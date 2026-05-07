@@ -37,6 +37,10 @@
       ],
       "description": "LOB classification. Validated against known LOB values when provided."
     },
+    "lobAttributes": {
+      "$ref": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+      "description": "Dynamic product attributes. Required by service validation when creating against an active non-sentinel product version; omitted or empty for unresolved null-LOB intake."
+    },
     "premiumEstimate": {
       "type": ["number", "null"],
       "minimum": 0,

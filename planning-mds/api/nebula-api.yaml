@@ -8,6 +8,10 @@ info:
     create from policy, detail with policy context, assignment/handoff, transition with
     conditional fields (Lost reason, Completed policy link), and renewal timeline.
     Renewal entity redesigned with 6-status lifecycle and computed urgency.
+    F0034 adds dynamic LOB attribute envelopes, schema-bundle read APIs, and
+    schema-pinned product metadata for Submission, Renewal, PolicyVersion, and
+    PolicyEndorsement. Policy responses expose current attributes through
+    CurrentVersionId -> PolicyVersion; Policy has no independent attribute source.
 servers:
   - url: https://api.nebula.local
 security:
@@ -29,6 +33,8 @@ tags:
     description: Renewal workflow operations
   - name: Policies
     description: Policy lifecycle, versioning, endorsements, cancellation, reinstatement (F0018)
+  - name: LobSchemas
+    description: Product schema registry and dynamic LOB attribute bundles (F0034)
   - name: Dashboard
     description: Dashboard widget data endpoints (F0001)
   - name: Tasks
@@ -930,6 +936,100 @@ paths:
           $ref: "#/components/responses/Unauthorized"
         "403":
           $ref: "#/components/responses/Forbidden"
+
+  # ──────────────────────────────────────────────────────────────
+  # Product schema registry endpoints (F0034)
+  # ──────────────────────────────────────────────────────────────
+  /lob-schemas/active:
+    get:
+      operationId: listActiveLobSchemaBundles
+      summary: List active LOB schema bundles
+      description: |
+        Returns active product schema bundles available to the authenticated tenant
+        and role. The frontend calls this after auth, normally once per lifecycle
+        stage, and caches by (productVersionId, stage, etag).
+      tags: [LobSchemas]
+      parameters:
+        - $ref: "#/components/parameters/LobStageFilter"
+        - $ref: "#/components/parameters/PolicyLobFilter"
+      responses:
+        "200":
+          description: Active bundle set
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LobActiveBundleSet"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "503":
+          $ref: "#/components/responses/ServiceUnavailable"
+
+  /lob-schemas/{productVersionId}/{stage}:
+    get:
+      operationId: getLobSchemaBundle
+      summary: Get one LOB schema bundle
+      description: |
+        Returns a resolved schema bundle for one product version and lifecycle
+        stage. Deprecated and internal bundles may resolve by direct id so
+        historical rows remain readable.
+      tags: [LobSchemas]
+      parameters:
+        - $ref: "#/components/parameters/ProductVersionId"
+        - $ref: "#/components/parameters/LobStagePath"
+      responses:
+        "200":
+          description: Resolved bundle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LobSchemaBundle"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+  /lob-schemas/{productVersionId}/activate:
+    post:
+      operationId: activateLobSchemaBundle
+      summary: Activate a product schema bundle
+      description: |
+        Steward/admin activation endpoint. The operation verifies deterministic
+        ids, HMAC signature metadata, status transition rules, bundle profile,
+        and projection safety before writing activation audit rows.
+      tags: [LobSchemas]
+      parameters:
+        - $ref: "#/components/parameters/ProductVersionId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LobBundleActivationRequest"
+      responses:
+        "200":
+          description: Bundle activation result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LobSchemaBundle"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "409":
+          $ref: "#/components/responses/Conflict"
+        "422":
+          $ref: "#/components/responses/UnprocessableContent"
 
   # ──────────────────────────────────────────────────────────────
   # Submission endpoints (redesigned — F0006)
@@ -3333,6 +3433,26 @@ components:
           - Surety
           - Cyber
           - DirectorsOfficers
+    ProductVersionId:
+      name: productVersionId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    LobStagePath:
+      name: stage
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/LobStage"
+    LobStageFilter:
+      name: stage
+      in: query
+      required: false
+      description: Optional lifecycle stage filter for active bundle bootstrap.
+      schema:
+        $ref: "#/components/schemas/LobStage"
     PolicyCarrierFilter:
       name: carrierId
       in: query
@@ -4046,6 +4166,169 @@ components:
           type: string
           format: uuid
 
+    # ── Dynamic LOB Attribute Schemas (F0034) ───────────────────
+    LobStage:
+      type: string
+      enum: [submission, policy, endorsement, renewal]
+
+    LobProductKind:
+      type: string
+      enum: [Standard, Unspecified, Legacy, Bridge]
+
+    LobProductVersionStatus:
+      type: string
+      enum: [Draft, Active, Deprecated, Retired, Internal]
+
+    LobAttributeEnvelope:
+      type: object
+      description: |
+        Schema-pinned dynamic product attribute envelope. Runtime validation
+        dispatches by lobProductVersionId; OpenAPI describes the envelope only.
+      required:
+        - lobProductVersionId
+        - attributes
+      properties:
+        lobProductVersionId:
+          type: string
+          format: uuid
+        lobProductId:
+          type: string
+          format: uuid
+          nullable: true
+        lobProductCode:
+          type: string
+          nullable: true
+        lobProductVersionStatus:
+          allOf:
+            - $ref: "#/components/schemas/LobProductVersionStatus"
+          nullable: true
+        lobSchemaVersion:
+          type: string
+          nullable: true
+          pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        lobSchemaHash:
+          type: string
+          nullable: true
+          pattern: "^sha256:[0-9a-f]{64}$"
+        attributes:
+          type: object
+          additionalProperties: true
+
+    LobSchemaBundle:
+      type: object
+      required: [productVersionId, productCode, lineOfBusiness, version, status, stage, etag, schemaHash, dataSchema, uiSchema, rules, projections]
+      properties:
+        productVersionId: { type: string, format: uuid }
+        productId: { type: string, format: uuid }
+        productCode: { type: string }
+        productKind:
+          $ref: "#/components/schemas/LobProductKind"
+        lineOfBusiness:
+          type: string
+          enum: [Property, GeneralLiability, CommercialAuto, WorkersCompensation, ProfessionalLiability, Marine, Umbrella, Surety, Cyber, DirectorsOfficers]
+        version:
+          type: string
+          pattern: "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        status:
+          $ref: "#/components/schemas/LobProductVersionStatus"
+        stage:
+          $ref: "#/components/schemas/LobStage"
+        etag: { type: string }
+        schemaHash:
+          type: string
+          pattern: "^sha256:[0-9a-f]{64}$"
+        dataSchema:
+          type: object
+          additionalProperties: true
+        uiSchema:
+          type: object
+          additionalProperties: true
+        rules:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+        projections:
+          type: array
+          items:
+            type: object
+            additionalProperties: true
+
+    LobActiveBundleSet:
+      type: object
+      required: [generatedAt, bundles]
+      properties:
+        generatedAt: { type: string, format: date-time }
+        bundles:
+          type: array
+          items:
+            $ref: "#/components/schemas/LobSchemaBundle"
+
+    LobBundleActivationRequest:
+      type: object
+      required: [targetStatus, activationReason]
+      properties:
+        targetStatus:
+          type: string
+          enum: [Active, Deprecated, Retired]
+        activationReason:
+          type: string
+          minLength: 1
+          maxLength: 500
+        effectiveAt:
+          type: string
+          format: date-time
+          nullable: true
+        stages:
+          type: array
+          items:
+            $ref: "#/components/schemas/LobStage"
+          nullable: true
+
+    LobValidationProblemDetails:
+      type: object
+      description: |
+        RFC 7807-compatible dynamic LOB validation error. Does not use
+        ProblemDetails.errors; normalized validator errors live in lobErrors[].
+      required: [type, title, status, code, traceId, lobErrors]
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer, minimum: 400, maximum: 599 }
+        detail: { type: string }
+        instance: { type: string, format: uri }
+        code:
+          type: string
+          enum: [VALIDATION_ERROR, LOB_PRODUCT_MISMATCH, LEGACY_SENTINEL_WRITE_BLOCKED, LOB_SCHEMA_NOT_ACTIVE, LOB_SCHEMA_NOT_FOUND, LOB_RULE_FAILED, LOB_VALIDATION_TIMEOUT]
+        traceId: { type: string }
+        productVersionId: { type: string, format: uuid, nullable: true }
+        stage:
+          allOf:
+            - $ref: "#/components/schemas/LobStage"
+          nullable: true
+        lobErrors:
+          type: array
+          items:
+            type: object
+            required: [code, pointer, keyword]
+            properties:
+              code:
+                type: string
+                enum: [RANGE_BELOW_MIN, RANGE_ABOVE_MAX, ENUM_MISMATCH, PATTERN_MISMATCH, REQUIRED_MISSING, TYPE_MISMATCH, FORMAT_INVALID, LENGTH_BELOW_MIN, LENGTH_ABOVE_MAX, ITEMS_BELOW_MIN, ITEMS_ABOVE_MAX, UNIQUE_ITEMS_VIOLATED, ADDITIONAL_PROPERTY, DISCRIMINATOR_MISMATCH, CONDITIONAL_BRANCH_FAILED, RULE_FAILED, TIMEOUT]
+              pointer: { type: string }
+              schemaPath: { type: string, nullable: true }
+              keyword: { type: string }
+              constraint:
+                nullable: true
+                oneOf:
+                  - type: string
+                  - type: number
+                  - type: boolean
+                  - type: object
+                    additionalProperties: true
+                  - type: array
+                    items: {}
+
     # ── Submission Schemas (redesigned — F0006) ─────────────────
     Submission:
       type: object
@@ -4059,6 +4342,7 @@ components:
         - brokerId
         - currentStatus
         - effectiveDate
+        - lobAttributes
         - assignedToUserId
         - rowVersion
         - createdAt
@@ -4095,6 +4379,8 @@ components:
             - Surety
             - Cyber
             - DirectorsOfficers
+        lobAttributes:
+          $ref: "#/components/schemas/LobAttributeEnvelope"
         currentStatus:
           type: string
           enum:
@@ -4302,6 +4588,8 @@ components:
             - Surety
             - Cyber
             - DirectorsOfficers
+        lobAttributes:
+          $ref: "#/components/schemas/LobAttributeEnvelope"
         effectiveDate:
           type: string
           format: date
@@ -4364,6 +4652,7 @@ components:
         - currentStatus
         - policyExpirationDate
         - targetOutreachDate
+        - lobAttributes
         - assignedToUserId
         - createdAt
         - updatedAt
@@ -4405,6 +4694,8 @@ components:
             - Surety
             - Cyber
             - DirectorsOfficers
+        lobAttributes:
+          $ref: "#/components/schemas/LobAttributeEnvelope"
         policyExpirationDate:
           type: string
           format: date
@@ -4567,6 +4858,8 @@ components:
             - Surety
             - Cyber
             - DirectorsOfficers
+        lobAttributes:
+          $ref: "#/components/schemas/LobAttributeEnvelope"
         premiumEstimate:
           type: number
           format: double
@@ -4618,6 +4911,8 @@ components:
             - Surety
             - Cyber
             - DirectorsOfficers
+        lobAttributes:
+          $ref: "#/components/schemas/LobAttributeEnvelope"
 
     RenewalAssignmentRequest:
       type: object
@@ -5543,6 +5838,7 @@ components:
         - totalPremium
         - premiumCurrency
         - currentVersionId
+        - currentLobAttributes
         - versionCount
         - rowVersion
         - createdAt
@@ -5589,6 +5885,10 @@ components:
           description: Computed at read time from F0007 Renewal.BoundPolicyId. Never persisted.
         currentVersionId: { type: string, format: uuid }
         currentVersionNumber: { type: integer, minimum: 1 }
+        currentLobAttributes:
+          allOf:
+            - $ref: "#/components/schemas/LobAttributeEnvelope"
+          description: Current policy-stage attributes resolved from CurrentVersionId -> PolicyVersion; not an independent Policy write source.
         versionCount: { type: integer, minimum: 1 }
         totalPremium: { type: number, minimum: 0 }
         premiumCurrency:
@@ -5678,6 +5978,7 @@ components:
         - premiumCurrency
         - currentVersionId
         - currentVersionNumber
+        - currentLobAttributes
         - versionCount
         - endorsementCount
         - rowVersion
@@ -5719,6 +6020,10 @@ components:
           enum: [USD]
         currentVersionId: { type: string, format: uuid }
         currentVersionNumber: { type: integer, minimum: 1 }
+        currentLobAttributes:
+          allOf:
+            - $ref: "#/components/schemas/LobAttributeEnvelope"
+          description: Current policy-stage attributes resolved from CurrentVersionId -> PolicyVersion.
         versionCount: { type: integer, minimum: 1 }
         endorsementCount: { type: integer, minimum: 0 }
         coverageLineCount: { type: integer, nullable: true, minimum: 0 }
@@ -5775,6 +6080,10 @@ components:
           nullable: true
           enum: [manual, csv-import]
         externalPolicyReference: { type: string, nullable: true, maxLength: 100 }
+        lobAttributes:
+          allOf:
+            - $ref: "#/components/schemas/LobAttributeEnvelope"
+          description: Dynamic policy-stage attributes. Persistence targets the initial PolicyVersion, not the Policy parent row.
         coverages:
           type: array
           nullable: true
@@ -5809,6 +6118,10 @@ components:
         endorsementReasonDetail: { type: string, nullable: true, maxLength: 1000 }
         effectiveDate: { type: string, format: date }
         premiumDelta: { type: number, nullable: true }
+        lobAttributes:
+          allOf:
+            - $ref: "#/components/schemas/LobAttributeEnvelope"
+          description: Dynamic endorsement-stage attributes. Persistence targets the resulting PolicyVersion and PolicyEndorsement rows.
         coverages:
           type: array
           minItems: 1
@@ -5865,7 +6178,7 @@ components:
 
     PolicyVersion:
       type: object
-      required: [id, policyId, versionNumber, versionReason, effectiveDate, expirationDate, totalPremium, premiumCurrency, createdAt]
+      required: [id, policyId, versionNumber, versionReason, effectiveDate, expirationDate, totalPremium, premiumCurrency, lobAttributes, createdAt]
       properties:
         id: { type: string, format: uuid }
         policyId: { type: string, format: uuid }
@@ -5880,6 +6193,10 @@ components:
         premiumCurrency:
           type: string
           enum: [USD]
+        lobAttributes:
+          allOf:
+            - $ref: "#/components/schemas/LobAttributeEnvelope"
+          description: Immutable policy-stage attributes captured for this version.
         profileSnapshot:
           type: object
           additionalProperties: true
@@ -5896,7 +6213,7 @@ components:
 
     PolicyEndorsement:
       type: object
-      required: [id, policyId, endorsementNumber, policyVersionId, endorsementReasonCode, effectiveDate, premiumDelta, createdAt]
+      required: [id, policyId, endorsementNumber, policyVersionId, endorsementReasonCode, effectiveDate, premiumDelta, lobAttributes, createdAt]
       properties:
         id: { type: string, format: uuid }
         policyId: { type: string, format: uuid }
@@ -5913,6 +6230,10 @@ components:
           type: string
           nullable: true
           enum: [USD]
+        lobAttributes:
+          allOf:
+            - $ref: "#/components/schemas/LobAttributeEnvelope"
+          description: Endorsement-stage attributes captured for this endorsement.
         createdAt: { type: string, format: date-time }
         createdByUserId: { type: string, format: uuid, nullable: true }
 
@@ -5987,6 +6308,10 @@ components:
         producerUserId: { type: string, format: uuid, nullable: true }
         predecessorPolicyId: { type: string, format: uuid, nullable: true }
         externalPolicyReference: { type: string, nullable: true, maxLength: 100 }
+        lobAttributes:
+          allOf:
+            - $ref: "#/components/schemas/LobAttributeEnvelope"
+          description: Dynamic policy-stage attributes carried from the bound F0019 submission/quote. Persistence targets the initial PolicyVersion.
         coverages:
           type: array
           minItems: 1

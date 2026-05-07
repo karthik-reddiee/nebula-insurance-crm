@@ -15,6 +15,7 @@
 #   contact         read, create, update, delete
 #   submission      read, transition
 #   renewal         read, transition
+#   lob_schema      read, resolve, activate, deprecate, retire
 #   dashboard_kpi   read
 #   dashboard_pipeline  read
 #   dashboard_nudge read
@@ -576,3 +577,31 @@ p, MgaUser,              document_template, link,    true
 
 p, ExternalUser,         document_template, read,    true
 p, ExternalUser,         document_template, link,    true
+
+# §4 Product schema registry (F0034)
+# Active bootstrap reads are internal-only and tenant-filtered at query layer.
+# Direct resolve allows historical rows to render when pinned to Deprecated,
+# Retired, or Internal bundles. Writes are Admin-only in MVP.
+p, Admin,                lob_schema, read,       true
+p, Admin,                lob_schema, resolve,    true
+p, Admin,                lob_schema, activate,   true
+p, Admin,                lob_schema, deprecate,  true
+p, Admin,                lob_schema, retire,     true
+
+p, Underwriter,          lob_schema, read,       true
+p, Underwriter,          lob_schema, resolve,    true
+
+p, DistributionUser,     lob_schema, read,       true
+p, DistributionUser,     lob_schema, resolve,    true
+
+p, DistributionManager,  lob_schema, read,       true
+p, DistributionManager,  lob_schema, resolve,    true
+
+p, RelationshipManager,  lob_schema, read,       true
+p, RelationshipManager,  lob_schema, resolve,    true
+
+p, ProgramManager,       lob_schema, read,       true
+p, ProgramManager,       lob_schema, resolve,    true
+
+p, Coordinator,          lob_schema, read,       true
+p, Coordinator,          lob_schema, resolve,    true

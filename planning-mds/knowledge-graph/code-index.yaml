@@ -440,6 +440,79 @@ node_bindings:
           - engine/tests/Nebula.Tests/Integration/DashboardReadAuthorizationTests.cs
           - engine/tests/Nebula.Tests/Integration/BrokerUserAccessTests.cs
 
+  - id: capability:product-schema-registry
+    paths:
+      docs:
+        architecture:
+          - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+          - planning-mds/architecture/openapi-30-projection-matrix.md
+          - planning-mds/architecture/validation-perf-baseline.md
+        api:
+          - planning-mds/api/nebula-api.yaml
+        schemas:
+          - planning-mds/schemas/lob-schema-bundle.schema.json
+          - planning-mds/schemas/lob-validation-problem-details.schema.json
+        authz:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+
+  - id: capability:dynamic-lob-attributes
+    paths:
+      docs:
+        architecture:
+          - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+        schemas:
+          - planning-mds/schemas/lob-attribute-envelope.schema.json
+          - planning-mds/schemas/submission.schema.json
+          - planning-mds/schemas/renewal.schema.json
+          - planning-mds/schemas/policy-version.schema.json
+          - planning-mds/schemas/policy-endorsement.schema.json
+          - planning-mds/schemas/policy.schema.json
+
+  - id: capability:dynamic-attribute-panel
+    paths:
+      docs:
+        architecture:
+          - planning-mds/architecture/decisions/ADR-021-form-engine-rhf-ajv-shadcn-registry.md
+        api:
+          - planning-mds/api/nebula-api.yaml
+
+  - id: capability:validator-equivalence
+    paths:
+      docs:
+        architecture:
+          - planning-mds/architecture/decisions/ADR-022-validator-equivalence-restricted-profile.md
+          - planning-mds/architecture/validation-perf-baseline.md
+        schemas:
+          - planning-mds/schemas/lob-validation-problem-details.schema.json
+
+  - id: endpoint:lob-schemas-active
+    paths:
+      docs:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        authz:
+          - planning-mds/security/policies/policy.csv
+          - planning-mds/security/authorization-matrix.md
+
+  - id: endpoint:lob-schema-bundle-detail
+    paths:
+      docs:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        authz:
+          - planning-mds/security/policies/policy.csv
+          - planning-mds/security/authorization-matrix.md
+
+  - id: endpoint:lob-schema-activate
+    paths:
+      docs:
+        api:
+          - planning-mds/api/nebula-api.yaml
+        authz:
+          - planning-mds/security/policies/policy.csv
+          - planning-mds/security/authorization-matrix.md
+
   - id: capability:dashboard-home
     paths:
       backend:

@@ -36,6 +36,10 @@
       "description": "When set to 'csv-import', the policy is created directly in Issued state (import-lite). Default 'manual' creates Pending."
     },
     "externalPolicyReference": { "type": ["string", "null"], "maxLength": 100 },
+    "lobAttributes": {
+      "$ref": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+      "description": "Dynamic policy-stage attributes. Persistence targets the initial PolicyVersion produced by create, not the Policy parent row."
+    },
     "coverages": {
       "type": ["array", "null"],
       "description": "Initial coverage lines for Pending policies. For import-lite, coverages may be omitted or supplied.",

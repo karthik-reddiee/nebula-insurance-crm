@@ -441,7 +441,7 @@ Resource: `account`. Actions: `read`, `create`, `update`, `deactivate`, `reactiv
 
 ## 3. InternalOnly Content Rule
 
-All resources in this matrix are classified **InternalOnly** for MVP. No data is accessible to ExternalUser under any circumstances. This rule applies universally to all resources above (Brokers, Contacts, Submissions, Renewals, Tasks, Dashboard, Timeline, Policies, Accounts).
+All resources in this matrix are classified **InternalOnly** for MVP unless a later section explicitly layers a narrower public/document rule. No data is accessible to ExternalUser under any circumstances for Brokers, Contacts, Submissions, Renewals, Tasks, Dashboard, Timeline, Policies, Accounts, or Product Schema Registry.
 
 Sources: BLUEPRINT §1.2 (external users are Future only), §3.1 non-goals ("No external broker/MGA self-service portal in MVP"), F0001-S0001 through F0001-S0005 Data Visibility sections, F0002-S0001 and F0002-S0002 Data Visibility sections.
 
@@ -514,6 +514,33 @@ The runtime YAML (`<docroot>/configuration/casbin-document-roles.yaml`) is close
 
 ---
 
-## 5. Open Questions
+## 5. Product Schema Registry (F0034)
+
+Product schema bundles are internal platform configuration. Runtime screens may read active bundles only after the same ABAC and tenant availability filters that govern the parent lifecycle record. Activation, deprecation, retirement, and rollback are steward/admin actions in MVP and must write activation audit rows.
+
+| Role | read active bundles | resolve direct bundle by id | activate / deprecate / retire |
+|------|---------------------|-----------------------------|-------------------------------|
+| Admin | ALLOW | ALLOW | ALLOW |
+| Underwriter | ALLOW | ALLOW | DENY |
+| DistributionUser | ALLOW | ALLOW | DENY |
+| DistributionManager | ALLOW | ALLOW | DENY |
+| RelationshipManager | ALLOW | ALLOW | DENY |
+| ProgramManager | ALLOW | ALLOW | DENY |
+| Coordinator | ALLOW | ALLOW | DENY |
+| BrokerUser | DENY | DENY | DENY |
+| MgaUser | DENY | DENY | DENY |
+| ExternalUser | DENY | DENY | DENY |
+
+**Constraints applying to all ALLOW decisions on Product Schema Registry:**
+
+- Read responses filter to tenant-available active product versions. Direct bundle reads by id are allowed for authenticated internal users so historical rows pinned to Deprecated, Retired, or Internal bundles render correctly.
+- Internal sentinel bundles (`_unspecified`, `_legacy_*`, `_bridge_*`) are never returned by active bootstrap listings.
+- Activation requires bundle profile validation, OpenAPI projection compatibility, HMAC signature verification, deterministic UUID verification, and an append-only activation event.
+- Activation failure must not partially update product-version status or served bundle content.
+- Every product schema write operation is Admin-only in MVP; a future Product Steward role requires a separate authorization update.
+
+---
+
+## 6. Open Questions
 
 None.

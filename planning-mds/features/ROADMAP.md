@@ -22,7 +22,7 @@ This document is the working prioritization view for feature sequencing.
 |---------|-------|---------|
 | [F0034 - Product Schema Registry and Dynamic LOB Attributes](./F0034-product-schema-registry-and-dynamic-lob-attributes/README.md) | Platform Foundation / CRM Release MVP Enabler | Establishes JSON Schema based product attributes and dynamic forms before F0019, F0022, and reporting work add product-specific fields that would otherwise become frontend, backend, and database debt. |
 
-**Implementation Readiness Note:** F0034 was promoted to Now on 2026-05-06 as the next planning/implementation foundation after F0020 completed. Product Manager planning should expand the minimal PRD before implementation starts.
+**Implementation Readiness Note:** F0034 was promoted to Now on 2026-05-06 as the next planning/implementation foundation after F0020 completed. Phase A is approved and Phase B now drafts ADR-020 through ADR-023, schema-bundle API contracts, static schema envelopes, authorization policy updates, and KG bindings; implementation waits for explicit Phase B approval.
 
 ## Next
 

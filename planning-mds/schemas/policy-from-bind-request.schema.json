@@ -31,6 +31,10 @@
     "producerUserId": { "type": ["string", "null"], "format": "uuid" },
     "predecessorPolicyId": { "type": ["string", "null"], "format": "uuid" },
     "externalPolicyReference": { "type": ["string", "null"], "maxLength": 100 },
+    "lobAttributes": {
+      "$ref": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+      "description": "Dynamic policy-stage attributes carried from the bound F0019 submission/quote. Persistence targets the initial PolicyVersion."
+    },
     "coverages": {
       "type": "array",
       "minItems": 1,

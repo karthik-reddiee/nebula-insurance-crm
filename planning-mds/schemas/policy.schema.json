@@ -17,6 +17,7 @@
     "totalPremium",
     "premiumCurrency",
     "currentVersionId",
+    "currentLobAttributes",
     "versionCount",
     "rowVersion",
     "createdAt",
@@ -109,6 +110,10 @@
     "currentVersionNumber": {
       "type": "integer",
       "minimum": 1
+    },
+    "currentLobAttributes": {
+      "$ref": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+      "description": "Current policy-stage product attributes resolved from CurrentVersionId -> PolicyVersion; not an independent Policy write source."
     },
     "versionCount": {
       "type": "integer",

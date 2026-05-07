@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+  "title": "LobAttributeEnvelope",
+  "description": "Envelope carried by dynamic LOB attribute-bearing lifecycle requests and responses. Product-version-specific validation is performed by LobSchemaResolver, not by this static draft-07 schema.",
+  "type": "object",
+  "required": [
+    "lobProductVersionId",
+    "attributes"
+  ],
+  "properties": {
+    "lobProductVersionId": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Pinned product version used to validate the attributes object."
+    },
+    "lobProductId": {
+      "type": ["string", "null"],
+      "format": "uuid",
+      "description": "Resolved product id. Required on responses; omitted on create/update requests."
+    },
+    "lobProductCode": {
+      "type": ["string", "null"],
+      "description": "Resolved product code such as cyber, _unspecified, or _legacy_cyber."
+    },
+    "lobProductVersionStatus": {
+      "type": ["string", "null"],
+      "enum": ["Draft", "Active", "Deprecated", "Retired", "Internal", null],
+      "description": "Resolved product version status. Required on responses; omitted on create/update requests."
+    },
+    "lobSchemaVersion": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "Semver for the product bundle."
+    },
+    "lobSchemaHash": {
+      "type": ["string", "null"],
+      "pattern": "^sha256:[0-9a-f]{64}$",
+      "description": "Resolved bundle hash used for cache validation and audit."
+    },
+    "attributes": {
+      "type": "object",
+      "description": "LOB-specific product attributes. The static contract permits object shape; runtime validation dispatches by lobProductVersionId.",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": false
+}
+

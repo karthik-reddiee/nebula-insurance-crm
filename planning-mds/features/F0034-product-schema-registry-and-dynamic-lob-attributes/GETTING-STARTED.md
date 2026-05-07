@@ -1,23 +1,55 @@
 # F0034 - Product Schema Registry and Dynamic LOB Attributes - Getting Started
 
-## Prerequisites
+## Planning Context
 
-- [ ] Read [PRD.md](./PRD.md).
-- [ ] Read [lob-extensible-attribute-plan.md](../../architecture/lob-extensible-attribute-plan.md).
-- [ ] Review the F0020 document metadata schema renderer as an adjacent but narrower precedent.
-- [ ] Review F0019 to identify where quote/proposal fields would otherwise become hardcoded product attributes.
+- Product root: `/mnt/c/Users/gajap/sandbox/nebula/nebula-insurance-crm`
+- Feature path: `planning-mds/features/F0034-product-schema-registry-and-dynamic-lob-attributes/`
+- Current mode: greenfield plan over an existing draft folder
+- Run id: `e726ab45-2563-442f-a360-c3173e66621b`
 
-## Product Manager Refinement Questions
+## Read First
 
-1. What is the smallest product pilot that proves the registry and dynamic form pattern?
-2. Which lifecycle carrier gets the first persisted `attributes` payload?
-3. What widget vocabulary is required for the pilot, and which widgets can wait?
-4. What validation parity fixtures are required before implementation can be accepted?
-5. What compatibility behavior is required for existing records that only have static `lineOfBusiness`?
+1. [PRD.md](./PRD.md)
+2. `planning-mds/architecture/lob-extensible-attribute-plan.md`
+3. F0019 PRD, specifically the quote/proposal product-attribute guardrail
+4. F0020 README and closeout notes for the document metadata schema renderer precedent
+5. ADR-001 and ADR-018 before Phase B architecture work
 
-## How to Verify Planning Readiness
+## Resolved Phase A Decisions
 
-1. Confirm `ROADMAP.md` lists F0034 in `Now`.
-2. Confirm `REGISTRY.md` assigns F0034 and advances the next available feature number.
-3. Confirm the full planning pass creates story files and refreshes `STORY-INDEX.md`.
-4. Confirm F0019 planning references the F0034 foundation instead of adding hardcoded product attributes.
+- Cyber is the first product pilot.
+- Submission, PolicyVersion, PolicyEndorsement, and Renewal carry product attributes.
+- Policy reads current product attributes through PolicyVersion and does not own an independent attribute payload in the first slice.
+- Existing null-LOB Submission/Renewal rows use `_unspecified/0.0.0`; existing non-null LOB rows use per-LOB legacy sentinels.
+- F0019 quote/proposal work depends on this feature for product-specific attributes.
+- A no-code product administration console and full LOB rollout remain out of scope.
+
+## Phase B Handoff Topics
+
+- ADR numbers are assigned: ADR-020 through ADR-023.
+- OpenAPI and static schema files are updated for the LOB attribute envelope and schema-bundle APIs.
+- KG canonical nodes and F0034 story mappings are bound to the Phase B architecture artifacts.
+- Authorization actions are defined: `lob_schema:read`, `lob_schema:resolve`, `lob_schema:activate`, `lob_schema:deprecate`, `lob_schema:retire`.
+- Runtime implementation still must fill numeric benchmark results in `planning-mds/architecture/validation-perf-baseline.md` before F0034 exits Phase C.
+
+## Architect Artifacts
+
+1. `planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md`
+2. `planning-mds/architecture/decisions/ADR-021-form-engine-rhf-ajv-shadcn-registry.md`
+3. `planning-mds/architecture/decisions/ADR-022-validator-equivalence-restricted-profile.md`
+4. `planning-mds/architecture/decisions/ADR-023-rules-governance-jsonlogic.md`
+5. `planning-mds/architecture/openapi-30-projection-matrix.md`
+6. `planning-mds/architecture/validation-perf-baseline.md`
+
+## Validation Commands
+
+Run these from `nebula-agents`:
+
+```bash
+python3 agents/product-manager/scripts/validate-stories.py /mnt/c/Users/gajap/sandbox/nebula/nebula-insurance-crm/planning-mds/features/F0034-product-schema-registry-and-dynamic-lob-attributes
+python3 agents/product-manager/scripts/generate-story-index.py /mnt/c/Users/gajap/sandbox/nebula/nebula-insurance-crm/planning-mds/features/
+python3 agents/product-manager/scripts/validate-trackers.py
+python3 /mnt/c/Users/gajap/sandbox/nebula/nebula-insurance-crm/scripts/kg/validate.py
+python3 /mnt/c/Users/gajap/sandbox/nebula/nebula-insurance-crm/scripts/kg/validate.py --check-drift
+python3 agents/scripts/validate_templates.py
+```

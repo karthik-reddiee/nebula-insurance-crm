@@ -1,0 +1,107 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/lob-validation-problem-details.schema.json",
+  "title": "LobValidationProblemDetails",
+  "description": "RFC Problem Details payload for dynamic LOB validation. Uses lobErrors[] instead of ProblemDetails.errors so normalized validator output stays stable across AJV and JsonSchema.Net.",
+  "type": "object",
+  "required": [
+    "type",
+    "title",
+    "status",
+    "code",
+    "traceId",
+    "lobErrors"
+  ],
+  "properties": {
+    "type": {
+      "type": "string",
+      "format": "uri"
+    },
+    "title": {
+      "type": "string"
+    },
+    "status": {
+      "type": "integer",
+      "minimum": 400,
+      "maximum": 599
+    },
+    "detail": {
+      "type": "string"
+    },
+    "instance": {
+      "type": "string",
+      "format": "uri"
+    },
+    "code": {
+      "type": "string",
+      "enum": [
+        "VALIDATION_ERROR",
+        "LOB_PRODUCT_MISMATCH",
+        "LEGACY_SENTINEL_WRITE_BLOCKED",
+        "LOB_SCHEMA_NOT_ACTIVE",
+        "LOB_SCHEMA_NOT_FOUND",
+        "LOB_RULE_FAILED",
+        "LOB_VALIDATION_TIMEOUT"
+      ]
+    },
+    "traceId": {
+      "type": "string"
+    },
+    "productVersionId": {
+      "type": ["string", "null"],
+      "format": "uuid"
+    },
+    "stage": {
+      "type": ["string", "null"],
+      "enum": ["submission", "policy", "endorsement", "renewal", null]
+    },
+    "lobErrors": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["code", "pointer", "keyword"],
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "RANGE_BELOW_MIN",
+              "RANGE_ABOVE_MAX",
+              "ENUM_MISMATCH",
+              "PATTERN_MISMATCH",
+              "REQUIRED_MISSING",
+              "TYPE_MISMATCH",
+              "FORMAT_INVALID",
+              "LENGTH_BELOW_MIN",
+              "LENGTH_ABOVE_MAX",
+              "ITEMS_BELOW_MIN",
+              "ITEMS_ABOVE_MAX",
+              "UNIQUE_ITEMS_VIOLATED",
+              "ADDITIONAL_PROPERTY",
+              "DISCRIMINATOR_MISMATCH",
+              "CONDITIONAL_BRANCH_FAILED",
+              "RULE_FAILED",
+              "TIMEOUT"
+            ]
+          },
+          "pointer": {
+            "type": "string",
+            "description": "RFC 6901 pointer into the attributes object."
+          },
+          "schemaPath": {
+            "type": ["string", "null"]
+          },
+          "keyword": {
+            "type": "string"
+          },
+          "constraint": {
+            "description": "Normalized violated constraint. Shape depends on keyword.",
+            "type": ["string", "number", "integer", "boolean", "object", "array", "null"]
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": true
+}
+

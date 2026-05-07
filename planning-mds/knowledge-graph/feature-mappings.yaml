@@ -722,14 +722,26 @@ features:
     path: planning-mds/features/F0034-product-schema-registry-and-dynamic-lob-attributes
     status: draft
     affects:
+      - capability:product-schema-registry
+      - capability:dynamic-lob-attributes
+      - capability:dynamic-attribute-panel
+      - capability:validator-equivalence
+      - capability:lob-rules-governance
       - entity:submission
       - entity:policy
       - entity:policy-version
       - entity:policy-endorsement
       - entity:renewal
+      - entity:lob-product
+      - entity:lob-product-version
+      - entity:lob-schema-bundle
+      - entity:lob-bundle-activation-event
       - workflow:submission
       - workflow:policy
       - workflow:renewal
+      - endpoint:lob-schemas-active
+      - endpoint:lob-schema-bundle-detail
+      - endpoint:lob-schema-activate
       - endpoint:submission-create
       - endpoint:submission-detail
       - endpoint:renewal-create
@@ -737,8 +749,15 @@ features:
     governed_by:
       - adr:001
       - adr:018
+      - adr:020
+      - adr:021
+      - adr:022
+      - adr:023
     uses_schema:
       - schema:line-of-business
+      - schema:lob-attribute-envelope
+      - schema:lob-schema-bundle
+      - schema:lob-validation-problem-details
       - schema:submission
       - schema:submission-create-request
       - schema:submission-update-request
@@ -754,6 +773,18 @@ features:
       - schema:problem-details
     uses_api_contract:
       - api:nebula-rest
+    enforced_by_policy:
+      - policy_rule:lob-schema-read
+      - policy_rule:lob-schema-resolve
+      - policy_rule:lob-schema-activate
+      - policy_rule:lob-schema-deprecate
+      - policy_rule:lob-schema-retire
+    depends_on:
+      - feature:F0006
+      - feature:F0007
+      - feature:F0018
+      - feature:F0019
+      - feature:F0020
 
 stories:
   - id: story:F0005-S0002
@@ -2533,3 +2564,217 @@ stories:
       - policy_rule:document-template-replace
       - policy_rule:document-template-link
       - policy_rule:document-create
+  - id: story:F0034-S0001
+    path: planning-mds/features/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0001-lock-product-attribute-decision-set.md
+    feature: feature:F0034
+    affects:
+      - capability:dynamic-lob-attributes
+      - entity:submission
+      - entity:policy
+      - entity:policy-version
+      - entity:policy-endorsement
+      - entity:renewal
+    governed_by:
+      - adr:001
+      - adr:018
+      - adr:020
+      - adr:022
+    uses_schema:
+      - schema:lob-attribute-envelope
+  - id: story:F0034-S0002
+    path: planning-mds/features/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0002-establish-product-schema-registry-foundation.md
+    feature: feature:F0034
+    affects:
+      - capability:product-schema-registry
+      - capability:lob-rules-governance
+      - endpoint:lob-schemas-active
+      - endpoint:lob-schema-bundle-detail
+      - endpoint:lob-schema-activate
+      - entity:lob-product
+      - entity:lob-product-version
+      - entity:lob-schema-bundle
+      - entity:lob-bundle-activation-event
+      - entity:submission
+      - entity:policy-version
+      - entity:policy-endorsement
+      - entity:renewal
+    governed_by:
+      - adr:001
+      - adr:018
+      - adr:020
+      - adr:022
+      - adr:023
+    uses_schema:
+      - schema:line-of-business
+      - schema:lob-schema-bundle
+      - schema:lob-validation-problem-details
+      - schema:problem-details
+    uses_api_contract:
+      - api:nebula-rest
+    enforced_by_policy:
+      - policy_rule:lob-schema-read
+      - policy_rule:lob-schema-resolve
+      - policy_rule:lob-schema-activate
+  - id: story:F0034-S0003
+    path: planning-mds/features/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0003-pin-attributes-on-lifecycle-carriers.md
+    feature: feature:F0034
+    affects:
+      - capability:dynamic-lob-attributes
+      - entity:submission
+      - entity:policy
+      - entity:policy-version
+      - entity:policy-endorsement
+      - entity:renewal
+      - entity:lob-product-version
+      - workflow:submission
+      - workflow:policy
+      - workflow:renewal
+    governed_by:
+      - adr:018
+      - adr:020
+    uses_schema:
+      - schema:lob-attribute-envelope
+      - schema:submission
+      - schema:submission-create-request
+      - schema:submission-update-request
+      - schema:policy
+      - schema:policy-create-request
+      - schema:policy-update-request
+      - schema:policy-endorsement-request
+      - schema:policy-version
+      - schema:policy-endorsement
+      - schema:renewal
+      - schema:renewal-create-request
+      - schema:renewal-update-request
+    uses_api_contract:
+      - api:nebula-rest
+  - id: story:F0034-S0004
+    path: planning-mds/features/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0004-prove-validator-equivalence.md
+    feature: feature:F0034
+    affects:
+      - capability:validator-equivalence
+      - capability:lob-rules-governance
+      - entity:submission
+      - entity:policy-version
+      - entity:policy-endorsement
+      - entity:renewal
+    governed_by:
+      - adr:001
+      - adr:022
+      - adr:023
+    uses_schema:
+      - schema:lob-schema-bundle
+      - schema:lob-validation-problem-details
+      - schema:problem-details
+    uses_api_contract:
+      - api:nebula-rest
+  - id: story:F0034-S0005
+    path: planning-mds/features/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0005-render-dynamic-attribute-panel.md
+    feature: feature:F0034
+    affects:
+      - capability:dynamic-attribute-panel
+      - capability:product-schema-registry
+      - endpoint:lob-schemas-active
+      - endpoint:lob-schema-bundle-detail
+      - entity:submission
+      - entity:policy
+      - entity:policy-version
+      - entity:policy-endorsement
+      - entity:renewal
+      - endpoint:submission-detail
+      - endpoint:renewal-detail
+    governed_by:
+      - adr:001
+      - adr:021
+      - adr:022
+    uses_schema:
+      - schema:lob-attribute-envelope
+      - schema:lob-schema-bundle
+      - schema:submission
+      - schema:policy
+      - schema:policy-version
+      - schema:policy-endorsement
+      - schema:renewal
+    uses_api_contract:
+      - api:nebula-rest
+  - id: story:F0034-S0006
+    path: planning-mds/features/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0006-activate-cyber-product-bundle.md
+    feature: feature:F0034
+    affects:
+      - capability:product-schema-registry
+      - capability:dynamic-lob-attributes
+      - capability:validator-equivalence
+      - capability:lob-rules-governance
+      - endpoint:lob-schemas-active
+      - endpoint:lob-schema-activate
+      - entity:lob-product
+      - entity:lob-product-version
+      - entity:lob-schema-bundle
+      - entity:lob-bundle-activation-event
+      - entity:submission
+      - entity:policy-version
+      - entity:policy-endorsement
+      - entity:renewal
+    governed_by:
+      - adr:001
+      - adr:018
+      - adr:020
+      - adr:021
+      - adr:022
+      - adr:023
+    uses_schema:
+      - schema:line-of-business
+      - schema:lob-attribute-envelope
+      - schema:lob-schema-bundle
+      - schema:lob-validation-problem-details
+      - schema:problem-details
+    uses_api_contract:
+      - api:nebula-rest
+    enforced_by_policy:
+      - policy_rule:lob-schema-read
+      - policy_rule:lob-schema-resolve
+      - policy_rule:lob-schema-activate
+  - id: story:F0034-S0007
+    path: planning-mds/features/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0007-prove-lifecycle-and-f0019-handoff.md
+    feature: feature:F0034
+    affects:
+      - capability:dynamic-lob-attributes
+      - capability:product-schema-registry
+      - entity:submission
+      - entity:policy
+      - entity:policy-version
+      - entity:policy-endorsement
+      - entity:renewal
+      - workflow:submission
+      - workflow:policy
+      - workflow:renewal
+      - endpoint:submission-create
+      - endpoint:submission-detail
+      - endpoint:renewal-create
+      - endpoint:renewal-detail
+    governed_by:
+      - adr:001
+      - adr:018
+      - adr:020
+      - adr:022
+    uses_schema:
+      - schema:lob-attribute-envelope
+      - schema:lob-validation-problem-details
+      - schema:submission
+      - schema:submission-create-request
+      - schema:policy
+      - schema:policy-create-request
+      - schema:policy-endorsement-request
+      - schema:policy-version
+      - schema:policy-endorsement
+      - schema:renewal
+      - schema:renewal-create-request
+      - schema:problem-details
+    uses_api_contract:
+      - api:nebula-rest
+    depends_on:
+      - story:F0034-S0002
+      - story:F0034-S0003
+      - story:F0034-S0004
+      - story:F0034-S0005
+      - story:F0034-S0006

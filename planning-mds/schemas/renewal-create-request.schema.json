@@ -22,6 +22,10 @@
         { "type": "null" }
       ],
       "description": "Override if policy LOB is null or needs correction."
+    },
+    "lobAttributes": {
+      "$ref": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+      "description": "Dynamic renewal-stage attributes. If omitted, creation inherits or resolves the policy's active renewal-stage product bundle."
     }
   },
   "additionalProperties": false

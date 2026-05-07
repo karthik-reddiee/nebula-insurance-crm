@@ -11,7 +11,7 @@
 
 | Feature ID | Name | Status | Phase | Folder |
 |------------|------|--------|-------|--------|
-| F0034 | Product Schema Registry and Dynamic LOB Attributes | Draft | Platform Foundation / CRM Release MVP Enabler | `F0034-product-schema-registry-and-dynamic-lob-attributes/` |
+| F0034 | Product Schema Registry and Dynamic LOB Attributes | Phase B Draft | Platform Foundation / CRM Release MVP Enabler | `F0034-product-schema-registry-and-dynamic-lob-attributes/` |
 
 ## Abandoned Features
 
