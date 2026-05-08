@@ -2,7 +2,7 @@
 
 **Purpose:** Authoritative data model reference for Nebula CRM. Contains the domain ERD, entity specifications, reference data, query patterns, and migration strategy. Supplements BLUEPRINT.md Section 4.2.
 
-**Last Updated:** 2026-03-03
+**Last Updated:** 2026-05-06
 
 ---
 
@@ -727,14 +727,103 @@ F0007 requires a minimum Policy entity from F0018. This section documents the in
 
 ---
 
+## 8. Product Schema Registry and Dynamic LOB Attributes (F0034)
+
+F0034 adds a governed product schema registry and dynamic attributes for variant lifecycle entities. Core entity columns remain stable. LOB-specific product attributes live in `attributes_json` and are validated by a pinned `lob_product_version_id`.
+
+### Attribute Carriers
+
+| Entity | Column Additions | Mutability Rule |
+|--------|------------------|-----------------|
+| Submission | `LobProductVersionId uuid NOT NULL`, `AttributesJson jsonb NOT NULL DEFAULT '{}'` | Same-version attributes may change while intake workflow rules permit edits. Version switches are limited to the null-LOB triage transition or governed migration. |
+| Renewal | `LobProductVersionId uuid NOT NULL`, `AttributesJson jsonb NOT NULL DEFAULT '{}'` | Same-version attributes may change while renewal workflow rules permit edits. Version switches follow the same sentinel/migration rules as Submission. |
+| PolicyVersion | `LineOfBusiness varchar(50) NOT NULL`, `LobProductVersionId uuid NOT NULL`, `AttributesJson jsonb NOT NULL DEFAULT '{}'` | Immutable once written. New attributes require a new policy version. |
+| PolicyEndorsement | `LineOfBusiness varchar(50) NOT NULL`, `LobProductVersionId uuid NOT NULL`, `AttributesJson jsonb NOT NULL DEFAULT '{}'` | Captured for the endorsement and frozen when the resulting PolicyVersion is produced. |
+| Policy | None | Policy has no independent `AttributesJson`; read models resolve current attributes through `CurrentVersionId -> PolicyVersion`. |
+
+### Registry Tables
+
+#### Table: `LobProducts`
+
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| Id | uuid | PK, deterministic UUIDv5 | Product id derived from namespace + product path |
+| Code | varchar(120) | UNIQUE, NOT NULL | Product code such as `cyber`, `_unspecified`, `_legacy_cyber` |
+| ProductKind | varchar(30) | NOT NULL | `Standard`, `Unspecified`, `Legacy`, or `Bridge` |
+| LineOfBusiness | varchar(50) | NULL for `_unspecified`, otherwise NOT NULL | Canonical LOB matched against carrier rows |
+| DisplayName | varchar(200) | NOT NULL | UI/steward label |
+| CreatedAt | timestamptz | NOT NULL | UTC creation timestamp |
+
+#### Table: `LobProductVersions`
+
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| Id | uuid | PK, deterministic UUIDv5 | Product version id pinned on carrier rows |
+| ProductId | uuid | FK -> LobProducts.Id, NOT NULL | Owning product |
+| Version | varchar(40) | NOT NULL | Semver, e.g. `1.0.0` |
+| Status | varchar(30) | NOT NULL | `Draft`, `Active`, `Deprecated`, `Retired`, or `Internal` |
+| Signature | varchar(80) | NOT NULL after activation | HMAC-SHA256 bundle signature |
+| SignatureKeyId | varchar(80) | NOT NULL after activation | Key id for rolling signature-key rotation |
+| ActivatedAt | timestamptz | NULL | First activation timestamp |
+| DeprecatedAt | timestamptz | NULL | Deprecation timestamp |
+| RetiredAt | timestamptz | NULL | Retirement timestamp |
+
+#### Table: `LobSchemaBundles`
+
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| Id | uuid | PK | Bundle row id |
+| ProductVersionId | uuid | FK -> LobProductVersions.Id, NOT NULL | Owning product version |
+| Stage | varchar(30) | NOT NULL | `submission`, `policy`, `endorsement`, or `renewal` |
+| SchemaHash | varchar(80) | NOT NULL | `sha256:<hex>` of resolved bundle |
+| DataSchemaJson | jsonb | NOT NULL | Resolved JSON Schema bundle |
+| UiSchemaJson | jsonb | NOT NULL | Dynamic form UI schema |
+| RulesJson | jsonb | NOT NULL DEFAULT '[]' | Governed JsonLogic rule envelope |
+| ProjectionsJson | jsonb | NOT NULL DEFAULT '[]' | Explicit projection definitions |
+
+#### Table: `LobBundleActivationEvents`
+
+| Field | Type | Constraints | Description |
+|-------|------|-------------|-------------|
+| Id | uuid | PK | Activation event id |
+| ProductVersionId | uuid | FK -> LobProductVersions.Id, NOT NULL | Affected product version |
+| FromStatus | varchar(30) | NULL | Prior status |
+| ToStatus | varchar(30) | NOT NULL | New status |
+| Reason | varchar(500) | NOT NULL | Steward/admin reason |
+| ActorUserId | uuid | NOT NULL | Internal user id |
+| OccurredAt | timestamptz | NOT NULL | UTC event timestamp |
+
+### Invariants
+
+- Every non-deleted attribute-carrier row has a non-null `LobProductVersionId`.
+- Carrier `LineOfBusiness` must match the pinned product's `LineOfBusiness`, except `_unspecified/0.0.0` on null-LOB Submission/Renewal rows with `{}` attributes.
+- `_legacy_*` rows render but reject creates, attribute changes, and ad hoc version switches.
+- Policy parent rows do not carry `AttributesJson`; current policy attributes are read through `CurrentVersionId`.
+- Queryable attributes require explicit projections. Default GIN indexing on raw `AttributesJson` is not used.
+
+### Migration Order
+
+1. Create registry tables and seed `_unspecified/0.0.0` plus per-LOB `_legacy/<lob>/0.0.0` sentinel products.
+2. Add `LobProductVersionId` and `AttributesJson` to Submission, Renewal, PolicyVersion, and PolicyEndorsement. Add immutable denormalized `LineOfBusiness` to PolicyVersion and PolicyEndorsement.
+3. Backfill null-LOB Submission/Renewal rows to `_unspecified/0.0.0`; backfill non-null LOB rows to their per-LOB legacy sentinel.
+4. Assert no carrier has null `LobProductVersionId` and no non-null LOB carrier points at a mismatched product.
+5. Install invariant triggers and service middleware.
+6. Activate `cyber/1.0.0` after bundle profile, parity, projection, and signature checks pass.
+
 ## Related Documents
 
 - [BLUEPRINT.md Section 4.2](../BLUEPRINT.md) — Core entity definitions
 - [ADR-003: Task Entity and Nudge Engine](decisions/ADR-003-task-entity-nudge-engine.md) — Design rationale
 - [ADR-002: Dashboard Data Aggregation](decisions/ADR-002-dashboard-data-aggregation.md) — Endpoint structure
 - [SOLUTION-PATTERNS.md](SOLUTION-PATTERNS.md) — Audit, ABAC, and repository patterns
+- [ADR-020: LOB Extensible Attribute Architecture](decisions/ADR-020-lob-extensible-attribute-architecture.md) — Registry, carriers, sentinels, invariants
+- [ADR-021: Dynamic Form Engine](decisions/ADR-021-form-engine-rhf-ajv-shadcn-registry.md) — Frontend dynamic form decision
+- [ADR-022: Validator Equivalence](decisions/ADR-022-validator-equivalence-restricted-profile.md) — Restricted profile and normalized error envelope
+- [ADR-023: JsonLogic Rules Governance](decisions/ADR-023-rules-governance-jsonlogic.md) — Rule envelope and op governance
 
 ---
+
+**Version:** 4.0 — 2026-05-06: Added F0034 product schema registry, dynamic LOB attribute carrier columns, sentinel/backfill strategy, and Policy parent exception.
 
 **Version:** 3.0 — 2026-03-26: Redesigned Renewal entity for F0007 (policy linkage, 6-status lifecycle, timing windows, outcome tracking). Added Policy stub (F0018 dependency surface). Extended WorkflowSlaThreshold with per-LOB dimension (ADR-014). Reconciled ReferenceRenewalStatus from 8→6 values. Updated domain ERD.
 

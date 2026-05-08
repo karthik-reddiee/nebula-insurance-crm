@@ -12,6 +12,7 @@
     "endorsementReasonCode",
     "effectiveDate",
     "premiumDelta",
+    "lobAttributes",
     "createdAt"
   ],
   "properties": {
@@ -38,6 +39,10 @@
     "effectiveDate": { "type": "string", "format": "date" },
     "premiumDelta": { "type": "number" },
     "premiumCurrency": { "type": ["string", "null"], "enum": ["USD", null] },
+    "lobAttributes": {
+      "$ref": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+      "description": "Schema-pinned endorsement-stage attributes captured for this endorsement."
+    },
     "createdAt": { "type": "string", "format": "date-time" },
     "createdByUserId": { "type": ["string", "null"], "format": "uuid" }
   },

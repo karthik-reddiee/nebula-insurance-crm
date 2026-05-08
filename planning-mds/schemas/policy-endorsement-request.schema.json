@@ -30,6 +30,10 @@
       "type": ["number", "null"],
       "description": "Signed change in total premium (can be negative). If omitted, server recomputes from coverage-line premiums."
     },
+    "lobAttributes": {
+      "$ref": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+      "description": "Dynamic endorsement-stage attributes. Persistence targets the resulting PolicyVersion plus the PolicyEndorsement row."
+    },
     "coverages": {
       "type": "array",
       "minItems": 1,

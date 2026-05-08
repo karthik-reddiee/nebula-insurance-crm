@@ -54,34 +54,51 @@ entities:
     source_docs:
       - planning-mds/architecture/data-model.md
       - planning-mds/domain/glossary.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+    rationale:
+      - adr: adr:020
+        section: "Decision"
+        summary: "Submission is a variant attribute carrier: core fields remain columned while product-specific intake attributes are pinned by lob_product_version_id and stored in attributes_json."
   - id: entity:policy
     label: Policy
     source_docs:
       - planning-mds/architecture/data-model.md
       - planning-mds/domain/glossary.md
       - planning-mds/architecture/decisions/ADR-018-policy-aggregate-versioning-and-reinstatement-window.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
     rationale:
       - adr: adr:018
         section: "Decision §1"
         summary: "Policy aggregate is a mutable parent row (lifecycle state + denormalized context) plus immutable PolicyVersion snapshots and materialized PolicyCoverageLine rows; endorsements and reinstatements produce new versions rather than mutating history."
+      - adr: adr:020
+        section: "Decision"
+        summary: "Policy is not an independent LOB attribute carrier; current product attributes are read through CurrentVersionId -> PolicyVersion."
   - id: entity:policy-version
     label: PolicyVersion
     source_docs:
       - planning-mds/architecture/data-model.md
       - planning-mds/architecture/decisions/ADR-018-policy-aggregate-versioning-and-reinstatement-window.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
     rationale:
       - adr: adr:018
         section: "Decision §1"
         summary: "Immutable term snapshot captured at issue, endorsement, or reinstatement. VersionNumber is monotonic per PolicyId and the source of truth for historical policy terms."
+      - adr: adr:020
+        section: "Decision"
+        summary: "PolicyVersion is the authoritative policy-level LOB attribute carrier; attributes_json supplements platform snapshots rather than replacing them."
   - id: entity:policy-endorsement
     label: PolicyEndorsement
     source_docs:
       - planning-mds/architecture/data-model.md
       - planning-mds/architecture/decisions/ADR-018-policy-aggregate-versioning-and-reinstatement-window.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
     rationale:
       - adr: adr:018
         section: "Decision §1"
         summary: "Endorsement record on an Issued policy; ties 1:1 to the PolicyVersion it produced and carries reason code, effective date, and premium delta."
+      - adr: adr:020
+        section: "Decision"
+        summary: "PolicyEndorsement carries endorsement-stage LOB attributes until the resulting PolicyVersion freezes the authoritative policy-stage attributes."
   - id: entity:policy-coverage-line
     label: PolicyCoverageLine
     source_docs:
@@ -105,6 +122,49 @@ entities:
     source_docs:
       - planning-mds/architecture/data-model.md
       - planning-mds/domain/glossary.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+    rationale:
+      - adr: adr:020
+        section: "Decision"
+        summary: "Renewal is a variant attribute carrier whose renewal-stage attributes are schema-pinned independently of core renewal workflow state."
+  - id: entity:lob-product
+    label: LobProduct
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+    rationale:
+      - adr: adr:020
+        section: "Decision"
+        summary: "Product identity, kind, code, and line-of-business semantics are separated from individual product versions so sentinels and standard products share one registry model."
+  - id: entity:lob-product-version
+    label: LobProductVersion
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+    rationale:
+      - adr: adr:020
+        section: "Decision"
+        summary: "Lifecycle rows pin a deterministic product version id to keep historical attributes resolvable after new schema versions activate."
+  - id: entity:lob-schema-bundle
+    label: LobSchemaBundle
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+      - planning-mds/architecture/decisions/ADR-022-validator-equivalence-restricted-profile.md
+      - planning-mds/schemas/lob-schema-bundle.schema.json
+    rationale:
+      - adr: adr:022
+        section: "Decision"
+        summary: "Resolved schema bundles are the runtime validation and dynamic-form contract; OpenAPI receives a 3.0.3 projection, not the authoritative source."
+  - id: entity:lob-bundle-activation-event
+    label: LobBundleActivationEvent
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+    rationale:
+      - adr: adr:020
+        section: "Decision"
+        summary: "Bundle activation, deprecation, retirement, and rollback need append-only evidence because product schema changes alter validation behavior."
   - id: entity:task-item
     label: TaskItem
     source_docs:
@@ -485,6 +545,50 @@ capabilities:
     label: SonarQube Reporting
     source_docs:
       - planning-mds/features/archive/F0033-structured-logging-and-qe-toolchain-activation/README.md
+  - id: capability:product-schema-registry
+    label: Product Schema Registry
+    source_docs:
+      - planning-mds/features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/README.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+      - planning-mds/api/nebula-api.yaml
+    related_nodes:
+      - entity:lob-product
+      - entity:lob-product-version
+      - entity:lob-schema-bundle
+      - entity:lob-bundle-activation-event
+  - id: capability:dynamic-lob-attributes
+    label: Dynamic LOB Attributes
+    source_docs:
+      - planning-mds/features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/README.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+      - planning-mds/schemas/lob-attribute-envelope.schema.json
+    related_nodes:
+      - entity:submission
+      - entity:renewal
+      - entity:policy-version
+      - entity:policy-endorsement
+  - id: capability:dynamic-attribute-panel
+    label: Dynamic Attribute Panel
+    source_docs:
+      - planning-mds/features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0005-render-dynamic-attribute-panel.md
+      - planning-mds/architecture/decisions/ADR-021-form-engine-rhf-ajv-shadcn-registry.md
+    related_nodes:
+      - capability:dynamic-lob-attributes
+  - id: capability:validator-equivalence
+    label: Validator Equivalence
+    source_docs:
+      - planning-mds/features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0004-prove-validator-equivalence.md
+      - planning-mds/architecture/decisions/ADR-022-validator-equivalence-restricted-profile.md
+      - planning-mds/architecture/validation-perf-baseline.md
+    related_nodes:
+      - schema:lob-validation-problem-details
+      - capability:product-schema-registry
+  - id: capability:lob-rules-governance
+    label: LOB Rules Governance
+    source_docs:
+      - planning-mds/architecture/decisions/ADR-023-rules-governance-jsonlogic.md
+    related_nodes:
+      - capability:validator-equivalence
 
 glossary_terms:
   - id: glossary_term:quote
@@ -849,6 +953,42 @@ endpoints:
       - entity:activity-timeline-event
       - entity:workflow-transition
       - policy_rule:timeline-event-read
+  - id: endpoint:lob-schemas-active
+    label: GET /lob-schemas/active
+    method: GET
+    route: /lob-schemas/active
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+    related_nodes:
+      - capability:product-schema-registry
+      - entity:lob-schema-bundle
+      - policy_rule:lob-schema-read
+  - id: endpoint:lob-schema-bundle-detail
+    label: GET /lob-schemas/{productVersionId}/{stage}
+    method: GET
+    route: /lob-schemas/{productVersionId}/{stage}
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+    related_nodes:
+      - capability:product-schema-registry
+      - entity:lob-product-version
+      - entity:lob-schema-bundle
+      - policy_rule:lob-schema-resolve
+  - id: endpoint:lob-schema-activate
+    label: POST /lob-schemas/{productVersionId}/activate
+    method: POST
+    route: /lob-schemas/{productVersionId}/activate
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+    related_nodes:
+      - capability:product-schema-registry
+      - entity:lob-product-version
+      - entity:lob-bundle-activation-event
+      - policy_rule:lob-schema-activate
   - id: endpoint:task-my-list
     label: GET /my/tasks
     method: GET
@@ -2440,6 +2580,86 @@ policy_rules:
       - entity:policy
       - capability:authorization-enforcement
     notes: Gates the import-lite CSV ingest path; DistributionManager and Admin only in MVP.
+  - id: policy_rule:lob-schema-read
+    label: lob_schema:read
+    resource: lob_schema
+    action: read
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:admin
+      - role:underwriter
+      - role:distribution-user
+      - role:distribution-manager
+      - role:relationship-manager
+      - role:program-manager
+      - role:coordinator
+    related_nodes:
+      - capability:product-schema-registry
+      - entity:lob-schema-bundle
+      - capability:authorization-enforcement
+    notes: Active bootstrap read; query layer filters to tenant-available active product versions and excludes Internal sentinels.
+  - id: policy_rule:lob-schema-resolve
+    label: lob_schema:resolve
+    resource: lob_schema
+    action: resolve
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:admin
+      - role:underwriter
+      - role:distribution-user
+      - role:distribution-manager
+      - role:relationship-manager
+      - role:program-manager
+      - role:coordinator
+    related_nodes:
+      - capability:product-schema-registry
+      - entity:lob-product-version
+      - entity:lob-schema-bundle
+      - capability:authorization-enforcement
+    notes: Direct resolve path for historical rows pinned to Deprecated, Retired, or Internal bundles.
+  - id: policy_rule:lob-schema-activate
+    label: lob_schema:activate
+    resource: lob_schema
+    action: activate
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:admin
+    related_nodes:
+      - capability:product-schema-registry
+      - entity:lob-bundle-activation-event
+      - capability:authorization-enforcement
+  - id: policy_rule:lob-schema-deprecate
+    label: lob_schema:deprecate
+    resource: lob_schema
+    action: deprecate
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:admin
+    related_nodes:
+      - capability:product-schema-registry
+      - entity:lob-bundle-activation-event
+      - capability:authorization-enforcement
+  - id: policy_rule:lob-schema-retire
+    label: lob_schema:retire
+    resource: lob_schema
+    action: retire
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:admin
+    related_nodes:
+      - capability:product-schema-registry
+      - entity:lob-bundle-activation-event
+      - capability:authorization-enforcement
   - id: policy_rule:document-read
     label: document:read
     resource: document
@@ -2753,6 +2973,18 @@ adrs:
   - id: adr:019
     label: Mock-quarantine-then-promote ingest pipeline
     path: planning-mds/architecture/decisions/ADR-019-mock-quarantine-then-promote-ingest-pipeline.md
+  - id: adr:020
+    label: LOB Extensible Attribute Architecture
+    path: planning-mds/architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md
+  - id: adr:021
+    label: Dynamic Form Engine with RHF AJV and shadcn Registry
+    path: planning-mds/architecture/decisions/ADR-021-form-engine-rhf-ajv-shadcn-registry.md
+  - id: adr:022
+    label: Validator Equivalence and Restricted JSON Schema Profile
+    path: planning-mds/architecture/decisions/ADR-022-validator-equivalence-restricted-profile.md
+  - id: adr:023
+    label: JsonLogic Rules Governance
+    path: planning-mds/architecture/decisions/ADR-023-rules-governance-jsonlogic.md
 
 api_contracts:
   - id: api:nebula-rest
@@ -2796,6 +3028,15 @@ schemas:
   - id: schema:line-of-business
     path: planning-mds/schemas/line-of-business.schema.json
     related_nodes: [entity:submission, entity:renewal, entity:policy]
+  - id: schema:lob-attribute-envelope
+    path: planning-mds/schemas/lob-attribute-envelope.schema.json
+    related_nodes: [entity:submission, entity:renewal, entity:policy-version, entity:policy-endorsement, capability:dynamic-lob-attributes]
+  - id: schema:lob-schema-bundle
+    path: planning-mds/schemas/lob-schema-bundle.schema.json
+    related_nodes: [entity:lob-product, entity:lob-product-version, entity:lob-schema-bundle, capability:product-schema-registry]
+  - id: schema:lob-validation-problem-details
+    path: planning-mds/schemas/lob-validation-problem-details.schema.json
+    related_nodes: [capability:validator-equivalence, capability:dynamic-lob-attributes]
   - id: schema:submission
     path: planning-mds/schemas/submission.schema.json
     related_nodes: [entity:submission, workflow:submission]

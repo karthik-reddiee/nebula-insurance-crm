@@ -10,6 +10,7 @@
     "brokerId",
     "currentStatus",
     "effectiveDate",
+    "lobAttributes",
     "assignedToUserId",
     "rowVersion",
     "createdAt",
@@ -38,6 +39,10 @@
     "lineOfBusiness": {
       "type": ["string", "null"],
       "maxLength": 50
+    },
+    "lobAttributes": {
+      "$ref": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+      "description": "Schema-pinned dynamic product attributes for this submission."
     },
     "currentStatus": {
       "type": "string",

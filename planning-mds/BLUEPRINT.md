@@ -180,6 +180,7 @@ Status: Phase C implementation is complete for F0001 (Dashboard), F0002 (Broker 
 **CRM Release MVP (Planned):**
 - [F0016: Account 360 & Insured Management](features/archive/F0016-account-360-and-insured-management/PRD.md) - Done (Archived 2026-04-14; 11 stories: list, create, profile edit, 360 composition, contacts, relationships, lifecycle, merge, deleted/merged fallback contract, timeline, summary projection)
 - [F0018: Policy Lifecycle & Policy 360](features/archive/F0018-policy-lifecycle-and-policy-360/PRD.md) - Done (Archived 2026-04-22; 11 stories: list, create, profile edit, 360 composition, versions, endorsements, cancellation, reinstatement, renewal linkage, timeline, summary projection)
+- [F0034: Product Schema Registry and Dynamic LOB Attributes](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/PRD.md) - Done (Archived 2026-05-07; Platform Foundation / CRM Release MVP Enabler; 7 stories: decision lock, registry foundation, lifecycle carrier pinning, validator parity, dynamic panel, Cyber bundle, lifecycle/F0019 handoff)
 - F0019: Submission Quoting, Proposal & Approval Workflow - Planned
 - [F0020: Document Management & ACORD Intake](features/archive/F0020-document-management-and-acord-intake/PRD.md) - Done (Archived 2026-05-05; 12 stories: single upload, bulk upload, quarantine promote, classification-filtered list, detail/provenance, downloads, immutable replace, metadata update, classification ABAC, completeness signal, retention cleanup, templates library)
 - F0021: Communication Hub & Activity Capture - Planned
@@ -255,6 +256,15 @@ Status: Phase C implementation is complete for F0001 (Dashboard), F0002 (Broker 
 - [F0033-S0004: Establish broker list contract testing with Pact](features/archive/F0033-structured-logging-and-qe-toolchain-activation/F0033-S0004-establish-broker-list-contract-testing-with-pact.md) - Done (Archived)
 - [F0033-S0005: Activate SonarQube Community quality reporting](features/archive/F0033-structured-logging-and-qe-toolchain-activation/F0033-S0005-activate-sonarqube-community-quality-reporting.md) - Done (Archived)
 
+**Platform Foundation Stories (Feature F0034: Product Schema Registry and Dynamic LOB Attributes):**
+- [F0034-S0001: Lock product-attribute decision set](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0001-lock-product-attribute-decision-set.md) - Done (Archived)
+- [F0034-S0002: Establish product schema registry foundation](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0002-establish-product-schema-registry-foundation.md) - Done (Archived)
+- [F0034-S0003: Pin attributes on lifecycle carriers](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0003-pin-attributes-on-lifecycle-carriers.md) - Done (Archived)
+- [F0034-S0004: Prove frontend and backend validator equivalence](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0004-prove-validator-equivalence.md) - Done (Archived)
+- [F0034-S0005: Render dynamic attribute panel from schema metadata](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0005-render-dynamic-attribute-panel.md) - Done (Archived)
+- [F0034-S0006: Activate Cyber product bundle](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0006-activate-cyber-product-bundle.md) - Done (Archived)
+- [F0034-S0007: Prove lifecycle integration and F0019 handoff](features/archive/F0034-product-schema-registry-and-dynamic-lob-attributes/F0034-S0007-prove-lifecycle-and-f0019-handoff.md) - Done (Archived)
+
 **MVP Stories (Feature F0010: Dashboard Opportunities Refactor):**
 - [F0010-S0001: Replace Sankey default with Pipeline Board](features/archive/F0010-dashboard-opportunities-refactor/F0010-S0001-replace-sankey-with-pipeline-board-default.md) - Done (Historical; superseded by F0013)
 - [F0010-S0002: Add Opportunities Aging Heatmap view](features/archive/F0010-dashboard-opportunities-refactor/F0010-S0002-add-opportunity-aging-heatmap-view.md) - Done (Historical; superseded by F0013)
@@ -319,6 +329,7 @@ Reference examples also live under `planning-mds/examples/stories/`.
 - Create Submission (F0006)
 - Renewal Pipeline List (F0007)
 - Renewal Detail (F0007)
+- Dynamic Attribute Panel (F0034)
 - Admin minimal (roles/policies optional MVP)
 
 Screen baseline details:
@@ -327,6 +338,7 @@ Screen baseline details:
 - Broker List: sortable/filterable list, quick search, create action, status tags.
 - Broker 360: profile header, contacts, hierarchy/program links, immutable timeline panel.
 - Task Center: assigned tasks, due dates, simple status states, reminder hooks.
+- Dynamic Attribute Panel: schema-pinned product attributes, normalized validation errors, legacy read-only state, and Cyber pilot fields embedded in submission, policy, endorsement, and renewal surfaces.
 - Admin minimal: role assignment visibility and policy diagnostics (read-focused in MVP).
 
 ---
@@ -347,6 +359,10 @@ This section defines the build-ready technical baseline for the reference implem
 - [ADR-004](architecture/decisions/ADR-004-frontend-dashboard-widget-architecture.md) — Frontend Dashboard Widget Architecture
 - [ADR-012](architecture/decisions/ADR-012-shared-document-storage-and-metadata-architecture.md) — Shared Document Storage and Metadata Architecture (F0020 — finalised 2026-05-04)
 - [ADR-019](architecture/decisions/ADR-019-mock-quarantine-then-promote-ingest-pipeline.md) — Mock-quarantine-then-promote ingest pipeline (F0020)
+- [ADR-020](architecture/decisions/ADR-020-lob-extensible-attribute-architecture.md) — LOB extensible attribute architecture (F0034)
+- [ADR-021](architecture/decisions/ADR-021-form-engine-rhf-ajv-shadcn-registry.md) — Dynamic form engine with RHF, AJV, and shadcn widget registry (F0034)
+- [ADR-022](architecture/decisions/ADR-022-validator-equivalence-restricted-profile.md) — Validator equivalence and restricted JSON Schema profile (F0034)
+- [ADR-023](architecture/decisions/ADR-023-rules-governance-jsonlogic.md) — JsonLogic rules governance (F0034)
 
 **Data Model Supplement:** See `planning-mds/architecture/data-model.md` for Task entity, dashboard indexes, and query patterns. F0020 documents are filesystem-first (no relational entity in MVP); see `planning-mds/features/archive/F0020-document-management-and-acord-intake/README.md` for the on-disk layout and the `IDocumentRepository` boundary.
 
@@ -378,6 +394,11 @@ This section defines the build-ready technical baseline for the reference implem
 - TimelineAudit module:
   - Owns ActivityTimelineEvent and WorkflowTransition append-only records.
   - Provides timeline query/read APIs (including `GET /timeline/events` for dashboard activity feed).
+- ProductSchemaRegistry module (F0034):
+  - Owns LobProduct, LobProductVersion, LobSchemaBundle, and LobBundleActivationEvent.
+  - Serves active and direct schema-bundle reads for dynamic product attributes.
+  - Enforces bundle signatures, deterministic product-version ids, restricted schema profile, OpenAPI projection compatibility, and activation audit.
+  - Does not own lifecycle rows; Submission, Renewal, PolicyVersion, and PolicyEndorsement pin product versions and carry attributes.
 - IdentityAuthorization module:
   - Validates authentik JWT tokens (JWKS from `Authentication__Authority/.well-known/openid-configuration`).
   - Normalizes `(iss, sub)` claims to internal `NebulaPrincipal { UserId, Roles, Regions }` via `IClaimsPrincipalNormalizer`.
@@ -435,6 +456,19 @@ Core entities (minimum baseline):
   - Id (uuid), EntityType, EntityId, EventType, EventPayloadJson, ActorUserId (uuid, logical ref → UserProfile.UserId), OccurredAt
 - WorkflowTransition (append-only)
   - Id (uuid), WorkflowType, EntityId, FromState, ToState, Reason, ActorUserId (uuid, logical ref → UserProfile.UserId), OccurredAt
+- LobProduct (F0034)
+  - Id (uuid), Code, ProductKind, LineOfBusiness, DisplayName, CreatedAt
+- LobProductVersion (F0034)
+  - Id (uuid), ProductId, Version, Status, Signature, SignatureKeyId, ActivatedAt, DeprecatedAt, RetiredAt
+- LobSchemaBundle (F0034)
+  - Id (uuid), ProductVersionId, Stage, SchemaHash, DataSchemaJson, UiSchemaJson, RulesJson, ProjectionsJson
+- LobBundleActivationEvent (append-only, F0034)
+  - Id (uuid), ProductVersionId, FromStatus, ToStatus, Reason, ActorUserId, OccurredAt
+
+F0034 attribute-carrier additions:
+- Submission, Renewal, PolicyVersion, and PolicyEndorsement carry `LobProductVersionId` plus `AttributesJson`.
+- PolicyVersion and PolicyEndorsement also carry immutable denormalized `LineOfBusiness`.
+- Policy has no independent attributes source; current policy attributes resolve through `CurrentVersionId -> PolicyVersion`.
 
 Reference tables and seed strategy:
 - ReferenceState, ReferenceIndustry, ReferenceTaskStatus, ReferenceSubmissionStatus, ReferenceRenewalStatus
@@ -494,6 +528,7 @@ Policy baseline:
 - Admin has broad management access including policy administration.
 - InternalOnly resources are denied to non-internal subjects.
 - Enforcement is server-side only via Casbin middleware and application guards.
+- Product schema bundles are InternalOnly. Internal roles may read and resolve bundles needed for records they can access; Admin alone may activate, deprecate, or retire bundles in MVP.
 
 ### 4.5 API Contracts
 
@@ -532,8 +567,14 @@ Task CRUD endpoints (F0001 + F0003):
 - PUT `/tasks/{taskId}` — Update task
 - DELETE `/tasks/{taskId}` — Soft delete task
 
+Product schema registry endpoints (F0034):
+- GET `/lob-schemas/active` — active bundle bootstrap, tenant-filtered and excluding Internal sentinels
+- GET `/lob-schemas/{productVersionId}/{stage}` — direct bundle resolve for active and historical pinned rows
+- POST `/lob-schemas/{productVersionId}/activate` — Admin-only activation/deprecation/retirement command surface
+
 Error contract:
 - All non-success responses return RFC 7807 `ProblemDetails` with `type`, `title`, `status`, plus extension fields `code`, `traceId`, and optional `detail`/`errors`.
+- Dynamic LOB validation returns `LobValidationProblemDetails` with `lobErrors[]`; it does not reuse the global `ProblemDetails.errors` map.
 
 ### 4.6 Observability + NFRs
 

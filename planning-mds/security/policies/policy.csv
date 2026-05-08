@@ -15,6 +15,7 @@
 #   contact         read, create, update, delete
 #   submission      read, transition
 #   renewal         read, transition
+#   lob_schema      read, resolve, activate, deprecate, retire
 #   dashboard_kpi   read
 #   dashboard_pipeline  read
 #   dashboard_nudge read
@@ -164,7 +165,7 @@ p, Admin,               submission, transition, true
 p, Admin,               submission, assign,     true
 
 # ─────────────────────────────────────────────────────────────────────────────
-# §2.4 Renewal — Read / Create / Transition / Assign (F0007 update)
+# §2.4 Renewal — Read / Create / Update / Transition / Assign (F0007 update + F0034 attributes)
 # Transitions must follow workflow rules — see F0007 README transition matrix.
 # Per-transition role authorization is enforced at the application layer (ADR-011).
 # Casbin gates the broad action; app service gates specific from→to pairs.
@@ -173,6 +174,7 @@ p, Admin,               submission, assign,     true
 # Actions:
 #   read       — view renewal list/detail
 #   create     — create renewal from expiring policy
+#   update     — update dynamic LOB attributes on non-terminal renewals
 #   transition — advance renewal through workflow states
 #   assign     — assign/reassign renewal ownership
 # ─────────────────────────────────────────────────────────────────────────────
@@ -180,16 +182,19 @@ p, Admin,               submission, assign,     true
 # DistributionUser — read (own), create (self-assign), transition (Identified→Outreach, Outreach→InReview)
 p, DistributionUser,    renewal, read,       true
 p, DistributionUser,    renewal, create,     true
+p, DistributionUser,    renewal, update,     true
 p, DistributionUser,    renewal, transition, true
 
 # DistributionManager — read (all in region), create, transition (same as DistributionUser), assign (any in scope)
 p, DistributionManager, renewal, read,       true
 p, DistributionManager, renewal, create,     true
+p, DistributionManager, renewal, update,     true
 p, DistributionManager, renewal, transition, true
 p, DistributionManager, renewal, assign,     true
 
 # Underwriter — read (assigned + team), transition (InReview→Quoted/Lost, Quoted→Completed/Lost)
 p, Underwriter,         renewal, read,       true
+p, Underwriter,         renewal, update,     true
 p, Underwriter,         renewal, transition, true
 
 # RelationshipManager — read only (own accounts/brokers)
@@ -201,6 +206,7 @@ p, ProgramManager,      renewal, read,       true
 # Admin — full access
 p, Admin,               renewal, read,       true
 p, Admin,               renewal, create,     true
+p, Admin,               renewal, update,     true
 p, Admin,               renewal, transition, true
 p, Admin,               renewal, assign,     true
 
@@ -576,3 +582,31 @@ p, MgaUser,              document_template, link,    true
 
 p, ExternalUser,         document_template, read,    true
 p, ExternalUser,         document_template, link,    true
+
+# §4 Product schema registry (F0034)
+# Active bootstrap reads are internal-only and tenant-filtered at query layer.
+# Direct resolve allows historical rows to render when pinned to Deprecated,
+# Retired, or Internal bundles. Writes are Admin-only in MVP.
+p, Admin,                lob_schema, read,       true
+p, Admin,                lob_schema, resolve,    true
+p, Admin,                lob_schema, activate,   true
+p, Admin,                lob_schema, deprecate,  true
+p, Admin,                lob_schema, retire,     true
+
+p, Underwriter,          lob_schema, read,       true
+p, Underwriter,          lob_schema, resolve,    true
+
+p, DistributionUser,     lob_schema, read,       true
+p, DistributionUser,     lob_schema, resolve,    true
+
+p, DistributionManager,  lob_schema, read,       true
+p, DistributionManager,  lob_schema, resolve,    true
+
+p, RelationshipManager,  lob_schema, read,       true
+p, RelationshipManager,  lob_schema, resolve,    true
+
+p, ProgramManager,       lob_schema, read,       true
+p, ProgramManager,       lob_schema, resolve,    true
+
+p, Coordinator,          lob_schema, read,       true
+p, Coordinator,          lob_schema, resolve,    true

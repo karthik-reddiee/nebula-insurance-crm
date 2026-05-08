@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/lob-schema-bundle.schema.json",
+  "title": "LobSchemaBundle",
+  "description": "Resolved product schema bundle returned by the F0034 schema registry read APIs.",
+  "type": "object",
+  "required": [
+    "productVersionId",
+    "productCode",
+    "lineOfBusiness",
+    "version",
+    "status",
+    "stage",
+    "etag",
+    "schemaHash",
+    "dataSchema",
+    "uiSchema",
+    "rules",
+    "projections"
+  ],
+  "properties": {
+    "productVersionId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "productId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "productCode": {
+      "type": "string",
+      "minLength": 1
+    },
+    "productKind": {
+      "type": "string",
+      "enum": ["Standard", "Unspecified", "Legacy", "Bridge"]
+    },
+    "lineOfBusiness": {
+      "$ref": "https://nebula.local/schemas/line-of-business.schema.json"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["Draft", "Active", "Deprecated", "Retired", "Internal"]
+    },
+    "stage": {
+      "type": "string",
+      "enum": ["submission", "policy", "endorsement", "renewal"]
+    },
+    "etag": {
+      "type": "string"
+    },
+    "schemaHash": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "dataSchema": {
+      "type": "object",
+      "description": "Resolved JSON Schema source for runtime validation.",
+      "additionalProperties": true
+    },
+    "uiSchema": {
+      "type": "object",
+      "description": "Resolved UI schema consumed by DynamicAttributePanel.",
+      "additionalProperties": true
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "projections": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": false
+}
+

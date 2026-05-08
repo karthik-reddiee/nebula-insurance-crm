@@ -12,6 +12,7 @@
     "currentStatus",
     "policyExpirationDate",
     "targetOutreachDate",
+    "lobAttributes",
     "assignedToUserId",
     "createdAt",
     "updatedAt"
@@ -43,6 +44,10 @@
         { "$ref": "https://nebula.local/schemas/line-of-business.schema.json" },
         { "type": "null" }
       ]
+    },
+    "lobAttributes": {
+      "$ref": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+      "description": "Schema-pinned dynamic product attributes for this renewal."
     },
     "policyExpirationDate": {
       "type": "string",

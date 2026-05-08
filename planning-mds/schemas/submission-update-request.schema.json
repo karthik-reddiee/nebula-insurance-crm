@@ -17,6 +17,10 @@
       ],
       "description": "LOB classification. Validated against known LOB values when provided."
     },
+    "lobAttributes": {
+      "$ref": "https://nebula.local/schemas/lob-attribute-envelope.schema.json",
+      "description": "Dynamic product attributes. Version switches are allowed only for the approved null-LOB triage transition or governed migration paths."
+    },
     "effectiveDate": {
       "type": "string",
       "format": "date",
