@@ -63,7 +63,9 @@ public sealed record SymbolItem(
     [property: JsonPropertyName("signature")] string Signature,
     [property: JsonPropertyName("visibility")] string Visibility,
     [property: JsonPropertyName("calls")] CallRef[] Calls,
-    [property: JsonPropertyName("implements")] CallRef[] Implements
+    [property: JsonPropertyName("implements")] CallRef[] Implements,
+    [property: JsonPropertyName("instantiates")] CallRef[] Instantiates,
+    [property: JsonPropertyName("type_refs")] CallRef[] TypeRefs
 );
 
 public sealed record SidecarTarget(
@@ -349,7 +351,9 @@ public static class Program
                     Signature: Signature(e),
                     Visibility: VisibilityOf(e.Modifiers),
                     Calls: Array.Empty<CallRef>(),
-                    Implements: Array.Empty<CallRef>()));
+                    Implements: Array.Empty<CallRef>(),
+                    Instantiates: Array.Empty<CallRef>(),
+                    TypeRefs: Array.Empty<CallRef>()));
                 break;
             case DelegateDeclarationSyntax d:
                 items.Add(new SymbolItem(
@@ -362,7 +366,9 @@ public static class Program
                     Signature: Signature(d),
                     Visibility: VisibilityOf(d.Modifiers),
                     Calls: Array.Empty<CallRef>(),
-                    Implements: Array.Empty<CallRef>()));
+                    Implements: Array.Empty<CallRef>(),
+                    Instantiates: Array.Empty<CallRef>(),
+                    TypeRefs: Array.Empty<CallRef>()));
                 break;
         }
     }
@@ -390,7 +396,9 @@ public static class Program
             Signature: Signature(type),
             Visibility: VisibilityOf(type.Modifiers),
             Calls: Array.Empty<CallRef>(),
-            Implements: Array.Empty<CallRef>()));
+            Implements: Array.Empty<CallRef>(),
+            Instantiates: Array.Empty<CallRef>(),
+            TypeRefs: Array.Empty<CallRef>()));
 
         foreach (var member in type.Members)
         {
@@ -410,7 +418,9 @@ public static class Program
                         Signature: Signature(e),
                         Visibility: VisibilityOf(e.Modifiers),
                         Calls: Array.Empty<CallRef>(),
-                        Implements: Array.Empty<CallRef>()));
+                        Implements: Array.Empty<CallRef>(),
+                        Instantiates: Array.Empty<CallRef>(),
+                        TypeRefs: Array.Empty<CallRef>()));
                     break;
                 case MethodDeclarationSyntax m:
                     items.Add(new SymbolItem(
@@ -423,7 +433,9 @@ public static class Program
                         Signature: Signature(m),
                         Visibility: VisibilityOf(m.Modifiers),
                         Calls: ResolvedCalls(m, model),
-                        Implements: ImplementsOf(m, model)));
+                        Implements: ImplementsOf(m, model),
+                        Instantiates: ResolvedInstantiations(m, model),
+                        TypeRefs: ResolvedTypeRefsForMethod(m, model)));
                     break;
                 case PropertyDeclarationSyntax p:
                     items.Add(new SymbolItem(
@@ -436,7 +448,9 @@ public static class Program
                         Signature: Signature(p),
                         Visibility: VisibilityOf(p.Modifiers),
                         Calls: ResolvedCalls(p, model),
-                        Implements: Array.Empty<CallRef>()));
+                        Implements: Array.Empty<CallRef>(),
+                        Instantiates: ResolvedInstantiations(p, model),
+                        TypeRefs: ResolvedTypeRefsForProperty(p, model)));
                     break;
                 case ConstructorDeclarationSyntax ctor:
                     // Emit constructor with synthetic name ".ctor" so its symbol
@@ -451,7 +465,9 @@ public static class Program
                         Signature: Signature(ctor),
                         Visibility: VisibilityOf(ctor.Modifiers),
                         Calls: ResolvedCalls(ctor, model),
-                        Implements: Array.Empty<CallRef>()));
+                        Implements: Array.Empty<CallRef>(),
+                        Instantiates: ResolvedInstantiations(ctor, model),
+                        TypeRefs: ResolvedTypeRefsForConstructor(ctor, model)));
                     break;
             }
         }
@@ -601,5 +617,109 @@ public static class Program
             .GroupBy(r => (r.Name, r.Container))
             .Select(g => g.First())
             .ToArray();
+    }
+
+    private static CallRef[] ResolvedInstantiations(SyntaxNode body, SemanticModel model)
+    {
+        // Walk every `new T(...)` (explicit and target-typed) inside the body
+        // and emit one edge per distinct target type. Resolved via SemanticModel
+        // so cross-namespace types are correct.
+        var seen = new HashSet<(string Name, string? Container)>();
+        var result = new List<CallRef>();
+
+        foreach (var node in body.DescendantNodes())
+        {
+            INamedTypeSymbol? type = node switch
+            {
+                ObjectCreationExpressionSyntax oc => model.GetSymbolInfo(oc).Symbol is IMethodSymbol m
+                    ? m.ContainingType
+                    : model.GetTypeInfo(oc).Type as INamedTypeSymbol,
+                ImplicitObjectCreationExpressionSyntax ioc => model.GetSymbolInfo(ioc).Symbol is IMethodSymbol im
+                    ? im.ContainingType
+                    : model.GetTypeInfo(ioc).Type as INamedTypeSymbol,
+                _ => null,
+            };
+            if (type is null) continue;
+            var key = (type.Name, type.ContainingType?.Name);
+            if (seen.Add(key))
+            {
+                result.Add(new CallRef(type.Name, type.ContainingType?.Name));
+            }
+        }
+        return result.ToArray();
+    }
+
+    private static CallRef[] ResolvedTypeRefsForMethod(MethodDeclarationSyntax method, SemanticModel model)
+    {
+        if (model.GetDeclaredSymbol(method) is not IMethodSymbol symbol)
+            return Array.Empty<CallRef>();
+
+        var seen = new HashSet<(string Name, string? Container)>();
+        var result = new List<CallRef>();
+        AddTypeRef(symbol.ReturnType, seen, result);
+        foreach (var param in symbol.Parameters)
+            AddTypeRef(param.Type, seen, result);
+        foreach (var typeParam in symbol.TypeParameters)
+            foreach (var constraint in typeParam.ConstraintTypes)
+                AddTypeRef(constraint, seen, result);
+        return result.ToArray();
+    }
+
+    private static CallRef[] ResolvedTypeRefsForProperty(PropertyDeclarationSyntax property, SemanticModel model)
+    {
+        if (model.GetDeclaredSymbol(property) is not IPropertySymbol symbol)
+            return Array.Empty<CallRef>();
+
+        var seen = new HashSet<(string Name, string? Container)>();
+        var result = new List<CallRef>();
+        AddTypeRef(symbol.Type, seen, result);
+        return result.ToArray();
+    }
+
+    private static CallRef[] ResolvedTypeRefsForConstructor(ConstructorDeclarationSyntax ctor, SemanticModel model)
+    {
+        if (model.GetDeclaredSymbol(ctor) is not IMethodSymbol symbol)
+            return Array.Empty<CallRef>();
+
+        var seen = new HashSet<(string Name, string? Container)>();
+        var result = new List<CallRef>();
+        foreach (var param in symbol.Parameters)
+            AddTypeRef(param.Type, seen, result);
+        return result.ToArray();
+    }
+
+    // Add a type plus its generic type arguments, recursively. Built-in primitives
+    // and System.* anchors are skipped — they're noise that never resolves to a
+    // bound symbol anyway. The orchestrator further drops self-edges.
+    private static void AddTypeRef(
+        ITypeSymbol? type,
+        HashSet<(string Name, string? Container)> seen,
+        List<CallRef> result)
+    {
+        if (type is null) return;
+        if (type is INamedTypeSymbol named)
+        {
+            var name = named.Name;
+            if (!string.IsNullOrEmpty(name) && !IsBuiltInOrSystemAnchor(named))
+            {
+                var key = (name, named.ContainingType?.Name);
+                if (seen.Add(key))
+                    result.Add(new CallRef(name, named.ContainingType?.Name));
+            }
+            foreach (var arg in named.TypeArguments)
+                AddTypeRef(arg, seen, result);
+        }
+        else if (type is IArrayTypeSymbol array)
+        {
+            AddTypeRef(array.ElementType, seen, result);
+        }
+    }
+
+    private static bool IsBuiltInOrSystemAnchor(INamedTypeSymbol type)
+    {
+        if (type.SpecialType != SpecialType.None) return true; // int, string, bool, object, etc.
+        var ns = type.ContainingNamespace?.ToDisplayString() ?? "";
+        // Common framework anchors that would otherwise dominate type_refs.
+        return ns == "System" || ns.StartsWith("System.", StringComparison.Ordinal);
     }
 }

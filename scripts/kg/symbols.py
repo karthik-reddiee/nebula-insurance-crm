@@ -105,6 +105,16 @@ class SymbolRecord:
     # answer ``--implementers`` / ``--overrides`` without re-resolution.
     # Unresolvable entries are dropped during resolution.
     implements: list[Any] = field(default_factory=list)
+    # Type instantiations and type references emitted by C# and TS extractors
+    # (cheap, high-value extra edges per the §11 measurement: ~0.4x existing
+    # edge count combined). Raw lists carry ``{name, container}`` dicts from
+    # the semantic extractors; ``resolve_call_edges`` rewrites the resolved
+    # ``instantiates`` / ``type_refs`` arrays in-place with target symbol ids.
+    # Unidirectional — no back-edge persisted on the target side.
+    raw_instantiates: list[Any] = field(default_factory=list)
+    raw_type_refs: list[Any] = field(default_factory=list)
+    instantiates: list[str] = field(default_factory=list)
+    type_refs: list[str] = field(default_factory=list)
 
     def to_cache_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -112,6 +122,8 @@ class SymbolRecord:
     def to_index_dict(self) -> dict[str, Any]:
         d = asdict(self)
         d.pop("raw_calls", None)
+        d.pop("raw_instantiates", None)
+        d.pop("raw_type_refs", None)
         if d.get("container") is None:
             d.pop("container", None)
         if not d.get("end_line"):
@@ -120,6 +132,10 @@ class SymbolRecord:
             d.pop("implements", None)
         if not d.get("is_test"):
             d.pop("is_test", None)
+        if not d.get("instantiates"):
+            d.pop("instantiates", None)
+        if not d.get("type_refs"):
+            d.pop("type_refs", None)
         return d
 
 
@@ -459,6 +475,16 @@ class SubprocessExtractor(BaseExtractor):
                 for impl in (item.get("implements") or [])
                 if isinstance(impl, dict) and impl.get("name") and impl.get("container")
             ]
+            raw_instantiates = [
+                dict(ref)
+                for ref in (item.get("instantiates") or [])
+                if isinstance(ref, dict) and ref.get("name")
+            ]
+            raw_type_refs = [
+                dict(ref)
+                for ref in (item.get("type_refs") or [])
+                if isinstance(ref, dict) and ref.get("name")
+            ]
             records.append(SymbolRecord(
                 id=symbol_id(node_id, container, name, file_rel=rel_file),
                 node=node_id,
@@ -473,6 +499,8 @@ class SubprocessExtractor(BaseExtractor):
                 container=container,
                 raw_calls=raw_calls,
                 implements=implements,
+                raw_instantiates=raw_instantiates,
+                raw_type_refs=raw_type_refs,
             ))
 
         if sidecar_path is not None and sidecar_path.exists():
@@ -776,10 +804,18 @@ def resolve_call_edges(records: list[SymbolRecord]) -> None:
     """
     by_node_name: dict[tuple[str, str], list[SymbolRecord]] = {}
     by_qualified: dict[tuple[str, str], list[SymbolRecord]] = {}
+    # Cross-node lookup for top-level types — used by instantiates / type_refs
+    # whose target is a class, record, struct, interface, enum, or type alias.
+    # Methods/properties stay constrained to (container, name) so call
+    # resolution semantics are unchanged.
+    TYPE_KINDS = frozenset({"class", "record", "struct", "interface", "enum", "type", "delegate"})
+    by_top_level_type_name: dict[str, list[SymbolRecord]] = {}
     for rec in records:
         by_node_name.setdefault((rec.node, rec.name), []).append(rec)
         if rec.container:
             by_qualified.setdefault((rec.container, rec.name), []).append(rec)
+        elif rec.kind in TYPE_KINDS:
+            by_top_level_type_name.setdefault(rec.name, []).append(rec)
 
     def add_edge(caller: SymbolRecord, callee: SymbolRecord) -> None:
         if callee.id == caller.id:
@@ -825,6 +861,46 @@ def resolve_call_edges(records: list[SymbolRecord]) -> None:
                 resolved_iface_ids.append(iface_member.id)
         # Sort/dedupe for stable diffs.
         impl.implements = sorted(set(resolved_iface_ids))
+
+    # Resolve raw_instantiates / raw_type_refs into target symbol ids. These
+    # are unidirectional — the target does NOT gain a reciprocal edge, so a
+    # symbol's `callers` semantics stay unchanged. Consumers that want
+    # reverse-scan (e.g. "who instantiates Foo") reverse the array at query
+    # time the same way --implementers reverses `implements`.
+    #
+    # Resolution falls back from (container, name) qualified lookup to
+    # cross-node `by_top_level_type_name` so an instantiation on
+    # entity:order that targets a class bound to entity:customer resolves
+    # correctly. Same-node `by_node_name` is also consulted as a final
+    # fallback for languages whose extractor doesn't emit container info.
+    def _resolve_refs(refs: list[Any], own_node: str) -> list[str]:
+        resolved: set[str] = set()
+        for ref in refs:
+            if not isinstance(ref, dict):
+                continue
+            name = ref.get("name")
+            if not name:
+                continue
+            container = ref.get("container")
+            if container:
+                for target in by_qualified.get((container, name), []):
+                    resolved.add(target.id)
+                continue
+            per_ref_hits: set[str] = set()
+            for target in by_top_level_type_name.get(name, []):
+                per_ref_hits.add(target.id)
+            if not per_ref_hits:
+                for target in by_node_name.get((own_node, name), []):
+                    per_ref_hits.add(target.id)
+            resolved.update(per_ref_hits)
+        return sorted(resolved)
+
+    for rec in records:
+        rec.instantiates = _resolve_refs(rec.raw_instantiates, rec.node)
+        # A symbol referencing its own declared type is noise; drop self-edges.
+        rec.instantiates = [s for s in rec.instantiates if s != rec.id]
+        rec.type_refs = _resolve_refs(rec.raw_type_refs, rec.node)
+        rec.type_refs = [s for s in rec.type_refs if s != rec.id]
 
     for rec in records:
         rec.callers.sort()

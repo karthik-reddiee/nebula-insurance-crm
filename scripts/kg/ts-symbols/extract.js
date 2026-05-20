@@ -185,6 +185,110 @@ function collectCalls(node) {
   return out;
 }
 
+// Type names that resolve to lib.d.ts or are TS keywords; emitting them
+// would pollute type_refs without producing any bound symbol edge. The
+// real user types still surface because TypeReferenceNode recursion walks
+// into generic type arguments separately.
+const BUILTIN_TYPE_NAMES = new Set([
+  "Promise", "Array", "ReadonlyArray", "Map", "Set", "WeakMap", "WeakSet",
+  "Record", "Partial", "Required", "Readonly", "Pick", "Omit", "Exclude",
+  "Extract", "NonNullable", "Parameters", "ReturnType", "Awaited",
+  "string", "number", "boolean", "void", "null", "undefined", "any",
+  "unknown", "never", "object", "Date", "RegExp", "Error", "Function",
+  "Object", "JSX",
+]);
+
+function unaliasedSymbol(sym) {
+  if (!sym) return null;
+  if (typeof sym.getAliasedSymbol === "function") {
+    try {
+      const aliased = sym.getAliasedSymbol();
+      if (aliased) return aliased;
+    } catch {
+      /* ignore */
+    }
+  }
+  return sym;
+}
+
+function isUserTypeSymbol(sym) {
+  if (!sym || typeof sym.getDeclarations !== "function") return false;
+  const decls = sym.getDeclarations();
+  if (!decls || decls.length === 0) return false;
+  for (const d of decls) {
+    const sf = typeof d.getSourceFile === "function" ? d.getSourceFile() : null;
+    if (!sf) return false;
+    if (typeof sf.isDeclarationFile === "function" && sf.isDeclarationFile()) {
+      return false;
+    }
+    const fp = typeof sf.getFilePath === "function" ? sf.getFilePath() : "";
+    if (fp.includes("/node_modules/")) return false;
+  }
+  return true;
+}
+
+function refFromTypeSymbol(sym) {
+  if (!isUserTypeSymbol(sym)) return null;
+  const name = sym.getName();
+  if (!name || BUILTIN_TYPE_NAMES.has(name)) return null;
+  const decls = sym.getDeclarations();
+  const decl = decls[0];
+  const parent = typeof decl.getParent === "function" ? decl.getParent() : null;
+  const parentName =
+    parent && typeof parent.getName === "function" ? parent.getName() : null;
+  // Avoid emitting a self-shadowing container that's just the declaration's
+  // own enclosing module/file.
+  const container = parentName && parentName !== name ? parentName : null;
+  return { name, container };
+}
+
+function collectInstantiations(node) {
+  const seen = new Set();
+  const out = [];
+  node.forEachDescendant((desc) => {
+    if (desc.getKind() !== SyntaxKind.NewExpression) return;
+    const expr = desc.getExpression();
+    if (!expr) return;
+    let sym = null;
+    try {
+      sym = expr.getSymbol() || null;
+    } catch {
+      return;
+    }
+    const ref = refFromTypeSymbol(unaliasedSymbol(sym));
+    if (!ref) return;
+    const key = `${ref.name}::${ref.container || ""}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(ref);
+  });
+  return out;
+}
+
+function collectTypeRefs(node) {
+  const seen = new Set();
+  const out = [];
+  node.forEachDescendant((desc) => {
+    if (desc.getKind() !== SyntaxKind.TypeReference) return;
+    const typeName =
+      typeof desc.getTypeName === "function" ? desc.getTypeName() : null;
+    if (!typeName) return;
+    let sym = null;
+    try {
+      sym = typeName.getSymbol() || null;
+    } catch {
+      return;
+    }
+    const ref = refFromTypeSymbol(unaliasedSymbol(sym));
+    if (!ref) return;
+    const key = `${ref.name}::${ref.container || ""}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    out.push(ref);
+  });
+  return out;
+}
+
 // Resolve a heritage clause expression (e.g., implements IFoo, extends Base)
 // to the declaration node it points at, unwrapping aliases.
 function resolveHeritageTarget(expressionWithTypeArgs) {
@@ -308,6 +412,8 @@ function pushFunctionLike(rel, node, container, kind, outputs) {
     visibility,
     calls: collectCalls(node),
     implements: [],
+    instantiates: collectInstantiations(node),
+    type_refs: collectTypeRefs(node),
   });
 }
 
@@ -331,6 +437,8 @@ function emitSourceFile(sourceFile, rel, outputs) {
         visibility: hasExportModifier(child) ? "export" : "local",
         calls: [],
         implements: [],
+        instantiates: [],
+        type_refs: [],
       });
       for (const member of child.getMembers()) {
         const mk = member.getKind();
@@ -348,6 +456,8 @@ function emitSourceFile(sourceFile, rel, outputs) {
             visibility: "public",
             calls: collectCalls(member),
             implements: implementsForMethod(member, child),
+            instantiates: collectInstantiations(member),
+            type_refs: collectTypeRefs(member),
           });
         } else if (mk === SyntaxKind.PropertyDeclaration) {
           const name = typeof member.getName === "function" ? member.getName() : null;
@@ -363,6 +473,8 @@ function emitSourceFile(sourceFile, rel, outputs) {
             visibility: "public",
             calls: collectCalls(member),
             implements: [],
+            instantiates: collectInstantiations(member),
+            type_refs: collectTypeRefs(member),
           });
         }
       }
@@ -380,6 +492,8 @@ function emitSourceFile(sourceFile, rel, outputs) {
         visibility: hasExportModifier(child) ? "export" : "local",
         calls: [],
         implements: [],
+        instantiates: [],
+        type_refs: [],
       });
       // Emit each interface member as its own symbol so resolve_call_edges
       // can hang dispatch edges off them. Container = interface name, kind
@@ -401,6 +515,8 @@ function emitSourceFile(sourceFile, rel, outputs) {
           visibility: "public",
           calls: [],
           implements: [],
+          instantiates: [],
+          type_refs: collectTypeRefs(member),
         });
       }
     } else if (kind === SyntaxKind.TypeAliasDeclaration) {
@@ -417,6 +533,8 @@ function emitSourceFile(sourceFile, rel, outputs) {
         visibility: hasExportModifier(child) ? "export" : "local",
         calls: [],
         implements: [],
+        instantiates: [],
+        type_refs: collectTypeRefs(child),
       });
     } else if (kind === SyntaxKind.EnumDeclaration) {
       const name = typeof child.getName === "function" ? child.getName() : null;
@@ -432,6 +550,8 @@ function emitSourceFile(sourceFile, rel, outputs) {
         visibility: hasExportModifier(child) ? "export" : "local",
         calls: [],
         implements: [],
+        instantiates: [],
+        type_refs: [],
       });
     } else if (kind === SyntaxKind.VariableStatement) {
       const isExported = hasExportModifier(child);
@@ -455,6 +575,8 @@ function emitSourceFile(sourceFile, rel, outputs) {
           visibility: isExported ? "export" : "local",
           calls: collectCalls(init),
           implements: [],
+          instantiates: collectInstantiations(init),
+          type_refs: collectTypeRefs(decl),
         });
       }
     }
