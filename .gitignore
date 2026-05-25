@@ -44,8 +44,6 @@ build/
 experience/coverage/
 playwright-report/
 test-results/
-!planning-mds/operations/evidence/**/artifacts/playwright-report/
-!planning-mds/operations/evidence/**/artifacts/playwright-report/**
 
 # Python
 __pycache__/
