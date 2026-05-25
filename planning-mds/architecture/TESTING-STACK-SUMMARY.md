@@ -125,9 +125,9 @@ dynamic_scanning:
   scope: Runtime security testing (DAST)
 
 static_analysis:
-  tool: SonarQube Community Edition    # LGPL v3 - FREE
-  alternative: Semgrep                 # LGPL 2.1 - FREE
-  scope: Code quality + security (SAST)
+  sast_gate: Semgrep                   # LGPL 2.1 - FREE; per-feature SAST gate (zero-infra)
+  quality_reporting: SonarQube Community Edition  # LGPL v3 - FREE; release-cadence trends, not the per-feature gate
+  scope: Per-feature SAST (Semgrep, security_scans.sast); release quality reporting (SonarQube)
 
 secrets_scanning:
   tool: Gitleaks                       # MIT License - FREE
@@ -205,11 +205,16 @@ choco install trivy          # Windows
 # OWASP ZAP
 docker run -t owasp/zap2docker-stable zap-baseline.py -t http://localhost
 
-# SonarQube Community
-docker run -d sonarqube:community
+# Semgrep — per-feature SAST gate (zero-infra, recorded in security_scans.sast)
+pipx install semgrep         # preferred (isolated); pip install semgrep also works inside a venv
+# On PEP-668 "externally managed" Pythons a bare `pip install` is blocked — use pipx or a venv.
 
 # Gitleaks
 brew install gitleaks        # macOS
+
+# SonarQube Community (OPTIONAL — release-cadence quality reporting only,
+# NOT the per-feature SAST gate). Opt-in via the QE compose overlay:
+#   docker compose -f docker-compose.yml -f docker-compose.qe.yml up -d sonarqube
 ```
 
 **Total Installation Cost:** $0

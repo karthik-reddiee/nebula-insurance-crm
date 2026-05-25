@@ -239,7 +239,8 @@ testing:
 
   security:
     vulnerabilities: trivy  # NOT Snyk
-    sast: sonarqube-community
+    sast: semgrep  # per-feature SAST gate (zero-infra); recorded in security_scans.sast
+    quality_reporting: sonarqube-community  # release-cadence trends, NOT the per-feature gate
     dast: owasp-zap
 
   contracts:

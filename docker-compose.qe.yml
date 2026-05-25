@@ -1,6 +1,12 @@
 ## QE overlay services — opt-in via: docker compose -f docker-compose.yml -f docker-compose.qe.yml up -d
 ## These services support Pact Broker and SonarQube Community workflows.
 ## They are NOT required for normal local app development.
+##
+## SonarQube here is for RELEASE-CADENCE quality reporting (trend dashboards),
+## run deliberately — NOT the per-feature SAST gate. Per-feature SAST is Semgrep
+## (zero-infra, agents/security/scripts/run-sast-scan.sh), recorded in the
+## evidence manifest's security_scans.sast block. Do not gate feature runs on
+## standing this server up.
 
 services:
   pact-broker:
