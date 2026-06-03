@@ -274,7 +274,7 @@ F0004 extends the self-assigned-only task model with creator-based access for Di
 
 ---
 
-### 2.8 Submission — Read / Create / Update / Transition / Assign
+### 2.8 Submission — Read / Create / Update / Transition / Assign / Approve / Archive
 
 | Role | Action | Decision | Business Scope / Constraints | Story / AC Reference |
 |------|--------|----------|------------------------------|----------------------|
@@ -308,6 +308,11 @@ F0004 extends the self-assigned-only task model with creator-based access for Di
 | Admin | update | **ALLOW** | Unscoped mutable edit access. Applies to `PUT /submissions/{submissionId}`. | F0006-S0003 |
 | Admin | transition | **ALLOW** | Unscoped; valid transitions only. Applies to `POST /submissions/{submissionId}/transitions`. | BLUEPRINT §4.4; §4.3 |
 | Admin | assign | **ALLOW** | Unscoped assignment and reassignment access. Applies to `PUT /submissions/{submissionId}/assignment`. | F0006-S0006 |
+| Underwriter | approve | **ALLOW** | Single authorized approver: grant/decline the underwriting approval checkpoint on a Quoted submission. Applies to `POST /submissions/{submissionId}/approval`. | F0019-S0003; ADR-025 §3 |
+| Admin | approve | **ALLOW** | Unscoped approval authority. Applies to `POST /submissions/{submissionId}/approval`. | F0019-S0003; ADR-025 §3 |
+| Underwriter | archive | **ALLOW** | Archive/reactivate a terminal submission (Bound/Declined/Withdrawn). Explicit lifecycle action, not delete. Applies to `POST /submissions/{submissionId}/archive` and `/reactivate`. | F0019-S0006; ADR-025 §5 |
+| Admin | archive | **ALLOW** | Unscoped archive/reactivate of terminal submissions. Applies to `POST /submissions/{submissionId}/archive`. | F0019-S0006; ADR-025 §5 |
+| DistributionUser, DistributionManager, RelationshipManager, ProgramManager | approve, archive | **DENY** | Approval authority and archive are underwriting/admin-only in MVP (closed-by-default). | F0019-S0003/S0006; ADR-025 |
 | ExternalUser | all | **DENY** | No external portal in MVP. | BLUEPRINT §3.1 non-goals |
 
 **Constraints applying to all ALLOW decisions on Submission:**
@@ -315,6 +320,9 @@ F0004 extends the self-assigned-only task model with creator-based access for Di
 - Missing transition prerequisites return HTTP 409 with ProblemDetails code missing_transition_prerequisite. (BLUEPRINT §4.3)
 - State-changing mutations (`PUT /submissions/{submissionId}`, `PUT /submissions/{submissionId}/assignment`, `POST /submissions/{submissionId}/transitions`) require `If-Match` and return HTTP 412 `precondition_failed` on stale rowVersion values. (API Guidelines + F0006 architecture)
 - Every successful transition appends a WorkflowTransition and ActivityTimelineEvent record. (BLUEPRINT §4.3)
+- Approval (`POST /submissions/{submissionId}/approval`) is gated by `submission:approve` (Underwriter/Admin), requires a Quoted submission with a ready packet, and a granted approval is a precondition for `Quoted -> BindRequested`. Approval decisions are append-only. (F0019-S0003; ADR-025 §3)
+- Archive (`POST /submissions/{submissionId}/archive`) is gated by `submission:archive` (Underwriter/Admin), allowed only for terminal states (Bound/Declined/Withdrawn), audit-preserving, and reversible via `/reactivate`. There is no generic submission delete endpoint. (F0019-S0006; ADR-025 §5)
+- F0019 introduces no rating/pricing/scoring; quote figures are recorded reference values, never computed by Nebula. (ADR-025 §6)
 
 ---
 

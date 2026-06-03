@@ -131,6 +131,8 @@ p, Admin,            contact, delete, true
 #   update     — edit submission fields (description, LOB, premium, etc.)
 #   transition — advance submission through workflow states
 #   assign     — assign/reassign submission ownership
+#   approve    — grant/decline the underwriting approval checkpoint (F0019; single authorized approver)
+#   archive    — archive/deactivate a terminal submission (F0019; explicit lifecycle action, not delete)
 # ─────────────────────────────────────────────────────────────────────────────
 
 # DistributionUser — read (own), create (self-assign), update (own), transition (intake), assign (own only)
@@ -147,9 +149,11 @@ p, DistributionManager, submission, update,     true
 p, DistributionManager, submission, transition, true
 p, DistributionManager, submission, assign,     true
 
-# Underwriter — read (assigned only in F0006 intake scope), transition (downstream states only, F0019)
+# Underwriter — read (assigned only in F0006 intake scope), transition (downstream states only, F0019), approve + archive (F0019)
 p, Underwriter,         submission, read,       true
 p, Underwriter,         submission, transition, true
+p, Underwriter,         submission, approve,    true
+p, Underwriter,         submission, archive,    true
 
 # RelationshipManager — read only (own accounts/brokers)
 p, RelationshipManager, submission, read,       true
@@ -163,6 +167,8 @@ p, Admin,               submission, create,     true
 p, Admin,               submission, update,     true
 p, Admin,               submission, transition, true
 p, Admin,               submission, assign,     true
+p, Admin,               submission, approve,    true
+p, Admin,               submission, archive,    true
 
 # ─────────────────────────────────────────────────────────────────────────────
 # §2.4 Renewal — Read / Create / Update / Transition / Assign (F0007 update + F0034 attributes)

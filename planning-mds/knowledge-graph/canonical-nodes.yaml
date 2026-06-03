@@ -204,6 +204,26 @@ entities:
       - adr: adr:012
         section: "Decision §10"
         summary: "Templates are documents stored under <docroot>/templates/ with the same sidecar JSON shape; materialising a template into a parent record creates an independent document with provenance.source = template:{id}."
+  - id: entity:submission-quote-packet
+    label: SubmissionQuotePacket
+    source_docs:
+      - planning-mds/features/F0019-submission-quoting-proposal-and-approval/PRD.md
+      - planning-mds/features/F0019-submission-quoting-proposal-and-approval/F0019-S0002-submission-quote-proposal-packet-lifecycle.md
+      - planning-mds/architecture/decisions/ADR-025-submission-downstream-workflow-quote-approval-bind-and-archive.md
+    rationale:
+      - adr: adr:025
+        section: "Decision §2"
+        summary: "Submission-scoped coordination record (status, linked F0020 documents, recorded reference facts validated for presence/format only) — never computed. A CRM packet, not a quoting/rating artifact."
+  - id: entity:submission-approval-decision
+    label: SubmissionApprovalDecision
+    source_docs:
+      - planning-mds/features/F0019-submission-quoting-proposal-and-approval/PRD.md
+      - planning-mds/features/F0019-submission-quoting-proposal-and-approval/F0019-S0003-underwriting-approval-checkpoint.md
+      - planning-mds/architecture/decisions/ADR-025-submission-downstream-workflow-quote-approval-bind-and-archive.md
+    rationale:
+      - adr: adr:025
+        section: "Decision §3"
+        summary: "Append-only single-approver decision (approver, reason, authority context) gating bind; shaped to extend to maker-checker / authority limits without a workflow rewrite."
 
 workflows:
   - id: workflow:submission
@@ -213,13 +233,19 @@ workflows:
       - planning-mds/architecture/feature-assembly-plan.md
       - planning-mds/architecture/decisions/ADR-011-crm-workflow-state-machines-and-transition-history.md
       - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-025-submission-downstream-workflow-quote-approval-bind-and-archive.md
     notes: >
       F0006 owns the intake half of this workflow through ReadyForUWReview.
-      F0019 extends the downstream quote, bind, decline, and withdrawal path.
+      F0019 activates and extends the downstream quote, approval, bind, decline, and withdrawal
+      path, owns the archive/deactivate lifecycle, and is bounded as CRM status/workflow only
+      (recorded, never computed) — not an underwriting workbench.
     rationale:
       - adr: adr:011
         section: "Decision"
         summary: "Explicit state machine with declared transitions and append-only history prevents ad hoc status edits and enables audit-ready reporting."
+      - adr: adr:025
+        section: "Decision §1, §6"
+        summary: "F0019 deliberately activates the downstream transitions (boundary move beyond F0006) and bounds the workflow as CRM status coordination — no rating/pricing/scoring; quote figures are recorded, never computed."
     states:
       - id: state:submission:received
         label: Received
@@ -450,6 +476,15 @@ capabilities:
       - adr: adr:008
         section: "Decision"
         summary: "Native Casbin enforcer replaces hand-rolled policy parser to eliminate syntax drift from Casbin semantics and avoid manual parser changes for new policy conditions."
+  - id: capability:submission-workflow
+    label: Submission Downstream Workflow
+    source_docs:
+      - planning-mds/features/F0019-submission-quoting-proposal-and-approval/PRD.md
+      - planning-mds/architecture/decisions/ADR-025-submission-downstream-workflow-quote-approval-bind-and-archive.md
+    rationale:
+      - adr: adr:025
+        section: "Decision §6"
+        summary: "CRM status/workflow coordination, NOT an underwriting workbench: no rating/pricing/scoring; quote figures are recorded, never computed. Any feature touching workflow:submission inherits this boundary."
   - id: capability:task-center
     label: Task Center
     source_docs:
@@ -2490,6 +2525,37 @@ policy_rules:
       - entity:user-profile
       - capability:authorization-enforcement
     notes: DistributionUser self-assign and DistributionManager/Admin region- or cross-scope assignment are both gated here; query-layer filters the assignable pool.
+  - id: policy_rule:submission-approve
+    label: submission:approve
+    resource: submission
+    action: approve
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:underwriter
+      - role:admin
+    related_nodes:
+      - entity:submission
+      - entity:submission-approval-decision
+      - workflow:submission
+      - capability:authorization-enforcement
+    notes: MVP single authorized approver; distinct from submission:transition and a precondition for bind. Maker-checker / authority limits are Future via SubmissionApprovalDecision.authorityContext.
+  - id: policy_rule:submission-archive
+    label: submission:archive
+    resource: submission
+    action: archive
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:underwriter
+      - role:admin
+    related_nodes:
+      - entity:submission
+      - workflow:submission
+      - capability:authorization-enforcement
+    notes: Explicit archive/deactivate lifecycle action allowed only for terminal submission states; not a generic delete. Reactivation is gated by the same rule.
   - id: policy_rule:dashboard-kpi-read
     label: dashboard_kpi:read
     resource: dashboard_kpi
@@ -3172,6 +3238,9 @@ adrs:
   - id: adr:024
     label: Session Continuity and Token Refresh Architecture
     path: planning-mds/architecture/decisions/ADR-024-session-continuity-and-token-refresh.md
+  - id: adr:025
+    label: Submission Downstream Workflow — Quote/Approval/Bind, Recorded-Not-Computed Packet, and Archive
+    path: planning-mds/architecture/decisions/ADR-025-submission-downstream-workflow-quote-approval-bind-and-archive.md
 
 api_contracts:
   - id: api:nebula-rest

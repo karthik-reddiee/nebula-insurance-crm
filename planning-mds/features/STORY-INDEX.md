@@ -2,7 +2,7 @@
 
 Auto-generated index of all user stories across feature folders.
 
-**Total Stories:** 133
+**Total Stories:** 141
 
 ---
 
@@ -214,6 +214,21 @@ Auto-generated index of all user stories across feature folders.
 
 ---
 
+## F0019 — Submission Quoting, Proposal & Approval Workflow
+
+| Story ID | Title | Priority | Phase | Persona |
+|----------|-------|----------|-------|---------|
+| [F0019-S0001](./F0019-submission-quoting-proposal-and-approval/F0019-S0001-activate-downstream-submission-workflow.md) | Activate downstream submission workflow | Critical | CRM Release MVP | underwriter |
+| [F0019-S0002](./F0019-submission-quoting-proposal-and-approval/F0019-S0002-submission-quote-proposal-packet-lifecycle.md) | Submission quote/proposal packet lifecycle | Critical | CRM Release MVP | underwriter |
+| [F0019-S0003](./F0019-submission-quoting-proposal-and-approval/F0019-S0003-underwriting-approval-checkpoint.md) | Underwriting approval checkpoint | Critical | CRM Release MVP | underwriting approval authority |
+| [F0019-S0004](./F0019-submission-quoting-proposal-and-approval/F0019-S0004-bind-decision-and-policy-handoff.md) | Bind decision and policy handoff | Critical | CRM Release MVP | underwriter |
+| [F0019-S0005](./F0019-submission-quoting-proposal-and-approval/F0019-S0005-decline-and-withdraw-terminal-decisions.md) | Decline and withdraw terminal decisions | High | CRM Release MVP | underwriter or distribution user |
+| [F0019-S0006](./F0019-submission-quoting-proposal-and-approval/F0019-S0006-submission-archive-and-deactivate.md) | Submission archive and deactivate | High | CRM Release MVP | underwriter or distribution user |
+| [F0019-S0007](./F0019-submission-quoting-proposal-and-approval/F0019-S0007-downstream-submission-pipeline-list-and-workflow-visibility.md) | Downstream submission pipeline list and workflow visibility | High | CRM Release MVP | distribution user or underwriter |
+| [F0019-S0008](./F0019-submission-quoting-proposal-and-approval/F0019-S0008-downstream-submission-workflow-timeline-and-audit-trail.md) | Downstream submission workflow timeline and audit trail | Medium | CRM Release MVP | underwriter or distribution user |
+
+---
+
 ## F0020 — Document Management & ACORD Intake
 
 | Story ID | Title | Priority | Phase | Persona |
@@ -290,7 +305,7 @@ Auto-generated index of all user stories across feature folders.
 
 | Phase | Count |
 |-------|-------|
-| CRM Release MVP | 49 |
+| CRM Release MVP | 57 |
 | Future | 1 |
 | Infrastructure | 10 |
 | MVP | 50 |
@@ -305,9 +320,9 @@ Auto-generated index of all user stories across feature folders.
 
 | Priority | Count |
 |----------|-------|
-| Critical | 58 |
-| High | 59 |
-| Medium | 12 |
+| Critical | 62 |
+| High | 62 |
+| Medium | 13 |
 
 ---
 
