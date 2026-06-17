@@ -20,7 +20,7 @@ Normalized turn event (the contract every adapter targets):
    "payload": {"input_tokens", "output_tokens", "cache_read_tokens", "cache_write_tokens"}}
 
 Standalone (no git walk, unlike eval.py):
-  ingest  — normalize a harness usage feed -> .kg-state/usage.jsonl
+  ingest  — normalize a harness usage feed -> planning-mds/operations/telemetry/usage.jsonl
   report  — cache-hit ratio, cost-per-turn, cache-write spikes from those events
 
 eval.py imports cache_metrics() to fold the same numbers into its unified report.
@@ -40,7 +40,8 @@ from typing import Any, Callable, Iterable
 
 from kg_common import REPO_ROOT, now_iso
 
-USAGE_PATH = REPO_ROOT / ".kg-state" / "usage.jsonl"
+# Committed operations telemetry — the durable, diffable usage/cost stream.
+USAGE_PATH = REPO_ROOT / "planning-mds" / "operations" / "telemetry" / "usage.jsonl"
 
 # Cost weights in input-token-equivalent units (model-agnostic; not dollars).
 # Anthropic 5-min prompt cache: write 1.25x, read 0.1x base input. Output ~5x.
@@ -110,10 +111,10 @@ def _turn_from_event(event: dict[str, Any]) -> Turn | None:
 
 
 # ---------- source adapters: a harness's raw usage feed -> normalized Turns ----------
-# Add support for a new harness by registering ONE function here (and optionally a
-# default feed location in SOURCE_DEFAULT_DIRS). Everything else — dedup, metrics,
-# eval.py wiring, the CLI — is harness-neutral. A harness that can already emit the
-# normalized event uses the "jsonl" adapter and needs no native parser at all.
+# Add support for a new harness by registering ONE function here. Everything else —
+# dedup, metrics, eval.py wiring, the CLI — is harness-neutral. Feed locations are
+# never auto-resolved; the operator/CI passes --input/--input-dir explicitly. A harness
+# that can already emit the normalized event uses the "jsonl" adapter (no native parser).
 
 def parse_claude_transcript_text(text: str) -> list[Turn]:
     """Adapter: Claude Code session transcript (.jsonl) -> Turns."""
@@ -232,32 +233,6 @@ SOURCE_ADAPTERS: dict[str, Callable[[str], list[Turn]]] = {
     "claude-code": parse_claude_transcript_text,
     "codex": parse_codex_rollout_text,
     "jsonl": parse_normalized_jsonl_text,
-}
-
-
-def default_claude_transcript_dir() -> Path | None:
-    """Best-effort feed location for the claude-code adapter (one entry in
-    SOURCE_DEFAULT_DIRS, symmetric with any other harness's default).
-
-    Claude Code stores transcripts at ~/.claude/projects/<slug>, where <slug> is the
-    *launch cwd* with '/' -> '-' and a leading '-'. The launch cwd is often the outer
-    repo, not {PRODUCT_ROOT}; when it differs, pass --input-dir explicitly.
-    """
-    slug = "-" + str(Path.cwd()).lstrip("/").replace("/", "-")
-    d = Path.home() / ".claude" / "projects" / slug
-    return d if d.is_dir() else None
-
-
-def default_codex_sessions_dir() -> Path | None:
-    """Best-effort feed location for the codex adapter (rollouts nest under YYYY/MM/DD)."""
-    d = Path.home() / ".codex" / "sessions"
-    return d if d.is_dir() else None
-
-
-# name -> resolver for "where this harness keeps its feed" (optional convenience).
-SOURCE_DEFAULT_DIRS: dict[str, Callable[[], Path | None]] = {
-    "claude-code": default_claude_transcript_dir,
-    "codex": default_codex_sessions_dir,
 }
 
 
@@ -394,17 +369,15 @@ def main() -> int:
                   f"new turn event(s) -> {USAGE_PATH}")
             return 0
         inputs = [Path(p) for p in args.input]
-        if not inputs:
-            if args.input_dir:
-                d: Path | None = Path(args.input_dir)
-            else:
-                resolver = SOURCE_DEFAULT_DIRS.get(args.source)
-                d = resolver() if resolver else None
-            if d is not None and d.is_dir():
+        if not inputs and args.input_dir:
+            d = Path(args.input_dir)
+            if d.is_dir():
                 inputs = sorted(d.rglob("*.jsonl"))
         if not inputs:
-            print("no feed found — pass --input/--input-dir or --stdin "
-                  f"(source={args.source} has no usable default location here).", flush=True)
+            print("no feed found — pass --input FILE, --input-dir DIR, or --stdin. "
+                  "Point --input-dir at the harness's own session dir (e.g. "
+                  "~/.codex/sessions or ~/.claude/projects/<slug>); locations are not "
+                  "auto-resolved.", flush=True)
             return 1
         print(f"ingested {ingest(inputs, source=args.source)} new turn event(s) -> {USAGE_PATH}")
         return 0
