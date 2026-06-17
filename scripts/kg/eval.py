@@ -19,7 +19,8 @@ from kg_usage import cache_metrics
 
 STATUS_PATH_RE = "planning-mds/features/"
 MAPPINGS_PATH = "planning-mds/knowledge-graph/feature-mappings.yaml"
-TELEMETRY_GLOB = ".kg-state/**/*.jsonl"
+# Local dev telemetry (gitignored) + committed operations telemetry (usage/cost stream).
+TELEMETRY_GLOBS = (".kg-state/**/*.jsonl", "planning-mds/operations/telemetry/**/*.jsonl")
 
 
 def git(*args: str) -> str:
@@ -150,17 +151,18 @@ def tier3_declared_paths(feature_id: str, bundle: dict[str, Any]) -> set[str]:
 
 def load_telemetry_events() -> list[dict[str, Any]]:
     events: list[dict[str, Any]] = []
-    for path in REPO_ROOT.glob(TELEMETRY_GLOB):
-        if not path.is_file():
-            continue
-        for line in path.read_text(encoding="utf-8").splitlines():
-            line = line.strip()
-            if not line:
+    for glob in TELEMETRY_GLOBS:
+        for path in REPO_ROOT.glob(glob):
+            if not path.is_file():
                 continue
-            try:
-                events.append(json.loads(line))
-            except json.JSONDecodeError:
-                continue
+            for line in path.read_text(encoding="utf-8").splitlines():
+                line = line.strip()
+                if not line:
+                    continue
+                try:
+                    events.append(json.loads(line))
+                except json.JSONDecodeError:
+                    continue
     return events
 
 
