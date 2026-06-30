@@ -18,6 +18,14 @@ applies_to: architect
 > (architecture approval in the `plan` run), where the Phase B follow-ups below
 > are executed against the actual Phase A stories. Treat this ADR as a frame for
 > that session, not a scope ratchet — stories justify what F0038 builds.
+>
+> **Ratified at F0038 Phase B planning (plan run `2026-06-30-d1dd91f7`).** This
+> ADR stands as the framing decision; its deferred Phase B follow-ups are
+> executed and their concrete decisions recorded in
+> [ADR-028](./ADR-028-neuron-companion-persistence-and-outreach-authorization.md)
+> (persistence schema, cross-store write consistency, manifest/plan schemas,
+> contract surfaces, and the outreach-commit authorization delta). No change to
+> the §1–§10 decisions below was required.
 
 ## Context
 
@@ -403,16 +411,24 @@ Container: neuron/ Python FastAPI
 
 ## Follow-up Actions
 
-- [ ] F0038 Phase B to create/update OpenAPI and JSON Schema contracts for
-      Neuron operation persistence and message envelope replay.
-- [ ] F0038 Phase B to define the cross-store write-consistency pattern:
+- [x] F0038 Phase B to create/update OpenAPI and JSON Schema contracts for
+      Neuron operation persistence and message envelope replay. → `api/neuron-api.yaml`
+      (`api:neuron-rest`), engine additions in `api/nebula-api.yaml`, and
+      `schemas/neuron-message-envelope.schema.json` + `schemas/neuron-zone-payload.schema.json`
+      (ADR-028 §4).
+- [x] F0038 Phase B to define the cross-store write-consistency pattern:
       engine-first authoritative business write + idempotent Neuron operation
       record referencing the engine id (timeline-event / transition id);
-      outbox/reconciliation if needed.
-- [ ] F0038 Phase B to define the private Agent Card manifest schema and YAML
-      plan schema.
-- [ ] F0038 Phase B to create a formal Mermaid C4 component diagram if the ASCII
-      sketch in this ADR needs renderer-backed publication.
+      outbox/reconciliation if needed. → ADR-028 §2 (idempotent engine-id
+      reference; outbox deferred).
+- [x] F0038 Phase B to define the private Agent Card manifest schema and YAML
+      plan schema. → `schemas/neuron-agent-card.schema.json` +
+      `schemas/neuron-orchestration-plan.schema.json`.
+- [x] F0038 Phase B to create a formal Mermaid C4 component diagram if the ASCII
+      sketch in this ADR needs renderer-backed publication. → Not required; the
+      ASCII C4 in this ADR and `architecture/c4-neuron-companion.md` plus the
+      feature README C4 are sufficient for F0038 (revisit at F0040 when the
+      multi-head platform hardens).
 - [ ] F0040 to harden the head/agent contract on the first real second consumer.
 - [ ] Later external-host or cross-product agent work to decide whether to expose
       public A2A HTTP+JSON/JSON-RPC endpoints and public Agent Cards.

@@ -405,6 +405,45 @@ Applies to the F0007 Renewal Pipeline endpoints: `GET /renewals`, `POST /renewal
 
 ---
 
+### 2.9a Renewal — Draft Outreach (F0038, ADR-027 + ADR-028)
+
+New dedicated, least-privilege action `renewal:draft_outreach`. Gates **both** the
+persist-draft endpoint (`POST /renewals/{renewalId}/outreach-draft`, F0038-S0005)
+and the mock-send endpoint (`POST /renewals/{renewalId}/outreach-mock-send`,
+F0038-S0006). Distinct from `renewal:transition`. Called by the Neuron service as
+the user (forwarded authentik token); the engine enforces this Casbin rule — no
+authorization is re-implemented in Python.
+
+| Role | Action | Decision | Business Scope / Constraints | Story / AC Reference |
+|------|--------|----------|------------------------------|----------------------|
+| Underwriter | draft_outreach | **ALLOW** | Renewal owner. May draft (persist InternalOnly AI-generated `ActivityTimelineEvent` with provenance) and mock-send. Mock-send commits the real `Identified → Outreach` transition + a "sent (simulated)" event and **fakes SMTP** (no real email). | F0038-S0005, F0038-S0006; intake decisions B/C |
+| DistributionUser | draft_outreach | **DENY** | No draft rights in v1. "Refer draft to Distribution for review" is a future feature. | F0038 intake decision C |
+| DistributionManager | draft_outreach | **DENY** | No draft rights in v1. | F0038 intake decision C |
+| RelationshipManager | draft_outreach | **DENY** | Read-only in MVP. | F0038 scope |
+| ProgramManager | draft_outreach | **DENY** | Read-only in MVP. | F0038 scope |
+| Admin | draft_outreach | **ALLOW** | Unscoped. | ADR-028 §3 |
+| ExternalUser | draft_outreach | **DENY** | No external portal in MVP. | BLUEPRINT §3.1 non-goals |
+
+**Constraints applying to `renewal:draft_outreach`:**
+- **Outreach-commit exception (ADR-028 §3):** `WorkflowStateMachine.ValidateRenewalTransition`
+  permits `Identified → Outreach` for an **Underwriter** **only** when performed
+  through the outreach-mock-send path under `renewal:draft_outreach` authority. The
+  general `renewal:transition` ownership split (Distribution owns
+  `Identified ↔ Outreach ↔ InReview`) is **unchanged** for every other path. This
+  is the deliberate F0038↔F0007 reconciliation: in commercial P&C the underwriter
+  owns the renewal, so a dedicated single-purpose grant honors the locked intake
+  without widening general transition rights.
+- Draft content must not state/imply premium, quote figures, coverage terms, or
+  any binding commitment (engine-validated; 422 on violation). Drafts are
+  `InternalOnly` and labelled "AI-generated draft" until a human edits/approves.
+- Drafting does **not** transition; the transition fires only on mock-send.
+- Mock-send is atomic (transition + both events all-or-nothing) and requires
+  `If-Match` (rowVersion); invalid state → 409 `invalid_transition`.
+- Every draft and mock-send emits provenance (actor, model, prompt id/version,
+  content hash). Under no circumstance is a real email dispatched in v1.
+
+---
+
 ### 2.10 BrokerUser (Phase 1 Delta — F0009)
 
 This section applies only when F0009 is enabled. It does not alter MVP InternalOnly rules for existing external users by default.

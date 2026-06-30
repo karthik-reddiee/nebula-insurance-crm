@@ -1,0 +1,209 @@
+openapi: 3.0.3
+info:
+  title: Neuron Companion API
+  version: 0.1.0
+  description: |
+    Internal API contract for the Neuron Companion service (F0038, Python/FastAPI).
+    Neuron is a stateless secondary interface; the .NET engine (nebula-api.yaml)
+    remains the CRM source of truth. Neuron calls the engine **as the user**
+    (forwarded authentik bearer token) and owns only its `neuron.*` operation
+    store (threads, messages, message parts, agent runs, tool calls, provenance).
+
+    Governed by ADR-027 (A2A-aligned orchestration) and ADR-028 (persistence
+    schema, cross-store write consistency, outreach authorization). Responses use
+    the versioned multi-part message envelope
+    (schemas/neuron-message-envelope.schema.json); the React host renders only
+    registered components from validated props — Neuron never returns executable
+    markup. Public A2A endpoints, public Agent Cards, and MCP-UI external-host
+    surfaces are deferred (not in this contract).
+servers:
+  - url: https://neuron.nebula.local
+security:
+  - bearerAuth: []
+tags:
+  - name: Companion
+    description: Chat message send, component action callbacks, and Day-at-a-Glance assembly
+  - name: Health
+    description: Liveness/readiness for the stateless Neuron runtime
+paths:
+  /v1/glance:
+    get:
+      operationId: assembleDayAtAGlance
+      summary: Assemble the Day-at-a-Glance shell via zone-dispatch
+      description: >
+        Enumerates registered specialist heads and dispatches per zone
+        (F0038-S0002). The Renewals head returns content; stub heads (Tasks,
+        Pipeline, Broker activity) return a typed inactive payload (F0038-S0004).
+        Assembly, not composition — no zone reads or ranks another zone.
+        Permission-respecting: each zone's data is fetched from the engine with
+        the forwarded user token.
+      tags: [Companion]
+      parameters:
+        - name: thread_id
+          in: query
+          required: false
+          schema: { type: string, format: uuid }
+          description: Existing glance thread to resume; a new one is created if omitted.
+      responses:
+        "200":
+          description: Assembled glance — one zone payload per registered head, plus the envelope.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [thread_id, zones, message]
+                additionalProperties: false
+                properties:
+                  thread_id: { type: string, format: uuid }
+                  zones:
+                    type: array
+                    minItems: 1
+                    items:
+                      $ref: "https://nebula.local/schemas/neuron-zone-payload.schema.json"
+                  message:
+                    $ref: "https://nebula.local/schemas/neuron-message-envelope.schema.json"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "502": { $ref: "#/components/responses/UpstreamUnavailable" }
+  /v1/messages:
+    post:
+      operationId: sendCompanionMessage
+      summary: Send a chat message to the companion
+      description: >
+        Scope guard + intent classifier first (F0038-S0007): CRM intents route to
+        the matching head; non-CRM intents return a polite CRM redirect (text
+        part), never a general-assistant answer. In-scope intents may return text,
+        an app component, status, sources, and registered actions (e.g. a
+        proactive "Draft outreach" CTA). Drafts are generated only on an explicit
+        action callback, never here.
+      tags: [Companion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text]
+              additionalProperties: false
+              properties:
+                thread_id: { type: string, format: uuid, description: Omit to start the single v1 glance thread. }
+                text: { type: string, minLength: 1, maxLength: 4000 }
+      responses:
+        "200":
+          description: Companion response as a versioned message envelope.
+          content:
+            application/json:
+              schema:
+                $ref: "https://nebula.local/schemas/neuron-message-envelope.schema.json"
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "502": { $ref: "#/components/responses/UpstreamUnavailable" }
+  /v1/actions:
+    post:
+      operationId: invokeCompanionAction
+      summary: Invoke a registered component action (draft outreach, mock-send, drill)
+      description: >
+        Executes an allow-listed action echoed from an envelope `actions` part.
+        The handler re-authorizes server-side and calls the engine as the user;
+        the action payload never carries authorization claims. `draft_outreach`
+        generates + persists the draft (engine ActivityTimelineEvent, F0038-S0005);
+        `mock_send` commits Identified -> Outreach and fakes SMTP (F0038-S0006).
+        Both require engine `renewal:draft_outreach` (Underwriter only) — a
+        non-holder is denied 403 with no draft/transition (ADR-028 §3).
+      tags: [Companion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [thread_id, action_id, action_type]
+              additionalProperties: false
+              properties:
+                thread_id: { type: string, format: uuid }
+                action_id: { type: string, description: Registered action id from the envelope actions part. }
+                action_type:
+                  type: string
+                  enum: [draft_outreach, mock_send, drill_renewal, scope_redirect_ack]
+                payload:
+                  type: object
+                  description: Action data, e.g. { renewalId, edited_body } for draft/mock-send.
+      responses:
+        "200":
+          description: Result envelope (e.g. the editable draft, or the post-send confirmation).
+          content:
+            application/json:
+              schema:
+                $ref: "https://nebula.local/schemas/neuron-message-envelope.schema.json"
+        "400": { $ref: "#/components/responses/BadRequest" }
+        "401": { $ref: "#/components/responses/Unauthorized" }
+        "403": { $ref: "#/components/responses/Forbidden" }
+        "409":
+          description: Invalid renewal state for the action (e.g. mock-send on a non-Identified renewal).
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+        "502": { $ref: "#/components/responses/UpstreamUnavailable" }
+  /health:
+    get:
+      operationId: neuronHealth
+      summary: Liveness + registered heads/tools
+      description: >
+        Reports the stateless service healthy and lists registered specialist
+        heads and tools (F0038-S0001). Used to confirm orchestration assets
+        validated at startup. Unauthenticated liveness; no CRM data.
+      tags: [Health]
+      security: []
+      responses:
+        "200":
+          description: Service healthy.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [status, heads, tools]
+                additionalProperties: false
+                properties:
+                  status: { type: string, enum: [healthy] }
+                  heads: { type: array, items: { type: string } }
+                  tools: { type: array, items: { type: string } }
+        "503":
+          description: Service not ready (e.g. an orchestration asset failed validation at startup).
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Forwarded end-user authentik token (on-behalf-of). The engine enforces Casbin ABAC.
+  responses:
+    BadRequest:
+      description: Malformed request.
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/ProblemDetails" }
+    Unauthorized:
+      description: Missing or invalid bearer token.
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/ProblemDetails" }
+    Forbidden:
+      description: Authenticated but not authorized by the engine (e.g. lacks renewal:draft_outreach).
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/ProblemDetails" }
+    UpstreamUnavailable:
+      description: Engine unreachable; surfaced as a typed upstream-unavailable error (not a stack leak).
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/ProblemDetails" }
+  schemas:
+    ProblemDetails:
+      type: object
+      description: RFC 7807 problem details (aligned with the engine's ProblemDetails).
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }

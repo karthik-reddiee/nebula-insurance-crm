@@ -1,0 +1,102 @@
+# Lifecycle Gates Log — F0038 run 2026-06-30-dbc93ab5
+
+Plan action, Phase A. Validator/lifecycle invocations for this run.
+
+### Phase A — story validation
+Command: python3 agents/product-manager/scripts/validate-stories.py {FEATURE_PATH}
+Stage: G2 (tracker sync prep)
+Exit Code: 0
+Result: PASS (8 stories; 4 with a single non-blocking INVEST "needs-attention" dependency-heuristic warning)
+Output References: scratchpad/vstories.txt
+Skipped Gates: -
+
+### Phase A — story index regeneration
+Command: python3 agents/product-manager/scripts/generate-story-index.py {PRODUCT_ROOT}/planning-mds/features/
+Stage: G2
+Exit Code: 0
+Result: PASS (161 story files indexed, incl. F0038-S0001..S0008)
+Output References: planning-mds/features/STORY-INDEX.md
+Skipped Gates: -
+
+### Phase A — tracker validation
+Command: python3 agents/product-manager/scripts/validate-trackers.py --product-root {PRODUCT_ROOT}
+Stage: G2
+Exit Code: 1
+Result: MIXED — tracker/registry CONSISTENCY check PASS (errors: 0). Overall exit 1 is driven by the
+        embedded feature-evidence sub-validation (--stage G6) of governed features UNRELATED to F0038
+        (F0023, F0035 via run 2026-05-24-c92b16b6, and run 2026-06-03-7e8e0ddc). Those failures are a
+        pre-existing repo-relocation artifact: committed commands.log / report files reference
+        '/mnt/c/Users/gajap/sandbox/nebula/...' absolute paths (and some missing test/coverage
+        artifacts) from before the repo moved to '/home/gajap/uSandbox/...'. None of the failing paths
+        belong to F0038 or to this plan run; git confirms this run touched only F0038 planning artifacts
+        + this base run folder.
+Output References: scratchpad/vtrackers.txt
+Skipped Gates: -
+
+Note: per plan-action scope discipline, this run does NOT modify the unrelated feature evidence
+packages (out of declared F0038 scope; contract discourages backfilling prior evidence). Escalated to
+the operator for disposition (see gate-decisions.md, G2 row). Operator disposition: proceed as known issue.
+
+## Closeout — plan-action exit validation (post-G3 approval)
+
+### exit-validation 1/7 — validate-stories
+Command: python3 agents/product-manager/scripts/validate-stories.py {FEATURE_PATH}
+Stage: closeout
+Exit Code: 0
+Result: PASS
+Output References: scratchpad/ev1.txt
+Skipped Gates: -
+
+### exit-validation 2/7 — generate-story-index
+Command: python3 agents/product-manager/scripts/generate-story-index.py {PRODUCT_ROOT}/planning-mds/features/
+Stage: closeout
+Exit Code: 0
+Result: PASS (161 story files)
+Output References: planning-mds/features/STORY-INDEX.md
+Skipped Gates: -
+
+### exit-validation 3/7 — validate-trackers
+Command: python3 agents/product-manager/scripts/validate-trackers.py --product-root {PRODUCT_ROOT}
+Stage: closeout
+Exit Code: 1
+Result: FAIL (PRE-EXISTING, OUT-OF-SCOPE) — tracker-consistency summary `result: PASS`; overall exit 1
+        from unrelated relocated feature-evidence packages (see G2 entry). Operator-acknowledged known issue.
+Output References: scratchpad/ev3.txt
+Skipped Gates: -
+
+### exit-validation 4/7 — kg coverage report
+Command: python3 {PRODUCT_ROOT}/scripts/kg/validate.py --write-coverage-report
+Stage: closeout
+Exit Code: n/a
+Result: SKIPPED — KG was not changed in this PHASE=A run (F0038 ontology bindings deferred to Phase B).
+        git shows no edits under planning-mds/knowledge-graph/. Conditional step ("IF KG changed") not triggered.
+Output References: -
+Skipped Gates: kg coverage-report refresh (precondition not met)
+
+### exit-validation 5/7 — kg validate
+Command: python3 {PRODUCT_ROOT}/scripts/kg/validate.py
+Stage: closeout
+Exit Code: 0
+Result: PASS (knowledge-graph integrity)
+Output References: scratchpad/ev5.txt
+Skipped Gates: -
+
+### exit-validation 6/7 — kg validate --check-drift
+Command: python3 {PRODUCT_ROOT}/scripts/kg/validate.py --check-drift
+Stage: closeout
+Exit Code: 0
+Result: PASS (no drift; pre-existing renewal-stub symbol warnings only)
+Output References: scratchpad/ev6.txt
+Skipped Gates: -
+
+### exit-validation 7/7 — validate_templates
+Command: python3 agents/scripts/validate_templates.py
+Stage: closeout
+Exit Code: 0
+Result: PASS (prompt templates align with action contracts)
+Output References: scratchpad/ev7.txt
+Skipped Gates: -
+
+Closeout summary: 6/7 validators PASS; step 4 SKIPPED (KG unchanged); step 3 FAIL is the
+operator-acknowledged pre-existing, F0038-unrelated evidence drift. No `validate-feature-evidence.py`
+was run (correct: no feature evidence package exists at plan).

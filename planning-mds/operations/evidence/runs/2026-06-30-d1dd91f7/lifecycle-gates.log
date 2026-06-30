@@ -1,0 +1,33 @@
+# Lifecycle Gates Log — F0038 run 2026-06-30-d1dd91f7
+
+Plan action, Phase B (Architect architecture). Validator / lifecycle-gate
+invocations for this run are appended below as they execute (G4 ontology sync,
+exit-validation closeout sequence).
+
+## G4 ONTOLOGY SYNC (Step 3.5)
+
+| Validator | Result |
+|-----------|--------|
+| `kg/validate.py --write-coverage-report` | PASS (exit 0) — coverage-report.yaml regenerated |
+| `kg/validate.py` | PASS (exit 0) — features 28, stories 137, coverage 28 mapped / 12 excluded / **0 uncovered** |
+| `kg/validate.py --check-drift` | PASS (exit 0) |
+
+F0038 promoted out of `excluded_features` to a full feature mapping + 8 story
+mappings; +33 canonical nodes (10 capability, 8 endpoint, 3 event, 1 policy_rule,
+2 adr, 1 api_contract, 8 schema). All referenced IDs resolve; all referenced
+paths exist. **G4 PASS.**
+
+## Exit Validation (plan.md → Exit Validation)
+
+| # | Validator | Result |
+|---|-----------|--------|
+| 1 | `validate-stories.py {FEATURE_PATH}` | PASS (exit 0) — 8 stories; non-blocking INVEST warnings ("fast", dependency check) on Phase-A-authored stories |
+| 2 | `generate-story-index.py` | PASS (exit 0) — STORY-INDEX.md regenerated (161 story files) |
+| 3 | `validate-trackers.py` | tracker-consistency PASS (`errors: 0`); **overall exit 1 — pre-existing, F0038-unrelated** relocated-evidence drift (F0023, F0035, F0036, runs `2026-06-03-7e8e0ddc` / `2026-05-28-077b7b30` referencing `/mnt/c/...`). Zero F0038 errors. Same operator-acknowledged issue as Phase A G2. |
+| 4 | `kg/validate.py --write-coverage-report` | PASS (exit 0) — KG changed this run |
+| 5 | `kg/validate.py` | PASS (exit 0) |
+| 6 | `kg/validate.py --check-drift` | PASS (exit 0) |
+| 7 | `validate_templates.py` | PASS (exit 0) — prompt templates align with action contracts |
+
+`validate-feature-evidence.py` correctly NOT run — no feature evidence package
+exists at plan (created later by `agents/actions/feature.md`).

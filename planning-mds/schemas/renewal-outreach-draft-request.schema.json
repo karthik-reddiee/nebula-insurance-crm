@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/renewal-outreach-draft-request.schema.json",
+  "title": "RenewalOutreachDraftRequest",
+  "description": "Engine request to persist a generated/edited renewal outreach draft as a renewal ActivityTimelineEvent (F0038-S0005). Generating a draft does NOT transition the renewal (transition fires only on mock-send, F0038-S0006). Authorized engine-side by renewal:draft_outreach (Underwriter only). The persisted event is InternalOnly, labelled AI-generated draft, and carries full provenance. Content constraints (no premium/quote/coverage-terms/binding-commitment language) are validated before persistence.",
+  "type": "object",
+  "required": ["draft_body", "provenance"],
+  "additionalProperties": false,
+  "properties": {
+    "draft_body": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8000,
+      "description": "Generated or user-edited draft text. Must not state or imply premium, quote figures, coverage terms, or any binding commitment."
+    },
+    "internal_only": {
+      "type": "boolean",
+      "const": true,
+      "description": "Always true until a human edits/approves; the draft is never externally visible automatically."
+    },
+    "label": {
+      "type": "string",
+      "const": "AI-generated draft"
+    },
+    "provenance": { "$ref": "#/definitions/provenance" }
+  },
+  "definitions": {
+    "provenance": {
+      "type": "object",
+      "description": "Audit/provenance recorded on the timeline event. No raw prompt or raw model response is stored (ADR-027 security notes).",
+      "required": ["actor_user_id", "model", "prompt_id", "prompt_version", "content_hash"],
+      "additionalProperties": false,
+      "properties": {
+        "actor_user_id": { "type": "string", "format": "uuid" },
+        "model": { "type": "string", "description": "Model id used for generation, e.g. claude-opus-4-8." },
+        "prompt_id": { "type": "string" },
+        "prompt_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "content_hash": { "type": "string", "description": "Hash of the persisted draft_body for tamper-evidence and edit detection." },
+        "agent_run_id": { "type": "string", "format": "uuid", "description": "Neuron agent_run id linking the engine event back to the Neuron operation record (idempotency/reconciliation, ADR-028)." }
+      }
+    }
+  }
+}

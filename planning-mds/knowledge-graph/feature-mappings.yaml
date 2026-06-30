@@ -38,9 +38,6 @@ coverage:
     - id: feature:F0031
       path: planning-mds/features/F0031-data-import-deduplication-and-go-live-migration
       reason: Planned feature folder exists but ontology mapping backfill has not started.
-    - id: feature:F0038
-      path: planning-mds/features/F0038-neuron-day-at-a-glance-shell
-      reason: Neuron Companion epic first slice; skeleton only. Ontology bindings authored by the architect during the F0038 plan run (Phase B).
     - id: feature:F0039
       path: planning-mds/features/F0039-neuron-multi-thread-conversations
       reason: Neuron Companion epic; provisional skeleton. Ontology mapping deferred until F0038 lands and F0039 runs its own plan.
@@ -1007,6 +1004,70 @@ features:
     notes:
       - "Phase B Architect bindings (plan run 2026-06-06-5fb353e9), governed by ADR-026. MVP = arbitrary-depth self-referencing hierarchy + effective-dated producer ownership + effective-dated territory + change audit (stories S0001-S0005)."
       - "Plan-review repair 2026-06-06 bound F0017 to concrete OpenAPI routes, JSON Schemas, and role-based mutation policy rules. F0023 is a downstream reporting substrate/consumer, not a build prerequisite. Hierarchy-aware access-control enforcement and rollup reporting are deferred to F0037."
+  - id: feature:F0038
+    path: planning-mds/features/F0038-neuron-day-at-a-glance-shell
+    status: architecture-complete
+    affects:
+      - capability:neuron-companion
+      - capability:neuron-orchestration-runtime
+      - capability:neuron-day-at-a-glance-shell
+      - capability:neuron-zone-dispatch
+      - capability:neuron-message-envelope
+      - capability:neuron-renewals-head
+      - capability:neuron-scope-guard
+      - capability:neuron-outreach-drafter
+      - capability:neuron-operation-persistence
+      - capability:neuron-companion-telemetry
+      - capability:authorization-enforcement
+      - endpoint:renewals-needs-attention
+      - endpoint:renewal-companion-context
+      - endpoint:renewal-outreach-draft
+      - endpoint:renewal-outreach-mock-send
+      - endpoint:neuron-companion-telemetry
+      - endpoint:neuron-glance
+      - endpoint:neuron-message-send
+      - endpoint:neuron-action-callback
+      - event:renewal-outreach-drafted
+      - event:renewal-outreach-mock-sent
+      - event:renewal-transitioned
+      - event:neuron-companion-telemetry
+      - workflow:renewal
+      - state:renewal:identified
+      - state:renewal:outreach
+      - entity:renewal
+      - entity:account
+      - entity:broker
+      - entity:activity-timeline-event
+      - entity:workflow-transition
+    governed_by:
+      - adr:027
+      - adr:028
+    uses_schema:
+      - schema:neuron-message-envelope
+      - schema:neuron-zone-payload
+      - schema:neuron-agent-card
+      - schema:neuron-orchestration-plan
+      - schema:renewal-needs-attention-item
+      - schema:renewal-outreach-draft-request
+      - schema:renewal-outreach-mock-send-request
+      - schema:neuron-companion-telemetry-event
+      - schema:problem-details
+    uses_api_contract:
+      - api:nebula-rest
+      - api:neuron-rest
+    depends_on:
+      - feature:F0007
+    restricted_to_role:
+      - role:underwriter
+    enforced_by_policy:
+      - policy_rule:renewal-draft-outreach
+      - policy_rule:renewal-read
+      - policy_rule:renewal-transition
+    notes:
+      - "Phase B Architect bindings (plan run 2026-06-30-d1dd91f7), governed by ADR-027 (A2A-aligned orchestration foundation) + ADR-028 (persistence schema, cross-store write consistency, outreach authorization). Neuron is a stateless secondary interface; the .NET engine is the CRM source of truth and authorization boundary."
+      - "Neuron owns its neuron.* operation store directly (threads/messages/message_parts/agent_runs/tool_calls/provenance_events; data-model §11), NOT via an engine pass-through. Cross-store writes are engine-first authoritative + idempotent Neuron record referencing the engine id (ADR-028 §2)."
+      - "F0038↔F0007 reconciliation (ADR-028 §3): mock-send commits the real Identified→Outreach transition, but this is Distribution-owned in F0007. Resolved by a dedicated least-privilege renewal:draft_outreach (Underwriter only) gating draft+mock-send; the engine WorkflowStateMachine permits Identified→Outreach for an Underwriter only on the mock-send path. General renewal:transition ownership unchanged. #1 operator ratification item at G5."
+      - "code-index.yaml bindings intentionally deferred: no neuron/ implementation code exists at plan; the F0038 feature action binds the as-built neuron/ + engine/ paths."
 
 stories:
   - id: story:F0023-S0001
@@ -3418,3 +3479,156 @@ stories:
       - schema:problem-details
     uses_api_contract:
       - api:nebula-rest
+  # ── F0038 Neuron Day-at-a-Glance Shell (plan run 2026-06-30-d1dd91f7) ──────
+  - id: story:F0038-S0001
+    path: planning-mds/features/F0038-neuron-day-at-a-glance-shell/F0038-S0001-neuron-service-bootstrap.md
+    feature: feature:F0038
+    affects:
+      - capability:neuron-orchestration-runtime
+      - capability:neuron-operation-persistence
+    governed_by:
+      - adr:027
+      - adr:028
+    uses_schema:
+      - schema:neuron-agent-card
+      - schema:neuron-orchestration-plan
+    uses_api_contract:
+      - api:neuron-rest
+  - id: story:F0038-S0002
+    path: planning-mds/features/F0038-neuron-day-at-a-glance-shell/F0038-S0002-day-at-a-glance-shell-and-zone-dispatch.md
+    feature: feature:F0038
+    affects:
+      - capability:neuron-day-at-a-glance-shell
+      - capability:neuron-zone-dispatch
+      - capability:neuron-message-envelope
+      - endpoint:neuron-glance
+      - endpoint:neuron-message-send
+    governed_by:
+      - adr:027
+    uses_schema:
+      - schema:neuron-message-envelope
+      - schema:neuron-zone-payload
+    uses_api_contract:
+      - api:neuron-rest
+    depends_on:
+      - story:F0038-S0001
+  - id: story:F0038-S0003
+    path: planning-mds/features/F0038-neuron-day-at-a-glance-shell/F0038-S0003-live-renewals-zone-read.md
+    feature: feature:F0038
+    affects:
+      - capability:neuron-renewals-head
+      - endpoint:renewals-needs-attention
+      - endpoint:renewal-companion-context
+      - entity:renewal
+      - entity:account
+      - entity:broker
+      - workflow:renewal
+    governed_by:
+      - adr:027
+    enforced_by_policy:
+      - policy_rule:renewal-read
+    uses_schema:
+      - schema:renewal-needs-attention-item
+    uses_api_contract:
+      - api:nebula-rest
+      - api:neuron-rest
+    depends_on:
+      - story:F0038-S0001
+      - story:F0038-S0002
+      - feature:F0007
+  - id: story:F0038-S0004
+    path: planning-mds/features/F0038-neuron-day-at-a-glance-shell/F0038-S0004-stub-zones-inactive-payload.md
+    feature: feature:F0038
+    affects:
+      - capability:neuron-zone-dispatch
+    governed_by:
+      - adr:027
+    uses_schema:
+      - schema:neuron-zone-payload
+    uses_api_contract:
+      - api:neuron-rest
+    depends_on:
+      - story:F0038-S0001
+      - story:F0038-S0002
+  - id: story:F0038-S0005
+    path: planning-mds/features/F0038-neuron-day-at-a-glance-shell/F0038-S0005-renewal-outreach-draft.md
+    feature: feature:F0038
+    affects:
+      - capability:neuron-outreach-drafter
+      - endpoint:renewal-outreach-draft
+      - endpoint:neuron-action-callback
+      - event:renewal-outreach-drafted
+      - entity:renewal
+      - entity:activity-timeline-event
+    governed_by:
+      - adr:028
+    restricted_to_role:
+      - role:underwriter
+    enforced_by_policy:
+      - policy_rule:renewal-draft-outreach
+    uses_schema:
+      - schema:renewal-outreach-draft-request
+    uses_api_contract:
+      - api:nebula-rest
+      - api:neuron-rest
+    depends_on:
+      - story:F0038-S0003
+  - id: story:F0038-S0006
+    path: planning-mds/features/F0038-neuron-day-at-a-glance-shell/F0038-S0006-mock-send-and-workflow-transition.md
+    feature: feature:F0038
+    affects:
+      - capability:neuron-outreach-drafter
+      - endpoint:renewal-outreach-mock-send
+      - event:renewal-outreach-mock-sent
+      - event:renewal-transitioned
+      - entity:renewal
+      - entity:workflow-transition
+      - entity:activity-timeline-event
+      - workflow:renewal
+      - state:renewal:identified
+      - state:renewal:outreach
+    governed_by:
+      - adr:028
+    restricted_to_role:
+      - role:underwriter
+    enforced_by_policy:
+      - policy_rule:renewal-draft-outreach
+    uses_schema:
+      - schema:renewal-outreach-mock-send-request
+    uses_api_contract:
+      - api:nebula-rest
+    depends_on:
+      - story:F0038-S0005
+      - feature:F0007
+  - id: story:F0038-S0007
+    path: planning-mds/features/F0038-neuron-day-at-a-glance-shell/F0038-S0007-crm-scope-guard.md
+    feature: feature:F0038
+    affects:
+      - capability:neuron-scope-guard
+      - capability:neuron-message-envelope
+    governed_by:
+      - adr:027
+    uses_schema:
+      - schema:neuron-message-envelope
+    uses_api_contract:
+      - api:neuron-rest
+    depends_on:
+      - story:F0038-S0001
+      - story:F0038-S0002
+  - id: story:F0038-S0008
+    path: planning-mds/features/F0038-neuron-day-at-a-glance-shell/F0038-S0008-companion-telemetry-instrumentation.md
+    feature: feature:F0038
+    affects:
+      - capability:neuron-companion-telemetry
+      - endpoint:neuron-companion-telemetry
+      - event:neuron-companion-telemetry
+    governed_by:
+      - adr:028
+    uses_schema:
+      - schema:neuron-companion-telemetry-event
+    uses_api_contract:
+      - api:nebula-rest
+    depends_on:
+      - story:F0038-S0003
+      - story:F0038-S0005
+      - story:F0038-S0006

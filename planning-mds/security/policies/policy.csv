@@ -17,7 +17,7 @@
 #   territory      read, create, assign
 #   contact         read, create, update, delete
 #   submission      read, transition
-#   renewal         read, transition
+#   renewal         read, transition, draft_outreach
 #   lob_schema      read, resolve, activate, deprecate, retire
 #   dashboard_kpi   read
 #   dashboard_pipeline  read
@@ -231,6 +231,11 @@ p, Admin,               submission, archive,    true
 #   update     — update dynamic LOB attributes on non-terminal renewals
 #   transition — advance renewal through workflow states
 #   assign     — assign/reassign renewal ownership
+#   draft_outreach — F0038: draft + mock-send the renewal outreach email; the
+#                    mock-send commits Identified→Outreach via a dedicated,
+#                    least-privilege path (Underwriter only; NOT renewal:transition).
+#                    App layer (WorkflowStateMachine) permits Identified→Outreach
+#                    for an Underwriter only on the outreach-mock-send path. See ADR-028 §3.
 # ─────────────────────────────────────────────────────────────────────────────
 
 # DistributionUser — read (own), create (self-assign), transition (Identified→Outreach, Outreach→InReview)
@@ -250,6 +255,7 @@ p, DistributionManager, renewal, assign,     true
 p, Underwriter,         renewal, read,       true
 p, Underwriter,         renewal, update,     true
 p, Underwriter,         renewal, transition, true
+p, Underwriter,         renewal, draft_outreach, true
 
 # RelationshipManager — read only (own accounts/brokers)
 p, RelationshipManager, renewal, read,       true
@@ -263,6 +269,7 @@ p, Admin,               renewal, create,     true
 p, Admin,               renewal, update,     true
 p, Admin,               renewal, transition, true
 p, Admin,               renewal, assign,     true
+p, Admin,               renewal, draft_outreach, true
 
 # ─────────────────────────────────────────────────────────────────────────────
 # §2.4a Account — Read / Create / Update / Lifecycle / Merge / Contact / Relationship
