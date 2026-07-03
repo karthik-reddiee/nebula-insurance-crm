@@ -23,3 +23,4 @@ Decisions: `PASS`, `PASS WITH RECOMMENDATIONS`, `FAIL`, `SKIP`, `APPROVED`, `APP
 - **Rationale:** Fixed local dev invalid-token reproduction by defaulting unset Vite dev auth to the deterministic dev token path and by seeding deterministic F0028 demo markets for contributor reproducibility.
 - **Blocking:** No
 - **Validation:** Backend build, frontend build, focused frontend auth/API tests, focused F0028 backend endpoint tests, live local proxy `/carrier-markets` smoke check, KG symbol/drift checks, feature evidence validator, and template validator passed. Existing package/KG warnings remain non-blocking.
+- **Follow-up patch:** Added a F0028-scoped local dev retry for stale invalid-token responses on `/carrier-markets`; restarted the stale Vite process so the browser is served the patched bundle.

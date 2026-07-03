@@ -61,6 +61,8 @@
 - Local Vite development now falls back to dev auth when `VITE_AUTH_MODE` is unset, preventing stale OIDC browser sessions from sending invalid bearer tokens to `/carrier-markets`.
 - Added idempotent F0028 carrier-market demo fixtures to `engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs` so fresh and existing development databases converge on visible sample markets.
 - Verified `/carrier-markets` through the local frontend proxy with a synthetic dev bearer token returned `200` and three demo markets.
+- Added a local-development retry guard in `experience/src/services/api.ts` so `/carrier-markets` invalid-token responses retry once with the deterministic dev token before forced reauth.
+- Restarted the stale Vite dev server on port `5173`; the restarted proxy returned `200` with the three F0028 demo markets.
 
 ## External Or Global Evidence References
 
