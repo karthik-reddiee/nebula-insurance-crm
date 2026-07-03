@@ -1,18 +1,19 @@
 # F0028 — Carrier & Market Relationship Management
 
-**Status:** Draft
+**Status:** In Progress — feature action run 2026-07-02-736e7854
 **Priority:** Medium
 **Phase:** CRM Release MVP+
 
 ## Overview
 
-Track carriers, market relationships, underwriter contacts, appetite notes, and appointment context so Nebula supports commercial P&C market strategy in addition to broker strategy.
+Track carrier and market relationship context, underwriter contacts, appetite notes, appointment status, and market activity so Nebula supports commercial P&C placement strategy without introducing carrier integrations or rating logic in this slice.
 
 ## Documents
 
 | Document | Purpose |
 |----------|---------|
-| [PRD.md](./PRD.md) | Product scope and business outcomes |
+| [PRD.md](./PRD.md) | Product scope, workflows, screen layouts, and story map |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) | Phase B service, data, API, authorization, audit, and KG contract |
 | [STATUS.md](./STATUS.md) | Planning and implementation tracker |
 | [GETTING-STARTED.md](./GETTING-STARTED.md) | Setup and refinement notes |
 
@@ -20,6 +21,37 @@ Track carriers, market relationships, underwriter contacts, appetite notes, and 
 
 | ID | Title | Status |
 |----|-------|--------|
+| [F0028-S0001](./F0028-S0001-market-directory-search.md) | Market directory search and open | Not Started |
+| [F0028-S0002](./F0028-S0002-carrier-market-profile-management.md) | Carrier and market profile management | Not Started |
+| [F0028-S0003](./F0028-S0003-underwriter-contact-management.md) | Underwriter and market contact management | Not Started |
+| [F0028-S0004](./F0028-S0004-appetite-note-capture.md) | Appetite note capture and freshness | Not Started |
+| [F0028-S0005](./F0028-S0005-appointment-context-management.md) | Appointment context management | Not Started |
+| [F0028-S0006](./F0028-S0006-market-activity-and-related-work.md) | Market activity and related work visibility | Not Started |
 
-**Total Stories:** 0
-**Completed:** 0 / 0
+**Total Stories:** 6
+**Completed:** 0 / 6
+
+## Architecture Review
+
+**Phase B status:** Approved for feature action
+**Execution Plan:** Produced later by `agents/actions/feature.md`, not by the plan action.
+
+### Key Findings
+
+- F0019 and F0023 are complete, so submission context and search/reporting substrate are available dependencies.
+- F0028 remains CRM-side recorded market intelligence only; carrier API sync, rating, quote comparison, and reinsurance stay out of scope.
+- Security Reviewer is expected to be required because appetite, appointment, and underwriter relationship context are commercially sensitive.
+- No new ADR is required; F0028 applies existing clean architecture, Casbin ABAC, timeline, search, and ProblemDetails patterns.
+
+### Architecture Artifacts
+
+| Artifact | Status |
+|----------|--------|
+| Data model / ERD | Defined in `ARCHITECTURE.md` |
+| API contract (OpenAPI) | Updated in `planning-mds/api/nebula-api.yaml` |
+| Workflow state machine | Not required; F0028 uses CRUD-style relationship records plus timeline events |
+| Casbin policy | Updated in authorization matrix and policy CSV |
+| JSON schemas | Added under `planning-mds/schemas/carrier-*.schema.json` |
+| C4 diagrams | Covered by existing CRM/API container boundary; no new runtime container |
+| ADRs | Not required for this slice |
+| Assembly plan | Deferred to feature action G0 |

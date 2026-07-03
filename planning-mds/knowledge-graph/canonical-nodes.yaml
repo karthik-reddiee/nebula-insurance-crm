@@ -149,6 +149,53 @@ entities:
       - adr: adr:018
         section: "Decision §1"
         summary: "Carrier reference-data seed used by the Policy aggregate in MVP; a full Carrier lifecycle is a follow-up feature."
+  - id: entity:carrier-market
+    label: CarrierMarket
+    source_docs:
+      - planning-mds/features/F0028-carrier-and-market-relationship-management/ARCHITECTURE.md
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/schemas/carrier-market.schema.json
+    related_nodes:
+      - entity:carrier-ref
+      - entity:activity-timeline-event
+      - capability:carrier-market-relationship-management
+    notes: CRM-side carrier and market relationship aggregate introduced by F0028; replaces the earlier lightweight CarrierRef seed for relationship intelligence while policy history may retain CarrierRef references.
+  - id: entity:carrier-market-contact
+    label: CarrierMarketContact
+    source_docs:
+      - planning-mds/features/F0028-carrier-and-market-relationship-management/ARCHITECTURE.md
+      - planning-mds/schemas/carrier-market-contact.schema.json
+    related_nodes:
+      - entity:carrier-market
+      - entity:activity-timeline-event
+  - id: entity:carrier-appetite-note
+    label: CarrierAppetiteNote
+    source_docs:
+      - planning-mds/features/F0028-carrier-and-market-relationship-management/ARCHITECTURE.md
+      - planning-mds/schemas/carrier-appetite-note.schema.json
+    related_nodes:
+      - entity:carrier-market
+      - entity:activity-timeline-event
+    notes: Commercially sensitive internal appetite intelligence; external roles must not receive rows, snippets, or facet counts.
+  - id: entity:carrier-appointment
+    label: CarrierAppointment
+    source_docs:
+      - planning-mds/features/F0028-carrier-and-market-relationship-management/ARCHITECTURE.md
+      - planning-mds/schemas/carrier-appointment.schema.json
+    related_nodes:
+      - entity:carrier-market
+      - entity:activity-timeline-event
+  - id: entity:carrier-market-activity-link
+    label: CarrierMarketActivityLink
+    source_docs:
+      - planning-mds/features/F0028-carrier-and-market-relationship-management/ARCHITECTURE.md
+      - planning-mds/schemas/carrier-market-activity-link.schema.json
+    related_nodes:
+      - entity:carrier-market
+      - entity:submission
+      - entity:policy
+      - entity:activity-timeline-event
+    notes: Link-only context; creating a link never mutates submission or policy workflow state.
   - id: entity:renewal
     label: Renewal
     source_docs:
@@ -552,6 +599,21 @@ capabilities:
       - adr: adr:014-search
         section: "Search Index Design"
         summary: "Global search reads a PostgreSQL-backed SearchDocument projection and applies source-record authorization before rows, snippets, facets, or counts are returned."
+  - id: capability:carrier-market-relationship-management
+    label: Carrier Market Relationship Management
+    source_docs:
+      - planning-mds/features/F0028-carrier-and-market-relationship-management/PRD.md
+      - planning-mds/features/F0028-carrier-and-market-relationship-management/ARCHITECTURE.md
+      - planning-mds/api/nebula-api.yaml
+    related_nodes:
+      - entity:carrier-market
+      - entity:carrier-market-contact
+      - entity:carrier-appetite-note
+      - entity:carrier-appointment
+      - entity:carrier-market-activity-link
+      - capability:global-search
+      - capability:authorization-enforcement
+    notes: Internal-only market directory, carrier profile, contact, appetite, appointment, and related-work context for F0028.
   - id: capability:saved-views
     label: Saved Views
     source_docs:
@@ -1166,6 +1228,90 @@ endpoints:
       - capability:global-search
       - entity:search-document
       - policy_rule:global-search-read
+  - id: endpoint:carrier-market-list
+    label: GET /carrier-markets
+    method: GET
+    route: /carrier-markets
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+    related_nodes:
+      - capability:carrier-market-relationship-management
+      - entity:carrier-market
+      - policy_rule:carrier-market-read
+  - id: endpoint:carrier-market-create
+    label: POST /carrier-markets
+    method: POST
+    route: /carrier-markets
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+    related_nodes:
+      - capability:carrier-market-relationship-management
+      - entity:carrier-market
+      - entity:activity-timeline-event
+      - policy_rule:carrier-market-create
+  - id: endpoint:carrier-market-detail
+    label: GET /carrier-markets/{carrierMarketId}
+    method: GET
+    route: /carrier-markets/{carrierMarketId}
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+    related_nodes:
+      - capability:carrier-market-relationship-management
+      - entity:carrier-market
+      - policy_rule:carrier-market-read
+  - id: endpoint:carrier-market-update
+    label: PUT /carrier-markets/{carrierMarketId}
+    method: PUT
+    route: /carrier-markets/{carrierMarketId}
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+    related_nodes:
+      - capability:carrier-market-relationship-management
+      - entity:carrier-market
+      - entity:activity-timeline-event
+      - policy_rule:carrier-market-update
+  - id: endpoint:carrier-market-contacts
+    label: GET/POST/PUT /carrier-markets/{carrierMarketId}/contacts
+    method: MULTI
+    route: /carrier-markets/{carrierMarketId}/contacts
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+    related_nodes:
+      - entity:carrier-market-contact
+      - entity:activity-timeline-event
+      - policy_rule:carrier-market-manage-contact
+  - id: endpoint:carrier-market-appetite-notes
+    label: GET/POST/PUT /carrier-markets/{carrierMarketId}/appetite-notes
+    method: MULTI
+    route: /carrier-markets/{carrierMarketId}/appetite-notes
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+    related_nodes:
+      - entity:carrier-appetite-note
+      - entity:activity-timeline-event
+      - policy_rule:carrier-market-manage-appetite
+  - id: endpoint:carrier-market-appointments
+    label: GET/POST/PUT /carrier-markets/{carrierMarketId}/appointments
+    method: MULTI
+    route: /carrier-markets/{carrierMarketId}/appointments
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+    related_nodes:
+      - entity:carrier-appointment
+      - entity:activity-timeline-event
+      - policy_rule:carrier-market-manage-appointment
+  - id: endpoint:carrier-market-activity-links
+    label: GET/POST /carrier-markets/{carrierMarketId}/activity-links
+    method: MULTI
+    route: /carrier-markets/{carrierMarketId}/activity-links
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+    related_nodes:
+      - entity:carrier-market-activity-link
+      - entity:submission
+      - entity:policy
+      - entity:activity-timeline-event
+      - policy_rule:carrier-market-link-activity
   - id: endpoint:saved-view-list
     label: GET /saved-views
     method: GET
@@ -3367,6 +3513,138 @@ policy_rules:
       - entity:search-document
       - capability:authorization-enforcement
     notes: Rows, snippets, facets, suggestions, and counts are filtered at the query layer before response materialization; external roles have no policy lines.
+  - id: policy_rule:carrier-market-read
+    label: carrier_market:read
+    resource: carrier_market
+    action: read
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:program-manager
+      - role:admin
+    related_nodes:
+      - entity:carrier-market
+      - capability:carrier-market-relationship-management
+      - capability:authorization-enforcement
+  - id: policy_rule:carrier-market-search
+    label: carrier_market:search
+    resource: carrier_market
+    action: search
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:program-manager
+      - role:admin
+    related_nodes:
+      - entity:carrier-market
+      - capability:carrier-market-relationship-management
+      - capability:global-search
+      - capability:authorization-enforcement
+  - id: policy_rule:carrier-market-create
+    label: carrier_market:create
+    resource: carrier_market
+    action: create
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:relationship-manager
+      - role:admin
+    related_nodes:
+      - entity:carrier-market
+      - entity:activity-timeline-event
+      - capability:authorization-enforcement
+  - id: policy_rule:carrier-market-update
+    label: carrier_market:update
+    resource: carrier_market
+    action: update
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:relationship-manager
+      - role:admin
+    related_nodes:
+      - entity:carrier-market
+      - entity:activity-timeline-event
+      - capability:authorization-enforcement
+  - id: policy_rule:carrier-market-manage-contact
+    label: carrier_market:manage_contact
+    resource: carrier_market
+    action: manage_contact
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:relationship-manager
+      - role:admin
+    related_nodes:
+      - entity:carrier-market-contact
+      - entity:activity-timeline-event
+      - capability:authorization-enforcement
+  - id: policy_rule:carrier-market-manage-appetite
+    label: carrier_market:manage_appetite
+    resource: carrier_market
+    action: manage_appetite
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:relationship-manager
+      - role:admin
+    related_nodes:
+      - entity:carrier-appetite-note
+      - entity:activity-timeline-event
+      - capability:authorization-enforcement
+  - id: policy_rule:carrier-market-manage-appointment
+    label: carrier_market:manage_appointment
+    resource: carrier_market
+    action: manage_appointment
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:relationship-manager
+      - role:admin
+    related_nodes:
+      - entity:carrier-appointment
+      - entity:activity-timeline-event
+      - capability:authorization-enforcement
+  - id: policy_rule:carrier-market-link-activity
+    label: carrier_market:link_activity
+    resource: carrier_market
+    action: link_activity
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:admin
+    related_nodes:
+      - entity:carrier-market-activity-link
+      - entity:submission
+      - entity:policy
+      - entity:activity-timeline-event
+      - capability:authorization-enforcement
+    notes: Application layer must also confirm read access to the linked submission or policy.
   - id: policy_rule:saved-view-read
     label: saved_view:read
     resource: saved_view
@@ -4532,6 +4810,24 @@ schemas:
   - id: schema:carrier-ref
     path: planning-mds/schemas/carrier-ref.schema.json
     related_nodes: [entity:carrier-ref, entity:policy]
+  - id: schema:carrier-market
+    path: planning-mds/schemas/carrier-market.schema.json
+    related_nodes: [entity:carrier-market, capability:carrier-market-relationship-management]
+  - id: schema:carrier-market-upsert-request
+    path: planning-mds/schemas/carrier-market-upsert-request.schema.json
+    related_nodes: [entity:carrier-market, capability:carrier-market-relationship-management]
+  - id: schema:carrier-market-contact
+    path: planning-mds/schemas/carrier-market-contact.schema.json
+    related_nodes: [entity:carrier-market-contact, entity:carrier-market]
+  - id: schema:carrier-appetite-note
+    path: planning-mds/schemas/carrier-appetite-note.schema.json
+    related_nodes: [entity:carrier-appetite-note, entity:carrier-market]
+  - id: schema:carrier-appointment
+    path: planning-mds/schemas/carrier-appointment.schema.json
+    related_nodes: [entity:carrier-appointment, entity:carrier-market]
+  - id: schema:carrier-market-activity-link
+    path: planning-mds/schemas/carrier-market-activity-link.schema.json
+    related_nodes: [entity:carrier-market-activity-link, entity:carrier-market, entity:submission, entity:policy]
   - id: schema:policy-account-summary
     path: planning-mds/schemas/policy-account-summary.schema.json
     related_nodes: [entity:policy, entity:account]

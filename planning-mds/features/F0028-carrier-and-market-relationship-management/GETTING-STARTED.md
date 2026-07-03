@@ -3,11 +3,26 @@
 ## Prerequisites
 
 - [ ] Read the current release framing in [ROADMAP.md](../ROADMAP.md)
-- [ ] Review submission and reporting dependencies first
-- [ ] Refine this feature into stories and an implementation contract before coding
+- [ ] Review F0019 submission quote/proposal and bind workflow dependencies
+- [ ] Review F0023 search/reporting dependency
+- [ ] Confirm Phase A approval is recorded before starting Phase B
+- [ ] Confirm Phase B approval is recorded before starting implementation
 
-## How to Verify
+## Scope Guardrails
 
-1. Confirm the feature is focused on CRM-side market relationships, not deep carrier integration.
-2. Define the minimum carrier records, contacts, and appetite data required.
-3. Validate tracker sync after refinement.
+- F0028 manages CRM-side market relationship context only.
+- Carrier API integration, rating, quote comparison, reinsurance, commission, billing, and external broker collaboration are out of scope.
+- Appetite, appointment, and contact intelligence is internal and commercially sensitive.
+
+## How to Verify Phase A
+
+1. Confirm six F0028 story files exist and pass story validation.
+2. Confirm mutation stories include interaction contracts with entry point, editable state, save result, persistence evidence, role/status constraints, validation failure behavior, and audit/timeline expectation.
+3. Confirm `PRD.md` contains Desktop and narrow screen layouts for UI-bearing workflows.
+4. Confirm `STATUS.md`, `README.md`, `STORY-INDEX.md`, roadmap, and tracker state are synchronized.
+
+## How to Verify Phase B
+
+1. Confirm architecture defines the data model, API/schema contract, authorization model, timeline/audit behavior, and KG bindings.
+2. Confirm `scripts/kg/validate.py`, `scripts/kg/validate.py --check-drift`, and tracker validation pass.
+3. Confirm explicit Phase B approval is recorded before any feature action implementation starts.

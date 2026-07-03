@@ -26,9 +26,6 @@ coverage:
     - id: feature:F0027
       path: planning-mds/features/F0027-coi-acord-and-outbound-document-generation
       reason: Planned feature folder exists but ontology mapping backfill has not started.
-    - id: feature:F0028
-      path: planning-mds/features/F0028-carrier-and-market-relationship-management
-      reason: Planned feature folder exists but ontology mapping backfill has not started.
     - id: feature:F0029
       path: planning-mds/features/F0029-external-broker-collaboration-portal
       reason: Planned feature folder exists but ontology mapping backfill has not started.
@@ -52,6 +49,58 @@ rules:
   - If a target feature or story is not mapped here, prompts must fall back to the current file-centric read pattern.
 
 features:
+  - id: feature:F0028
+    path: planning-mds/features/F0028-carrier-and-market-relationship-management
+    status: planned
+    affects:
+      - entity:carrier-market
+      - entity:carrier-market-contact
+      - entity:carrier-appetite-note
+      - entity:carrier-appointment
+      - entity:carrier-market-activity-link
+      - entity:contact
+      - entity:activity-timeline-event
+      - entity:submission
+      - entity:policy
+      - capability:global-search
+      - capability:carrier-market-relationship-management
+      - endpoint:carrier-market-list
+      - endpoint:carrier-market-create
+      - endpoint:carrier-market-detail
+      - endpoint:carrier-market-update
+      - endpoint:carrier-market-contacts
+      - endpoint:carrier-market-appetite-notes
+      - endpoint:carrier-market-appointments
+      - endpoint:carrier-market-activity-links
+    depends_on:
+      - feature:F0019
+      - feature:F0023
+    uses_schema:
+      - schema:carrier-market
+      - schema:carrier-market-upsert-request
+      - schema:carrier-market-contact
+      - schema:carrier-appetite-note
+      - schema:carrier-appointment
+      - schema:carrier-market-activity-link
+      - schema:contact
+      - schema:contact-create-request
+      - schema:contact-update-request
+      - schema:timeline-event
+      - schema:activity-event-payloads
+    uses_api_contract:
+      - api:nebula-rest
+    enforced_by_policy:
+      - policy_rule:carrier-market-read
+      - policy_rule:carrier-market-search
+      - policy_rule:carrier-market-create
+      - policy_rule:carrier-market-update
+      - policy_rule:carrier-market-manage-contact
+      - policy_rule:carrier-market-manage-appetite
+      - policy_rule:carrier-market-manage-appointment
+      - policy_rule:carrier-market-link-activity
+      - policy_rule:timeline-event-read
+      - policy_rule:global-search-read
+    notes: "Phase B architecture contract finalized F0028 as internal CRM-side carrier market relationship management. Carrier API sync, rating/pricing, reinsurance, and external carrier synchronization remain out of scope."
   - id: feature:F0001
     path: planning-mds/features/archive/F0001-dashboard
     status: archived-done
@@ -1070,6 +1119,111 @@ features:
       - "code-index.yaml bindings intentionally deferred: no neuron/ implementation code exists at plan; the F0038 feature action binds the as-built neuron/ + engine/ paths."
 
 stories:
+  - id: story:F0028-S0001
+    path: planning-mds/features/F0028-carrier-and-market-relationship-management/F0028-S0001-market-directory-search.md
+    feature: feature:F0028
+    affects:
+      - entity:carrier-market
+      - capability:global-search
+      - capability:carrier-market-relationship-management
+      - endpoint:carrier-market-list
+    uses_schema:
+      - schema:carrier-market
+    uses_api_contract:
+      - api:nebula-rest
+    enforced_by_policy:
+      - policy_rule:carrier-market-read
+      - policy_rule:carrier-market-search
+      - policy_rule:global-search-read
+  - id: story:F0028-S0002
+    path: planning-mds/features/F0028-carrier-and-market-relationship-management/F0028-S0002-carrier-market-profile-management.md
+    feature: feature:F0028
+    affects:
+      - entity:carrier-market
+      - entity:activity-timeline-event
+      - endpoint:carrier-market-create
+      - endpoint:carrier-market-detail
+      - endpoint:carrier-market-update
+    uses_schema:
+      - schema:carrier-market
+      - schema:carrier-market-upsert-request
+      - schema:timeline-event
+      - schema:activity-event-payloads
+    uses_api_contract:
+      - api:nebula-rest
+    enforced_by_policy:
+      - policy_rule:carrier-market-read
+      - policy_rule:carrier-market-create
+      - policy_rule:carrier-market-update
+  - id: story:F0028-S0003
+    path: planning-mds/features/F0028-carrier-and-market-relationship-management/F0028-S0003-underwriter-contact-management.md
+    feature: feature:F0028
+    affects:
+      - entity:carrier-market-contact
+      - entity:contact
+      - entity:activity-timeline-event
+      - endpoint:carrier-market-contacts
+    uses_schema:
+      - schema:carrier-market-contact
+      - schema:contact
+      - schema:contact-create-request
+      - schema:contact-update-request
+      - schema:timeline-event
+    uses_api_contract:
+      - api:nebula-rest
+    enforced_by_policy:
+      - policy_rule:carrier-market-read
+      - policy_rule:carrier-market-manage-contact
+  - id: story:F0028-S0004
+    path: planning-mds/features/F0028-carrier-and-market-relationship-management/F0028-S0004-appetite-note-capture.md
+    feature: feature:F0028
+    affects:
+      - entity:carrier-appetite-note
+      - entity:activity-timeline-event
+      - endpoint:carrier-market-appetite-notes
+    uses_schema:
+      - schema:carrier-appetite-note
+      - schema:timeline-event
+      - schema:activity-event-payloads
+    uses_api_contract:
+      - api:nebula-rest
+    enforced_by_policy:
+      - policy_rule:carrier-market-read
+      - policy_rule:carrier-market-manage-appetite
+  - id: story:F0028-S0005
+    path: planning-mds/features/F0028-carrier-and-market-relationship-management/F0028-S0005-appointment-context-management.md
+    feature: feature:F0028
+    affects:
+      - entity:carrier-appointment
+      - entity:activity-timeline-event
+      - endpoint:carrier-market-appointments
+    uses_schema:
+      - schema:carrier-appointment
+      - schema:timeline-event
+      - schema:activity-event-payloads
+    uses_api_contract:
+      - api:nebula-rest
+    enforced_by_policy:
+      - policy_rule:carrier-market-read
+      - policy_rule:carrier-market-manage-appointment
+  - id: story:F0028-S0006
+    path: planning-mds/features/F0028-carrier-and-market-relationship-management/F0028-S0006-market-activity-and-related-work.md
+    feature: feature:F0028
+    affects:
+      - entity:carrier-market-activity-link
+      - entity:activity-timeline-event
+      - entity:submission
+      - entity:policy
+      - endpoint:carrier-market-activity-links
+    uses_schema:
+      - schema:carrier-market-activity-link
+      - schema:timeline-event
+      - schema:activity-event-payloads
+    uses_api_contract:
+      - api:nebula-rest
+    enforced_by_policy:
+      - policy_rule:carrier-market-read
+      - policy_rule:carrier-market-link-activity
   - id: story:F0023-S0001
     path: planning-mds/features/archive/F0023-global-search-saved-views-and-operational-reporting/F0023-S0001-global-search-results.md
     feature: feature:F0023

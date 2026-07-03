@@ -10,85 +10,158 @@ applies_to: product-manager
 **Feature Name:** Carrier & Market Relationship Management
 **Priority:** Medium
 **Phase:** CRM Release MVP+
+**Status:** Draft — Phase A refined, pending approval
 
 ## Feature Statement
 
 **As a** distribution leader or underwriter
-**I want** carrier and market relationship records
-**So that** Nebula supports appetite management, appointment context, and placement strategy
+**I want** structured carrier, market, appetite, appointment, and underwriter relationship records
+**So that** Nebula can support placement strategy with searchable, auditable market context before deeper carrier integrations are introduced
 
 ## Business Objective
 
-- **Goal:** Extend CRM visibility beyond brokers to the carrier and market side of the business.
-- **Metric:** Market relationship coverage, appetite visibility, and placement planning support.
-- **Baseline:** Carrier and market intelligence are not first-class CRM records today.
-- **Target:** Users can manage both broker-side and market-side relationship context in Nebula.
+- **Goal:** Extend CRM visibility beyond broker/account context to the carrier and market side of commercial P&C placement.
+- **Metric:** Users can find market relationship context, review appetite and appointment status, and connect that context to submissions and policies without leaving Nebula.
+- **Baseline:** Carrier appetite, market access, appointments, and underwriter contacts are tracked outside the CRM or as unstructured notes on individual workflows.
+- **Target:** Carrier-side context is first-class, searchable, permission-safe, and reusable across placement and reporting workflows.
 
 ## Problem Statement
 
-- **Current State:** Teams track carrier appetite and underwriter contacts outside the CRM.
-- **Desired State:** Market relationships become structured, searchable, and reportable in Nebula.
-- **Impact:** Better placement decisions and stronger market strategy.
+- **Current State:** Teams rely on local notes, email memory, and submission-specific carrier/market text when deciding where to place business.
+- **Desired State:** Market relationships are structured CRM records with contacts, appetite notes, appointment context, activity history, and links to related submissions and policies.
+- **Impact:** Distribution and underwriting teams can make faster placement decisions, preserve institutional market knowledge, and avoid stale or inaccessible carrier intelligence.
+
+## Personas
+
+- **Distribution Leader:** Owns carrier relationships, market access, and placement strategy across teams.
+- **Underwriter:** Needs current appetite and relationship context when reviewing submissions or quote packets.
+- **Relationship Manager:** Maintains market contacts and records relationship touchpoints.
+- **Program Manager:** Reviews market access and appointment context for program-level planning.
 
 ## Scope & Boundaries
 
 **In Scope:**
-- Carrier and market records
-- Underwriter and market contact relationships
-- Appetite notes and appointment context
-- Market-side activity visibility
+- Carrier and market directory records with status, admitted/non-admitted classification, market segments, geographic availability, and ownership.
+- Underwriter and market contact relationships linked to carrier or market records.
+- Appetite notes with line of business, geography, effective date, freshness/next-review information, source, confidence, and internal visibility.
+- Appointment context with status, jurisdiction/LOB scope, effective dates, owner, and supporting notes.
+- Market-side activity visibility and links to related submissions, policies, producers, and territories.
+- Permission-safe search/global-discovery participation for carrier and market records.
 
 **Out of Scope:**
-- Carrier API integration
-- Full rating engine
-- Reinsurance workflows
+- Carrier API integration or synchronization.
+- Rating, pricing, eligibility scoring, quote comparison, or recommendation automation.
+- Reinsurance workflows.
+- External broker collaboration or broker-visible carrier records.
+- Commission, billing, and carrier accounting workflows.
 
 ## Success Criteria
 
-- Users can access carrier and market relationship context inside Nebula.
-- Market strategy becomes more structured and searchable.
-- Carrier-side context can support submission and production workflows.
+- Internal users can create and find carrier/market records and open a single relationship workspace for each record.
+- Authorized users can manage contacts, appetite notes, appointment context, and market activities with clear audit/timeline evidence.
+- Submission and policy users can link to carrier/market context without duplicating relationship data inside workflow-specific screens.
+- Global search and reporting can discover carrier/market records without exposing unauthorized internal intelligence.
+- Stale appetite and appointment records are visibly flagged by explicit freshness or next-review metadata.
+
+## Screen Layouts (ASCII)
+
+### Desktop — Market Directory
+
+```text
+┌────────────────────────────────────────────────────────────────────────────┐
+│ Markets                                                                    │
+│ Search [ carrier, market, contact, appetite ]  Status [ ] Segment [ ] LOB [ ]│
+├───────────────────────────────┬────────────────────────────────────────────┤
+│ Market list                   │ Selected market preview                    │
+│ ┌───────────────────────────┐ │ Carrier / Market name                      │
+│ │ Acme Specialty Markets    │ │ Status · Type · Segments · Regions         │
+│ │ Active · E&S · Cyber      │ │ Appetite freshness · Appointment status    │
+│ └───────────────────────────┘ │ Primary contacts · Owner                   │
+│ ┌───────────────────────────┐ │ Recent activity                            │
+│ │ Northstar Casualty        │ │ Related submissions / policies             │
+│ └───────────────────────────┘ │ [Open relationship workspace]              │
+└───────────────────────────────┴────────────────────────────────────────────┘
+```
+
+### Desktop — Market Relationship Workspace
+
+```text
+┌────────────────────────────────────────────────────────────────────────────┐
+│ Acme Specialty Markets                 [Edit profile] [Add contact]        │
+│ Active · E&S · Cyber / Property · Northeast / Midwest · Owner: Maya         │
+├──────────────┬─────────────────────────────────────────────────────────────┤
+│ Navigation   │ Overview                                                    │
+│ Overview     │ Appetite Notes                                              │
+│ Contacts     │ ┌────────────┬────────────┬────────────┬─────────────────┐ │
+│ Appetite     │ │ LOB        │ Geography  │ Freshness  │ Source/Confidence│ │
+│ Appointments │ └────────────┴────────────┴────────────┴─────────────────┘ │
+│ Activity     │ Appointment Context                                         │
+│ Related Work │ Activity Timeline                                           │
+└──────────────┴─────────────────────────────────────────────────────────────┘
+```
+
+### Narrow — Market Relationship Workspace
+
+```text
+┌──────────────────────────────┐
+│ Acme Specialty Markets       │
+│ Active · E&S · Cyber         │
+│ [Edit] [Add]                 │
+├──────────────────────────────┤
+│ Tabs: Overview | Contacts    │
+│       Appetite | Activity    │
+├──────────────────────────────┤
+│ Appetite card                │
+│ Appointment card             │
+│ Related submissions/policies │
+│ Recent activity              │
+└──────────────────────────────┘
+```
+
+## Workflows
+
+| Workflow | Entry Point | Terminal Evidence |
+|----------|-------------|-------------------|
+| Create or update market profile | Market Directory → New Market / Edit profile | Reload shows saved profile, owner, status, segments, regions, and timeline event |
+| Manage underwriter contacts | Market Workspace → Contacts → Add/Edit | Reload shows contact row and contact activity/timeline entry |
+| Capture appetite note | Market Workspace → Appetite → Add note | Reload shows note with LOB, geography, source, confidence, and next-review/freshness state |
+| Maintain appointment context | Market Workspace → Appointments → Add/Edit | Reload shows appointment status/scope/effective dates and audit event |
+| Link market context to placement work | Submission or Policy detail → Market context link/search | Related work panel shows linked record and market workspace shows reciprocal link |
+| Discover market records | Global search / Market Directory filters | Only authorized records/counts render; source link opens market workspace |
+
+## Related User Stories
+
+| Story | Title | Status |
+|-------|-------|--------|
+| [F0028-S0001](./F0028-S0001-market-directory-search.md) | Market directory search and open | Not Started |
+| [F0028-S0002](./F0028-S0002-carrier-market-profile-management.md) | Carrier and market profile management | Not Started |
+| [F0028-S0003](./F0028-S0003-underwriter-contact-management.md) | Underwriter and market contact management | Not Started |
+| [F0028-S0004](./F0028-S0004-appetite-note-capture.md) | Appetite note capture and freshness | Not Started |
+| [F0028-S0005](./F0028-S0005-appointment-context-management.md) | Appointment context management | Not Started |
+| [F0028-S0006](./F0028-S0006-market-activity-and-related-work.md) | Market activity and related work visibility | Not Started |
 
 ## Risks & Assumptions
 
-- **Risk:** Market management scope expands into deep carrier integration too early.
-- **Assumption:** Relationship and appetite visibility delivers value before systems integration.
-- **Mitigation:** Start with CRM-side market records and defer carrier data exchange.
+- **Risk:** Market management scope expands into carrier integrations, rating, or quote comparison too early.
+- **Assumption:** Relationship, appetite, and appointment visibility delivers value before systems integration.
+- **Mitigation:** Start with CRM-side records, recorded facts, and links; defer data exchange and computation.
+- **Risk:** Stale market intelligence may mislead users.
+- **Mitigation:** Every appetite note and appointment record carries freshness or effective-date metadata plus owner/source.
 
 ## Dependencies
 
-- F0019 Submission Quoting, Proposal & Approval Workflow
-- F0023 Global Search, Saved Views & Operational Reporting
+- F0019 Submission Quoting, Proposal & Approval Workflow — completed; provides submission/quote context and recorded carrier/market reference facts.
+- F0023 Global Search, Saved Views & Operational Reporting — completed; provides search/reporting substrate to reuse in Phase B.
+- F0017 Broker/MGA Hierarchy, Producer Ownership & Territory Management — planned/Now; producer and territory linkage may be read-only or deferred if F0017 is not delivered when F0028 builds.
 
 ## Architecture & Solution Design
 
-### Solution Components
+Phase B must confirm the implementation contract. Phase A requirements expect the architecture to:
 
-- Introduce carrier and market domain services for managing carrier records, market contacts, appetite notes, appointment context, and market activity history.
-- Add market-intelligence read models that support placement planning, underwriter relationship visibility, and carrier comparison without turning this feature into a rating engine.
-- Separate carrier master data from submission-specific placement activity so reusable market context is not trapped inside individual workflows.
-- Keep reinsurance and automated carrier connectivity outside the first component set.
-
-### Data & Workflow Design
-
-- Model carrier, market, underwriter contact, appetite note, appointment record, and market activity as distinct but related concepts.
-- Preserve effective dating or clear historical versioning for appetite guidance and appointment status because these facts change over time and affect placement decisions.
-- Link carrier and market context to submissions, policies, producers, and territories through stable references so the same relationship model supports both placement and reporting.
-- Capture source and confidence metadata for market intelligence where data may be entered manually from conversations or external materials.
-
-### API & Integration Design
-
-- Expose carrier and market CRUD, search, relationship, and activity endpoints with filters for geography, appetite, status, and ownership.
-- Integrate with submission workflow and reporting modules through linked references and derived rollups rather than direct embedding of carrier details everywhere.
-- Keep rating, quoting, and carrier API synchronization outside the contract while preserving identifiers and adapter seams for later integration work.
-- Support deep links from market records into related submissions, policies, and producer relationships.
-
-### Security & Operational Considerations
-
-- Apply access control carefully to appetite notes, underwriter relationships, and appointment context because some market intelligence may be commercially sensitive.
-- Audit edits to appetite and appointment data because those changes can materially affect placement strategy and producer behavior.
-- Monitor data freshness and ownership because stale market intelligence is operationally misleading even if the UI remains functional.
-- Index by carrier, market segment, appetite attributes, geography, and producer ownership to keep search and planning views responsive.
+- Introduce carrier/market relationship records separate from submission-specific quote packet facts.
+- Reuse existing search/reporting and timeline/audit patterns where possible.
+- Preserve recorded-fact boundaries: Nebula records appetite/appointment/relationship context; it does not rate, score, price, compare, or recommend markets in F0028.
+- Treat appetite notes, appointment context, and relationship intelligence as internal commercially sensitive data.
 
 ## Architecture Traceability
 
@@ -96,10 +169,6 @@ applies_to: product-manager
 
 | Classification | Artifact / Decision | ADR |
 |----------------|---------------------|-----|
-| Introduces: Feature-Local Component | Carrier aggregate, appetite-note service, appointment context, and market activity feed | PRD only |
-| Reuses: Established Component/Pattern | Search and reporting substrate for market relationship discovery and rollups | [ADR-014](../../architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md) (Proposed) |
-| PRD-Only Traceability | No separate carrier-domain ADR is required unless market relationships expand into a shared external connectivity platform | None currently required |
-
-## Related User Stories
-
-- To be defined during refinement
+| Introduces: Feature-Local Component | Carrier/market relationship workspace, appetite notes, appointment context, and market activity history | Phase B to confirm |
+| Reuses: Established Component/Pattern | Global search/reporting substrate, audit/timeline events, ABAC policy model | ADR-014 search architecture; existing workflow/timeline patterns |
+| PRD-Only Traceability | Carrier API integration, rating, and reinsurance remain explicitly out of scope | None currently required |

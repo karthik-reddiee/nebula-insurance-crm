@@ -7,6 +7,18 @@ coverage_note: >
   files remain authoritative.
 
 node_bindings:
+  - id: entity:carrier-market
+    paths:
+      planning:
+        feature:
+          - planning-mds/features/F0028-carrier-and-market-relationship-management/**
+        api:
+          - planning-mds/api/nebula-api.yaml
+        schemas:
+          - planning-mds/schemas/carrier-market*.schema.json
+          - planning-mds/schemas/carrier-appetite-note.schema.json
+          - planning-mds/schemas/carrier-appointment.schema.json
+
   - id: entity:submission
     paths:
       backend:
