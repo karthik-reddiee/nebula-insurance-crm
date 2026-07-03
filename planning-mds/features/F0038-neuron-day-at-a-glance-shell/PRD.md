@@ -84,6 +84,65 @@ Detailed interaction contract + acceptance criteria are authored as a mutation s
 - **"Needs attention" rule:** renewals in `Identified`/`Outreach` **within 90 days of expiry** (configurable default), ordered by urgency, flag "no broker contact in 30+ days." Intra-zone ranking only — not cross-zone.
 - **Stub zones read nothing.**
 
+## Screen Layouts (ASCII)
+
+UI-bearing feature: the companion renders a multi-zone Day-at-a-Glance shell with a live Renewals zone, three inert stub zones (operator-confirmed "show not yet active" at G1), and an in-chat draft + mock-send affordance. Account names below are illustrative. Final visual/component treatment is owned by the frontend at the `feature` run; these layouts fix responsibilities and responsive behavior. Components are registry-rendered (intake L1) — no model-generated markup.
+
+### Desktop (≥1024px) — Neuron companion panel, Day-at-a-Glance view
+
+```
+┌ Neuron · Day at a Glance ───────────────────────────────────────────────┐
+│ ┌ Renewals  ● LIVE ─────────────────────────┐ ┌ Tasks  ○ not yet active ┐│
+│ │ 3 need attention                          │ │  coming soon            ││
+│ │ ▸ Acme Mfg          exp 12d  Identified   │ └─────────────────────────┘│
+│ │     ⚠ no broker contact 41d   [Draft ✏]   │ ┌ Pipeline  ○ not yet ────┐│
+│ │ ▸ Globex Logistics  exp 27d  Outreach     │ │  active · coming soon    ││
+│ │     [Draft outreach ✏]                    │ └─────────────────────────┘│
+│ │ ▸ Initech           exp 63d  Identified   │ ┌ Broker activity  ○ ─────┐│
+│ │     [Draft ✏]                             │ │  not yet active          ││
+│ └───────────────────────────────────────────┘ └─────────────────────────┘│
+│ ┌ Chat (single "Day at a Glance" thread) ───────────────────────────────┐│
+│ │ You: draft outreach for Acme Mfg                                       ││
+│ │ Neuron:  [ AI-generated draft · InternalOnly ]                         ││
+│ │   Re: upcoming renewal — Acme Mfg (expires in 12 days)                 ││
+│ │   Hi {broker}, your client's policy renews soon — can we connect to    ││
+│ │   start the renewal conversation?  (no premium/quote/terms)            ││
+│ │   [ Edit ]   [ Send (mock) ]                                           ││
+│ └───────────────────────────────────────────────────────────────────────┘│
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+- Renewals zone (live): needs-attention list, urgency-ordered, no-contact-30d⚠ flag, per-row `[Draft]` CTA. Drill opens record context.
+- Stub zones (Tasks / Pipeline / Broker activity): visible, inert, read nothing, no CTA.
+- Chat: in-chat editable draft labelled AI-generated + InternalOnly; `[Send (mock)]` commits `Identified → Outreach` and fakes SMTP.
+
+### Narrow (<768px, mobile/iPad) — single column, Renewals first
+
+```
+┌ Neuron · Day at a Glance ─────────┐
+│ ┌ Renewals  ● LIVE ─────────────┐ │
+│ │ 3 need attention              │ │
+│ │ ▸ Acme Mfg   exp 12d  ⚠41d    │ │
+│ │     [Draft ✏]                 │ │
+│ │ ▸ Globex     exp 27d  [Draft] │ │
+│ │ ▸ Initech    exp 63d  [Draft] │ │
+│ └───────────────────────────────┘ │
+│ ┌ Tasks  ○ not yet active ──────┐ │
+│ └───────────────────────────────┘ │
+│ ┌ Pipeline  ○ not yet active ───┐ │
+│ └───────────────────────────────┘ │
+│ ┌ Broker activity ○ not yet ────┐ │
+│ └───────────────────────────────┘ │
+│ ┌ Chat ─────────────────────────┐ │
+│ │ [AI draft · InternalOnly]     │ │
+│ │ Re: Acme Mfg renewal (12d)    │ │
+│ │ [ Edit ]  [ Send (mock) ]     │ │
+│ └───────────────────────────────┘ │
+└───────────────────────────────────┘
+```
+
+- Zones stack vertically; the live Renewals zone is first; stubs collapse to compact "not yet active" cards; chat/draft remain full-width.
+
 ## Architecture Seams to Reserve (cheap now, painful later — for the architect at Phase B)
 
 1. **Thread id keys all conversation state** (not session/user); single-thread v1 = "one thread, no switcher."
@@ -137,4 +196,17 @@ Detailed interaction contract + acceptance criteria are authored as a mutation s
 
 ## Related User Stories
 
-- To be defined during the `plan` run (PM Phase A). Anticipated vertical slices: glance shell + zone-dispatch, live Renewals zone (read), stub zones (`inactive` payload), outreach-draft interaction contract, mock-send + workflow transition, CRM-scope guard, telemetry instrumentation.
+Authored during the `plan` run (PM Phase A), 8 vertical slices (operator-confirmed fine-grained decomposition, G1 2026-06-30):
+
+| Story | Title | Type | Phase |
+|-------|-------|------|-------|
+| [F0038-S0001](./F0038-S0001-neuron-service-bootstrap.md) | Neuron service bootstrap (stateless runtime + registries + versioned orchestration) | Infrastructure | Infrastructure |
+| [F0038-S0002](./F0038-S0002-day-at-a-glance-shell-and-zone-dispatch.md) | Day-at-a-Glance shell + zone-dispatch + message/component envelope | Read/assembly | MVP |
+| [F0038-S0003](./F0038-S0003-live-renewals-zone-read.md) | Live Renewals zone (needs-attention list + drill context) | Read-only | MVP |
+| [F0038-S0004](./F0038-S0004-stub-zones-inactive-payload.md) | Stub zones — inert "not yet active" payload | Read-only | MVP |
+| [F0038-S0005](./F0038-S0005-renewal-outreach-draft.md) | Renewal outreach draft (generate-on-click, persist, edit in-chat) | Mutation | MVP |
+| [F0038-S0006](./F0038-S0006-mock-send-and-workflow-transition.md) | Mock-send (commit `Identified → Outreach`, fake SMTP) | Mutation | MVP |
+| [F0038-S0007](./F0038-S0007-crm-scope-guard.md) | CRM-scope guard (out-of-scope → polite redirect) | Behavior | MVP |
+| [F0038-S0008](./F0038-S0008-companion-telemetry-instrumentation.md) | Companion telemetry (baseline timestamps + minimal secondary metrics) | Instrumentation | MVP |
+
+Story signoff provenance and the required-role matrix live in [`STATUS.md`](./STATUS.md).

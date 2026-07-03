@@ -2,7 +2,7 @@
 
 Auto-generated index of all user stories across feature folders.
 
-**Total Stories:** 158
+**Total Stories:** 166
 
 ---
 
@@ -339,14 +339,29 @@ Auto-generated index of all user stories across feature folders.
 
 ---
 
+## F0038 — Neuron Day-at-a-Glance Shell
+
+| Story ID | Title | Priority | Phase | Persona |
+|----------|-------|----------|-------|---------|
+| [F0038-S0001](./F0038-neuron-day-at-a-glance-shell/F0038-S0001-neuron-service-bootstrap.md) | Foundational Neuron service bootstrap | Critical | Infrastructure | Neuron platform engineer (AI Engineer) |
+| [F0038-S0002](./F0038-neuron-day-at-a-glance-shell/F0038-S0002-day-at-a-glance-shell-and-zone-dispatch.md) | Day-at-a-Glance multi-zone shell with zone-dispatch and component envelope | Critical | MVP | renewal-owning Underwriter |
+| [F0038-S0003](./F0038-neuron-day-at-a-glance-shell/F0038-S0003-live-renewals-zone-read.md) | Live Renewals zone — needs-attention list and drill context | Critical | MVP | renewal-owning Underwriter |
+| [F0038-S0004](./F0038-neuron-day-at-a-glance-shell/F0038-S0004-stub-zones-inactive-payload.md) | Inert stub zones for Tasks, Pipeline, and Broker activity | High | MVP | renewal-owning Underwriter |
+| [F0038-S0005](./F0038-neuron-day-at-a-glance-shell/F0038-S0005-renewal-outreach-draft.md) | Generate and persist an editable renewal outreach draft | Critical | MVP | renewal-owning Underwriter |
+| [F0038-S0006](./F0038-neuron-day-at-a-glance-shell/F0038-S0006-mock-send-and-workflow-transition.md) | Mock-send commits the real renewal workflow transition without dispatching email | Critical | MVP | renewal-owning Underwriter |
+| [F0038-S0007](./F0038-neuron-day-at-a-glance-shell/F0038-S0007-crm-scope-guard.md) | Classifier out-of-scope guard redirects non-CRM intents | High | MVP | renewal-owning Underwriter |
+| [F0038-S0008](./F0038-neuron-day-at-a-glance-shell/F0038-S0008-companion-telemetry-instrumentation.md) | Emit baseline + secondary companion telemetry as a first-class requirement | High | MVP | product stakeholder for the Neuron companion |
+
+---
+
 ## Summary by Phase
 
 | Phase | Count |
 |-------|-------|
 | CRM Release MVP | 57 |
 | Future | 1 |
-| Infrastructure | 10 |
-| MVP | 67 |
+| Infrastructure | 11 |
+| MVP | 74 |
 | MVP Hardening | 1 |
 | Phase 1 | 11 |
 | Platform Foundation | 7 |
@@ -358,8 +373,8 @@ Auto-generated index of all user stories across feature folders.
 
 | Priority | Count |
 |----------|-------|
-| Critical | 64 |
-| High | 77 |
+| Critical | 69 |
+| High | 80 |
 | Medium | 13 |
 
 ---

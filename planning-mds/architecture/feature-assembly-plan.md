@@ -66,7 +66,7 @@ Define the build order, role handoffs, and integration checkpoints for implement
 | Submission detail and timeline | F0006 | Submission context and linked timeline | Done and archived |
 | Account 360 | F0016 | Account context and timeline surface | Done and archived |
 | Policy 360 | F0018 | Policy context and timeline surface | Done and archived |
-| Communication architecture | ADR-028 | Source communication records, redaction, and timeline projection boundary | Proposed in Phase B |
+| Communication architecture | ADR-029 | Source communication records, redaction, and timeline projection boundary | Proposed in Phase B |
 
 ### Assembly Slice Order
 

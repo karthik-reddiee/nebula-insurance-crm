@@ -999,8 +999,113 @@ LineOfBusiness)`.
 4. Wire source-write projection refresh hooks and retryable backfill command.
 5. Add Casbin resources (`global_search`, `saved_view`, `operational_report`) and validate matrix/policy drift.
 
+## 11. Neuron Companion Operation Store (`neuron.*` schema) — F0038 (ADR-027, ADR-028)
+
+The Neuron Companion owns a **separate `neuron` Postgres schema**, written
+**directly** by the stateless Neuron Python service — **not** via an engine
+pass-through (ADR-027 §9, ADR-028 §1). It holds only **companion operation
+state**, never CRM business data: renewal reads/writes, the draft
+`ActivityTimelineEvent`, and the mock-send `WorkflowTransition` remain
+engine-owned application-schema records. The engine never touches `neuron.*` and
+Neuron never touches the application schemas directly. The `neuron` schema may
+co-reside in the same Postgres instance.
+
+Audit columns (`created_at`, `updated_at`) are on every table by convention; all
+ids are UUID. Threads are **owner-scoped** — private to the creating user; Neuron
+applies owner-scoping to its own threads only (it re-implements no CRM authz).
+
+| Table | Key columns (beyond audit) | Purpose |
+|-------|----------------------------|---------|
+| `neuron.threads` | `id` PK, `owner_user_id`, `anchor_type` (`domain`\|`record`\|`free_form`), `anchor_ref` (nullable), `title`, `deleted_at` (nullable) | Conversation thread keyed by `thread_id` (intake seam 1); maps to A2A `contextId`. Single-thread v1; F0039 adds management UX. User-deletable. |
+| `neuron.messages` | `id` PK, `thread_id` FK→threads, `role` (`user`\|`assistant`), `in_reply_to_message_id` (nullable, self-FK), `envelope_version` | One chat message, replayed via the versioned envelope. |
+| `neuron.message_parts` | `id` PK, `message_id` FK→messages, `ordinal`, `part_type` (`text`\|`app`\|`status`\|`sources`\|`actions`), `content_json` (jsonb) | Ordered envelope parts (`neuron-message-envelope.schema.json`). |
+| `neuron.agent_runs` | `id` PK, `thread_id` FK→threads, `parent_run_id` (nullable, self-FK), `plan_id`, `plan_version`, `card_id`, `card_version`, `card_content_hash`, `state` (A2A task state), `engine_ref_type` (nullable), `engine_ref_id` (nullable) | A2A task / subtask trace. References the active plan + Agent Card by id+version+hash (definitions stay in source). `engine_ref_*` references the authoritative engine write (ADR-028 §2). |
+| `neuron.tool_calls` | `id` PK, `agent_run_id` FK→agent_runs, `tool_name`, `request_digest`, `status`, `latency_ms` | MCP/tool invocation trace under a task. No raw args/PII. |
+| `neuron.provenance_events` | `id` PK, `agent_run_id` FK→agent_runs, `model`, `prompt_id`, `prompt_version`, `content_hash`, `trace_id`, `cost`, `latency_ms` | Draft/mock-send provenance + run metadata. No raw prompts, raw responses, or customer PII. |
+
+Optional read-only `neuron.prompt_versions` (id → semver → content_hash, projected
+from checked-in assets at deploy) is added only if runtime id→hash resolution is
+needed (decided at implementation; ADR-027 §9, ADR-028 §1). F0038 may run on an
+in-memory implementation behind the same repository interface (F0038-S0001).
+
+**Cross-store write (ADR-028 §2):** the engine business write is authoritative and
+commits first; the Neuron `agent_run`/`provenance_events` record references the
+returned engine id (`engine_ref_id`) and is written **idempotently** keyed on
+`agent_run_id`, so a partial failure is reconcilable, never corrupting.
+
+### 11.1 ERD — `neuron.*` operation store + engine reference edges
+
+```mermaid
+erDiagram
+    NEURON_THREAD ||--o{ NEURON_MESSAGE : contains
+    NEURON_MESSAGE ||--o{ NEURON_MESSAGE_PART : has
+    NEURON_THREAD ||--o{ NEURON_AGENT_RUN : traces
+    NEURON_AGENT_RUN ||--o{ NEURON_AGENT_RUN : "parent of (subtask)"
+    NEURON_AGENT_RUN ||--o{ NEURON_TOOL_CALL : invokes
+    NEURON_AGENT_RUN ||--o{ NEURON_PROVENANCE_EVENT : records
+    NEURON_AGENT_RUN }o..|| ACTIVITY_TIMELINE_EVENT : "engine_ref (draft / sent-simulated)"
+    NEURON_AGENT_RUN }o..|| WORKFLOW_TRANSITION : "engine_ref (mock-send)"
+
+    NEURON_THREAD {
+        uuid id PK
+        uuid owner_user_id
+        string anchor_type
+        string anchor_ref
+        string title
+        timestamp deleted_at
+    }
+    NEURON_MESSAGE {
+        uuid id PK
+        uuid thread_id FK
+        string role
+        int envelope_version
+    }
+    NEURON_MESSAGE_PART {
+        uuid id PK
+        uuid message_id FK
+        int ordinal
+        string part_type
+        jsonb content_json
+    }
+    NEURON_AGENT_RUN {
+        uuid id PK
+        uuid thread_id FK
+        uuid parent_run_id FK
+        string plan_id
+        string card_id
+        string card_content_hash
+        string state
+        string engine_ref_type
+        uuid engine_ref_id
+    }
+    NEURON_TOOL_CALL {
+        uuid id PK
+        uuid agent_run_id FK
+        string tool_name
+        string status
+    }
+    NEURON_PROVENANCE_EVENT {
+        uuid id PK
+        uuid agent_run_id FK
+        string model
+        string prompt_id
+        string prompt_version
+        string content_hash
+    }
+```
+
+> Dashed edges (`}o..||`) are **cross-store references**, not foreign keys:
+> `ACTIVITY_TIMELINE_EVENT` and `WORKFLOW_TRANSITION` are engine-owned
+> application-schema entities (see §0 and §6); `neuron.agent_runs.engine_ref_id`
+> holds their id for idempotent reconciliation. There is no DB-level FK across the
+> schema boundary.
+
+---
+
 ## Related Documents
 
+- [ADR-027: Neuron Companion A2A Orchestration](decisions/ADR-027-neuron-companion-a2a-orchestration.md) — F0038 companion foundation
+- [ADR-028: Neuron Persistence, Cross-Store Consistency & Outreach Authorization](decisions/ADR-028-neuron-companion-persistence-and-outreach-authorization.md) — F0038 `neuron.*` schema
 - [ADR-026: Broker/MGA Hierarchy, Producer Ownership & Territory](decisions/ADR-026-broker-mga-hierarchy-producer-ownership-and-territory.md) — F0017 structural model
 - [ADR-014: Search Index, Saved Views, and Operational Reporting Projections](decisions/ADR-014-search-index-and-saved-view-architecture.md) — F0023 read-side model
 - [BLUEPRINT.md Section 4.2](../BLUEPRINT.md) — Core entity definitions
@@ -1013,6 +1118,8 @@ LineOfBusiness)`.
 - [ADR-023: JsonLogic Rules Governance](decisions/ADR-023-rules-governance-jsonlogic.md) — Rule envelope and op governance
 
 ---
+
+**Version:** 7.0 — 2026-06-30: Added §11 F0038 Neuron Companion operation store (`neuron.*` schema, Neuron-owned, written directly) — threads, messages, message parts, agent runs, tool calls, provenance events — with cross-store reference edges to engine-owned ActivityTimelineEvent/WorkflowTransition (ADR-027, ADR-028).
 
 **Version:** 6.0 — 2026-06-19: Added §10 F0023 SearchDocument, SavedView, SavedViewAuditEvent, and OperationalReportProjection read-side model (ADR-014).
 

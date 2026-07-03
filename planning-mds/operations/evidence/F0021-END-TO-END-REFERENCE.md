@@ -163,7 +163,7 @@ Security / policy / schemas:
 - `planning-mds/schemas/communication-event-create-request.schema.json`
 - `planning-mds/schemas/communication-event-correction-request.schema.json`
 - `planning-mds/schemas/communication-event-follow-up-request.schema.json`
-- `planning-mds/architecture/decisions/ADR-028-communication-activity-capture-and-redaction.md`
+- `planning-mds/architecture/decisions/ADR-029-communication-activity-capture-and-redaction.md`
 
 Testing:
 
@@ -192,7 +192,7 @@ Feature-phase KG reconciliation:
   - communication endpoints
   - communication schemas
   - `policy_rule:communication-event-*`
-  - `adr:028`
+  - `adr:029`
 - Updated/confirmed source bindings in:
   - `planning-mds/knowledge-graph/code-index.yaml`
   - `planning-mds/knowledge-graph/symbol-index.yaml`

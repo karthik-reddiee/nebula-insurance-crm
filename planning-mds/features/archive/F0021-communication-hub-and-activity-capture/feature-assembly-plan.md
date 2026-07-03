@@ -675,4 +675,4 @@ Expected G7 code-index additions:
   - tests: `engine/tests/Nebula.Tests/**/Communication*.cs`
   - frontend: `experience/src/features/communications/**`
 
-Expected canonical nodes already introduced in Phase B: `entity:communication-event`, `entity:communication-link`, `entity:communication-participant`, communication endpoints, communication schemas, ADR-028, and `communication_event:*` policy rules. G7 reconciles as-built paths and adjusts only if implementation diverges from this plan.
+Expected canonical nodes already introduced in Phase B: `entity:communication-event`, `entity:communication-link`, `entity:communication-participant`, communication endpoints, communication schemas, ADR-029, and `communication_event:*` policy rules. G7 reconciles as-built paths and adjusts only if implementation diverges from this plan.

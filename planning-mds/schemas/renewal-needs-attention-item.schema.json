@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/renewal-needs-attention-item.schema.json",
+  "title": "RenewalNeedsAttentionItem",
+  "description": "One row of the engine's 'renewals needing attention' read for the live Renewals zone (F0038-S0003). The engine computes this list permission-scoped to the forwarded user token (Casbin ABAC); Neuron applies no independent authorization. Needs-attention rule: workflow state in {Identified, Outreach} AND within the configured window (default 90 days) of expiry, ordered by urgency, flagging renewals with no broker contact in 30+ days. Intra-zone only — no cross-zone ranking.",
+  "type": "object",
+  "required": ["renewal_id", "account_name", "expiry_date", "days_to_expiry", "workflow_state", "no_contact_flag"],
+  "additionalProperties": false,
+  "properties": {
+    "renewal_id": { "type": "string", "format": "uuid" },
+    "account_name": { "type": "string" },
+    "expiry_date": { "type": "string", "format": "date" },
+    "days_to_expiry": { "type": "integer", "description": "Negative when past expiry (overdue)." },
+    "workflow_state": {
+      "type": "string",
+      "enum": ["Identified", "Outreach"],
+      "description": "Only Identified/Outreach renewals qualify for needs-attention in F0038."
+    },
+    "last_broker_contact_at": {
+      "type": ["string", "null"],
+      "format": "date-time",
+      "description": "Timestamp of the most recent broker-contact signal, or null if none recorded."
+    },
+    "no_contact_flag": {
+      "type": "boolean",
+      "description": "true when there is no broker contact in 30+ days (configurable threshold)."
+    },
+    "broker_name": { "type": "string" },
+    "can_draft_outreach": {
+      "type": "boolean",
+      "description": "true when the current user holds renewal:draft_outreach and the renewal is in a draftable state; drives whether the proactive Draft CTA is offered (F0038-S0005)."
+    }
+  }
+}

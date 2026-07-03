@@ -49,7 +49,7 @@ Capture notes, calls, meetings, email-linked references, and follow-up history s
 | Casbin policy | Complete |
 | JSON schemas | Complete |
 | C4 diagrams | N/A for MVP closeout |
-| ADRs | Complete — ADR-028 |
+| ADRs | Complete — ADR-029 |
 | Assembly plan | Complete |
 
 **Archived:** 2026-07-02
