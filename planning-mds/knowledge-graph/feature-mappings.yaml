@@ -23,9 +23,6 @@ coverage:
     - id: feature:F0026
       path: planning-mds/features/F0026-billing-invoicing-and-reconciliation
       reason: Planned feature folder exists but ontology mapping backfill has not started.
-    - id: feature:F0027
-      path: planning-mds/features/F0027-coi-acord-and-outbound-document-generation
-      reason: Planned feature folder exists but ontology mapping backfill has not started.
     - id: feature:F0028
       path: planning-mds/features/F0028-carrier-and-market-relationship-management
       reason: Planned feature folder exists but ontology mapping backfill has not started.
@@ -1068,6 +1065,65 @@ features:
       - "Neuron owns its neuron.* operation store directly (threads/messages/message_parts/agent_runs/tool_calls/provenance_events; data-model §11), NOT via an engine pass-through. Cross-store writes are engine-first authoritative + idempotent Neuron record referencing the engine id (ADR-028 §2)."
       - "F0038↔F0007 reconciliation (ADR-028 §3): mock-send commits the real Identified→Outreach transition, but this is Distribution-owned in F0007. Resolved by a dedicated least-privilege renewal:draft_outreach (Underwriter only) gating draft+mock-send; the engine WorkflowStateMachine permits Identified→Outreach for an Underwriter only on the mock-send path. General renewal:transition ownership unchanged. #1 operator ratification item at G5."
       - "code-index.yaml bindings intentionally deferred: no neuron/ implementation code exists at plan; the F0038 feature action binds the as-built neuron/ + engine/ paths."
+  - id: feature:F0027
+    path: planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation
+    status: archived
+    affects:
+      - capability:outbound-document-generation
+      - capability:document-management
+      - capability:document-templates
+      - capability:document-classification
+      - entity:document
+      - entity:document-template
+      - entity:generated-document-artifact
+      - entity:policy
+      - entity:account
+      - entity:submission
+      - entity:submission-quote-packet
+      - entity:activity-timeline-event
+      - endpoint:outbound-documents-preview
+      - endpoint:outbound-documents-issue
+      - endpoint:outbound-documents-regenerate
+    governed_by:
+      - adr:012
+      - adr:025
+    uses_schema:
+      - schema:document-sidecar
+      - schema:document-template
+      - schema:document-list-item
+      - schema:document-detail
+      - schema:generated-document-request
+      - schema:generated-document-preview-response
+      - schema:generated-document-issue-response
+      - schema:policy
+      - schema:submission
+      - schema:account
+    uses_api_contract:
+      - api:nebula-rest
+    depends_on:
+      - feature:F0018
+      - feature:F0020
+      - feature:F0019
+    restricted_to_role:
+      - role:admin
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+    enforced_by_policy:
+      - policy_rule:document-read
+      - policy_rule:document-create
+      - policy_rule:document-download
+      - policy_rule:document-template-read
+      - policy_rule:document-template-create
+      - policy_rule:document-template-replace
+      - policy_rule:document-template-link
+      - policy_rule:outbound-template-manage
+      - policy_rule:outbound-document-preview
+      - policy_rule:outbound-document-issue
+      - policy_rule:outbound-document-regenerate
+    notes:
+      - "Phase B architecture keeps generated artifacts inside the ADR-012 document subsystem; no relational generated-document table."
+      - "F0027-specific outbound_template/outbound_document policy rules enforce Admin-only outbound template governance while preserving F0020 generic document-template behavior."
 
 stories:
   - id: story:F0023-S0001
@@ -3632,3 +3688,179 @@ stories:
       - story:F0038-S0003
       - story:F0038-S0005
       - story:F0038-S0006
+  - id: story:F0027-S0001
+    path: planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/F0027-S0001-template-library-governance.md
+    feature: feature:F0027
+    affects:
+      - capability:outbound-document-generation
+      - capability:document-templates
+      - entity:document-template
+      - entity:document
+    uses_schema:
+      - schema:document-template
+      - schema:document-sidecar
+    uses_api_contract:
+      - api:nebula-rest
+    restricted_to_role:
+      - role:admin
+    enforced_by_policy:
+      - policy_rule:document-template-read
+      - policy_rule:document-template-create
+      - policy_rule:document-template-replace
+      - policy_rule:outbound-template-manage
+    depends_on:
+      - feature:F0020
+  - id: story:F0027-S0002
+    path: planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/F0027-S0002-preview-generated-document.md
+    feature: feature:F0027
+    affects:
+      - capability:outbound-document-generation
+      - capability:document-management
+      - capability:document-templates
+      - entity:document-template
+      - entity:policy
+      - entity:account
+      - entity:submission
+      - endpoint:outbound-documents-preview
+    uses_schema:
+      - schema:generated-document-request
+      - schema:generated-document-preview-response
+      - schema:document-template
+      - schema:policy
+      - schema:submission
+      - schema:account
+    uses_api_contract:
+      - api:nebula-rest
+    restricted_to_role:
+      - role:admin
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+    enforced_by_policy:
+      - policy_rule:document-template-read
+      - policy_rule:document-read
+      - policy_rule:outbound-document-preview
+    depends_on:
+      - story:F0027-S0001
+      - feature:F0018
+      - feature:F0020
+      - feature:F0019
+  - id: story:F0027-S0003
+    path: planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/F0027-S0003-issue-generated-artifact.md
+    feature: feature:F0027
+    affects:
+      - capability:outbound-document-generation
+      - capability:document-management
+      - capability:document-classification
+      - entity:document
+      - entity:generated-document-artifact
+      - entity:document-template
+      - entity:policy
+      - entity:account
+      - entity:submission
+      - entity:activity-timeline-event
+      - endpoint:outbound-documents-issue
+    uses_schema:
+      - schema:generated-document-request
+      - schema:generated-document-issue-response
+      - schema:document-sidecar
+      - schema:document-detail
+      - schema:policy
+      - schema:submission
+      - schema:account
+    uses_api_contract:
+      - api:nebula-rest
+    restricted_to_role:
+      - role:admin
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+    enforced_by_policy:
+      - policy_rule:document-create
+      - policy_rule:document-read
+      - policy_rule:document-download
+      - policy_rule:document-template-read
+      - policy_rule:outbound-document-issue
+    depends_on:
+      - story:F0027-S0001
+      - story:F0027-S0002
+      - feature:F0020
+  - id: story:F0027-S0004
+    path: planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/F0027-S0004-regenerate-and-retrieve-artifacts.md
+    feature: feature:F0027
+    affects:
+      - capability:outbound-document-generation
+      - capability:document-management
+      - capability:document-templates
+      - entity:document
+      - entity:generated-document-artifact
+      - entity:document-template
+      - entity:policy
+      - entity:account
+      - entity:submission
+      - entity:activity-timeline-event
+      - endpoint:outbound-documents-regenerate
+    uses_schema:
+      - schema:generated-document-request
+      - schema:generated-document-issue-response
+      - schema:document-detail
+      - schema:document-list-item
+      - schema:document-template
+    uses_api_contract:
+      - api:nebula-rest
+    restricted_to_role:
+      - role:admin
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+    enforced_by_policy:
+      - policy_rule:document-read
+      - policy_rule:document-download
+      - policy_rule:document-template-read
+      - policy_rule:outbound-document-regenerate
+    depends_on:
+      - story:F0027-S0003
+      - feature:F0020
+  - id: story:F0027-S0005
+    path: planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/F0027-S0005-render-proposal-from-submission-packet.md
+    feature: feature:F0027
+    affects:
+      - capability:outbound-document-generation
+      - capability:document-management
+      - capability:document-templates
+      - capability:submission-workflow
+      - entity:document
+      - entity:generated-document-artifact
+      - entity:document-template
+      - entity:submission
+      - entity:submission-quote-packet
+      - entity:activity-timeline-event
+      - workflow:submission
+      - endpoint:outbound-documents-preview
+      - endpoint:outbound-documents-issue
+    governed_by:
+      - adr:025
+    uses_schema:
+      - schema:generated-document-request
+      - schema:generated-document-preview-response
+      - schema:generated-document-issue-response
+      - schema:document-sidecar
+      - schema:submission
+    uses_api_contract:
+      - api:nebula-rest
+    restricted_to_role:
+      - role:admin
+      - role:distribution-user
+      - role:distribution-manager
+      - role:underwriter
+    enforced_by_policy:
+      - policy_rule:document-create
+      - policy_rule:document-read
+      - policy_rule:document-template-read
+      - policy_rule:outbound-document-preview
+      - policy_rule:outbound-document-issue
+    depends_on:
+      - feature:F0019
+      - story:F0027-S0001
+      - story:F0027-S0002
+      - story:F0027-S0003

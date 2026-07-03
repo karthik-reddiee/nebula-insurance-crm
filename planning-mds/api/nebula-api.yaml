@@ -66,6 +66,8 @@ tags:
     description: Document storage, classification, versioning, and parent linkage (F0020). See ADR-012 + ADR-019.
   - name: DocumentTemplates
     description: Reusable document templates (F0020-S0012). Materialise into a parent record to start from a boilerplate.
+  - name: OutboundDocumentGeneration
+    description: F0027 preview, issue, and regenerate flows for COI, ACORD, and reusable proposal artifacts.
   - name: SessionTelemetry
     description: Internal telemetry ingest for F0035 session-continuity events (silent renewal, idle warning, forced redirect, auth-error classification, form-snapshot skip). Governed by ADR-024.
   - name: NeuronCompanion
@@ -4510,6 +4512,113 @@ paths:
           $ref: "#/components/responses/NotFound"
 
   # ──────────────────────────────────────────────────────────────
+  # Outbound document generation (F0027)
+  # ──────────────────────────────────────────────────────────────
+  /outbound-documents/preview:
+    post:
+      operationId: previewOutboundDocument
+      summary: Preview an outbound generated document
+      description: >
+        Validates merge data and returns an ephemeral preview for COI, ACORD, or reusable proposal output.
+        Preview never creates a document sidecar and cannot be used as final issue input.
+      tags: [OutboundDocumentGeneration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/GeneratedDocumentRequest" }
+      responses:
+        "200":
+          description: Preview status, diagnostics, and optional short-lived preview URL.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GeneratedDocumentPreviewResponse" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          description: Source record or template is not eligible for preview.
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+
+  /outbound-documents/issue:
+    post:
+      operationId: issueOutboundDocument
+      summary: Issue a final outbound generated document
+      description: >
+        Reassembles source data server-side, renders a final PDF, and stores the generated artifact
+        through the ADR-012 document repository. Issue is explicit and auditable.
+      tags: [OutboundDocumentGeneration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/GeneratedDocumentRequest" }
+      responses:
+        "201":
+          description: Generated artifact issued and stored as a parent-linked document.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GeneratedDocumentIssueResponse" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          description: Source record or template is not eligible for issue.
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+
+  /outbound-documents/{documentId}/regenerate:
+    post:
+      operationId: regenerateOutboundDocument
+      summary: Regenerate a previously issued outbound generated document
+      description: >
+        Creates a new generated artifact linked to a prior issued generated document. The prior issued
+        artifact remains immutable and downloadable.
+      tags: [OutboundDocumentGeneration]
+      parameters:
+        - in: path
+          name: documentId
+          required: true
+          schema: { type: string, pattern: "^doc_[0-9A-HJKMNP-TV-Z]{26}$" }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/GeneratedDocumentRequest" }
+      responses:
+        "201":
+          description: Replacement generated artifact issued as a new document.
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/GeneratedDocumentIssueResponse" }
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "401":
+          $ref: "#/components/responses/Unauthorized"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "409":
+          description: Prior artifact, source record, or template is not eligible for regeneration.
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/ProblemDetails" }
+
+  # ──────────────────────────────────────────────────────────────
   # F0035 Session Continuity telemetry ingest (ADR-024)
   # ──────────────────────────────────────────────────────────────
   /internal/telemetry/session-continuity:
@@ -8845,6 +8954,106 @@ components:
                 type: string
                 enum: [public, confidential, restricted]
               count: { type: integer, minimum: 0 }
+
+    GeneratedDocumentRequest:
+      type: object
+      required: [parent, artifactFamily, templateDocumentId]
+      properties:
+        parent:
+          $ref: "#/components/schemas/DocumentParentRef"
+        artifactFamily:
+          type: string
+          enum: [coi, acord, proposal]
+        templateDocumentId:
+          type: string
+          pattern: "^doc_[0-9A-HJKMNP-TV-Z]{26}$"
+        templateVersion:
+          type: integer
+          nullable: true
+          minimum: 1
+        classification:
+          type: string
+          enum: [public, confidential, restricted]
+          default: confidential
+        regeneratedFromDocumentId:
+          type: string
+          nullable: true
+          pattern: "^doc_[0-9A-HJKMNP-TV-Z]{26}$"
+        regenerationReason:
+          type: string
+          nullable: true
+          maxLength: 500
+
+    GeneratedDocumentPreviewResponse:
+      type: object
+      required: [artifactFamily, templateDocumentId, sourceSnapshotHash, status, mergeDiagnostics]
+      properties:
+        artifactFamily:
+          type: string
+          enum: [coi, acord, proposal]
+        templateDocumentId:
+          type: string
+          pattern: "^doc_[0-9A-HJKMNP-TV-Z]{26}$"
+        templateVersion:
+          type: integer
+          minimum: 1
+        sourceSnapshotHash:
+          type: string
+          pattern: "^sha256:[0-9a-f]{64}$"
+        status:
+          type: string
+          enum: [ready, missing_merge_data, render_failed]
+        previewUrl:
+          type: string
+          format: uri
+          nullable: true
+        expiresAtUtc:
+          type: string
+          format: date-time
+          nullable: true
+        mergeDiagnostics:
+          type: array
+          items:
+            type: object
+            required: [field, status]
+            properties:
+              field: { type: string }
+              status: { type: string, enum: [ok, missing, invalid] }
+              detail: { type: string, nullable: true, maxLength: 500 }
+
+    GeneratedDocumentIssueResponse:
+      type: object
+      required: [documentId, artifactFamily, templateDocumentId, templateVersion, issuedAtUtc, issuedByUserId, sourceSnapshotHash]
+      properties:
+        documentId:
+          type: string
+          pattern: "^doc_[0-9A-HJKMNP-TV-Z]{26}$"
+        artifactFamily:
+          type: string
+          enum: [coi, acord, proposal]
+        templateDocumentId:
+          type: string
+          pattern: "^doc_[0-9A-HJKMNP-TV-Z]{26}$"
+        templateVersion:
+          type: integer
+          minimum: 1
+        issuedAtUtc:
+          type: string
+          format: date-time
+        issuedByUserId:
+          type: string
+          format: uuid
+        sourceSnapshotHash:
+          type: string
+          pattern: "^sha256:[0-9a-f]{64}$"
+        regeneratedFromDocumentId:
+          type: string
+          nullable: true
+          pattern: "^doc_[0-9A-HJKMNP-TV-Z]{26}$"
+        downloadUrl:
+          type: string
+          format: uri
+          nullable: true
 
     DocumentTemplate:
       type: object

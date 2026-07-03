@@ -278,6 +278,15 @@ entities:
       - adr: adr:012
         section: "Decision §10"
         summary: "Templates are documents stored under <docroot>/templates/ with the same sidecar JSON shape; materialising a template into a parent record creates an independent document with provenance.source = template:{id}."
+  - id: entity:generated-document-artifact
+    label: GeneratedDocumentArtifact
+    source_docs:
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+      - planning-mds/api/nebula-api.yaml
+    rationale:
+      - adr: adr:012
+        section: "Decision §2, §8, §9, §10"
+        summary: "F0027 issued artifacts are parent-linked ADR-012 documents with generated-document metadata, immutable binaries, sidecar events, and source-record timeline events; no per-feature document table is introduced."
   - id: entity:submission-quote-packet
     label: SubmissionQuotePacket
     source_docs:
@@ -1098,6 +1107,18 @@ glossary_terms:
     related_nodes:
       - entity:document-template
       - entity:document
+  - id: capability:outbound-document-generation
+    label: Outbound Document Generation
+    source_docs:
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/PRD.md
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+    related_nodes:
+      - entity:document
+      - entity:document-template
+      - entity:generated-document-artifact
+      - entity:submission-quote-packet
+      - capability:document-management
+      - capability:document-templates
   - id: capability:document-classification
     label: Classification-based document access control
     source_docs:
@@ -2022,6 +2043,41 @@ endpoints:
       - entity:document
       - entity:document-template
       - capability:document-templates
+  - id: endpoint:outbound-documents-preview
+    label: POST /outbound-documents/preview
+    method: POST
+    route: /outbound-documents/preview
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document-template
+      - entity:submission-quote-packet
+  - id: endpoint:outbound-documents-issue
+    label: POST /outbound-documents/issue
+    method: POST
+    route: /outbound-documents/issue
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:generated-document-artifact
+      - entity:document
+      - entity:document-template
+  - id: endpoint:outbound-documents-regenerate
+    label: POST /outbound-documents/{documentId}/regenerate
+    method: POST
+    route: /outbound-documents/{documentId}/regenerate
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:generated-document-artifact
+      - entity:document
+      - entity:document-template
   - id: endpoint:internal-telemetry-session-continuity
     label: POST /internal/telemetry/session-continuity
     method: POST
@@ -4098,6 +4154,72 @@ policy_rules:
       - entity:document
       - entity:document-template
       - capability:document-templates
+  - id: policy_rule:outbound-template-manage
+    label: outbound_template:manage
+    resource: outbound_template
+    action: manage
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+    allowed_roles:
+      - role:admin
+    related_nodes:
+      - entity:document-template
+      - capability:outbound-document-generation
+  - id: policy_rule:outbound-document-preview
+    label: outbound_document:preview
+    resource: outbound_document
+    action: preview
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+    allowed_roles:
+      - role:admin
+      - role:underwriter
+      - role:distribution-user
+      - role:distribution-manager
+      - role:coordinator
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document-template
+  - id: policy_rule:outbound-document-issue
+    label: outbound_document:issue
+    resource: outbound_document
+    action: issue
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+    allowed_roles:
+      - role:admin
+      - role:underwriter
+      - role:distribution-user
+      - role:distribution-manager
+      - role:coordinator
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:generated-document-artifact
+      - entity:document
+  - id: policy_rule:outbound-document-regenerate
+    label: outbound_document:regenerate
+    resource: outbound_document
+    action: regenerate
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+    allowed_roles:
+      - role:admin
+      - role:underwriter
+      - role:distribution-user
+      - role:distribution-manager
+      - role:coordinator
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:generated-document-artifact
+      - entity:document
   # ── Neuron Companion (F0038) ──────────────────────────────────────────────
   - id: policy_rule:renewal-draft-outreach
     label: renewal:draft_outreach
@@ -4568,6 +4690,15 @@ schemas:
   - id: schema:document-template
     path: planning-mds/schemas/document-template.schema.json
     related_nodes: [entity:document-template]
+  - id: schema:generated-document-request
+    path: planning-mds/schemas/generated-document-request.schema.json
+    related_nodes: [capability:outbound-document-generation, entity:generated-document-artifact, entity:document-template]
+  - id: schema:generated-document-preview-response
+    path: planning-mds/schemas/generated-document-preview-response.schema.json
+    related_nodes: [capability:outbound-document-generation, entity:document-template]
+  - id: schema:generated-document-issue-response
+    path: planning-mds/schemas/generated-document-issue-response.schema.json
+    related_nodes: [capability:outbound-document-generation, entity:generated-document-artifact, entity:document]
   - id: schema:session-continuity-event
     path: planning-mds/schemas/session-continuity-event.schema.json
     related_nodes: [capability:session-telemetry, capability:session-continuity]

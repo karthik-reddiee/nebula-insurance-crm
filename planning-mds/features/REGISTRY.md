@@ -34,7 +34,6 @@ Per §19 of the feature-evidence package contract. Replaces the legacy `Abandone
 | F0024 | Claims & Service Case Tracking | Planned | CRM Release MVP+ | `F0024-claims-and-service-case-tracking/` |
 | F0025 | Commission, Producer Splits & Revenue Tracking | Planned | Brokerage Platform Expansion | `F0025-commission-producer-splits-and-revenue-tracking/` |
 | F0026 | Billing, Invoicing & Reconciliation | Planned | Brokerage Platform Expansion | `F0026-billing-invoicing-and-reconciliation/` |
-| F0027 | COI, ACORD & Outbound Document Generation | Planned | CRM Release MVP+ | `F0027-coi-acord-and-outbound-document-generation/` |
 | F0028 | Carrier & Market Relationship Management | Planned | CRM Release MVP+ | `F0028-carrier-and-market-relationship-management/` |
 | F0029 | External Broker Collaboration Portal | Planned | Brokerage Platform Expansion | `F0029-external-broker-collaboration-portal/` |
 | F0030 | Integration Hub & Data Exchange | Planned | Brokerage Platform Expansion | `F0030-integration-hub-and-data-exchange/` |
@@ -49,6 +48,7 @@ Per §19 of the feature-evidence package contract. Replaces the legacy `Abandone
 
 | Feature ID | Name | Archived Date | Folder |
 |------------|------|---------------|--------|
+| F0027 | COI, ACORD & Outbound Document Generation | 2026-07-03 | `archive/F0027-coi-acord-and-outbound-document-generation/` |
 | F0023 | Global Search, Saved Views & Operational Reporting | 2026-06-20 | `archive/F0023-global-search-saved-views-and-operational-reporting/` |
 | F0019 | Submission Quoting, Proposal & Approval Workflow | 2026-06-03 | `archive/F0019-submission-quoting-proposal-and-approval/` |
 | F0036 | Form Engine and Form-State Preservation (RHF + AJV + Widget Registry) | 2026-05-30 | `archive/F0036-dynamic-product-attribute-form-engine/` |

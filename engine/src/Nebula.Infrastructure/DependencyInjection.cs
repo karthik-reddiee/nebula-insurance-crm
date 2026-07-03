@@ -41,6 +41,8 @@ public static class DependencyInjection
         services.AddScoped<IDocumentParentAccessResolver, DocumentParentAccessResolver>();
         services.AddScoped<IDocumentClassificationGate, DocumentClassificationGate>();
         services.AddScoped<IDocumentRepository, LocalFileSystemDocumentRepository>();
+        services.AddScoped<IDocumentRenderer, SimplePdfDocumentRenderer>();
+        services.AddScoped<IOutboundMergeDataAssembler, OutboundMergeDataAssembler>();
         // F0023 — SearchReporting read-side module
         services.AddScoped<ISearchDocumentRepository, SearchDocumentRepository>();
         services.AddScoped<ISavedViewRepository, SavedViewRepository>();
@@ -54,6 +56,8 @@ public static class DependencyInjection
         services.AddSingleton<IAuthorizationService, CasbinAuthorizationService>();
         services.AddScoped<Nebula.Application.Services.DocumentService>();
         services.AddScoped<Nebula.Application.Services.DocumentTemplateService>();
+        services.AddScoped<Nebula.Application.Services.OutboundTemplateGovernanceService>();
+        services.AddScoped<Nebula.Application.Services.OutboundDocumentGenerationService>();
         services.AddScoped<Nebula.Application.Services.DocumentRetentionService>();
         services.AddSingleton<IQuarantineScanner, MockTimerScanner>();
         services.AddHostedService<PolicyExpirationHostedService>();

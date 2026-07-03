@@ -2,7 +2,7 @@
 
 Auto-generated index of all user stories across feature folders.
 
-**Total Stories:** 161
+**Total Stories:** 166
 
 ---
 
@@ -274,6 +274,18 @@ Auto-generated index of all user stories across feature folders.
 
 ---
 
+## F0027 — COI, ACORD & Outbound Document Generation
+
+| Story ID | Title | Priority | Phase | Persona |
+|----------|-------|----------|-------|---------|
+| [F0027-S0001](./archive/F0027-coi-acord-and-outbound-document-generation/F0027-S0001-template-library-governance.md) | Template library governance for outbound artifacts | High | CRM Release MVP+ | admin |
+| [F0027-S0002](./archive/F0027-coi-acord-and-outbound-document-generation/F0027-S0002-preview-generated-document.md) | Preview generated document before issue | High | CRM Release MVP+ | service or distribution user |
+| [F0027-S0003](./archive/F0027-coi-acord-and-outbound-document-generation/F0027-S0003-issue-generated-artifact.md) | Issue final generated artifact with audit | High | CRM Release MVP+ | service or distribution user |
+| [F0027-S0004](./archive/F0027-coi-acord-and-outbound-document-generation/F0027-S0004-regenerate-and-retrieve-artifacts.md) | Regenerate and retrieve generated artifacts | Medium | CRM Release MVP+ | service or distribution user |
+| [F0027-S0005](./archive/F0027-coi-acord-and-outbound-document-generation/F0027-S0005-render-proposal-from-submission-packet.md) | Render proposal from submission packet context | Medium | CRM Release MVP+ | distribution user |
+
+---
+
 ## F0033 — Structured Logging and QE Toolchain Activation
 
 | Story ID | Title | Priority | Phase | Persona |
@@ -347,6 +359,7 @@ Auto-generated index of all user stories across feature folders.
 | Phase | Count |
 |-------|-------|
 | CRM Release MVP | 57 |
+| CRM Release MVP+ | 5 |
 | Future | 1 |
 | Infrastructure | 11 |
 | MVP | 69 |
@@ -362,8 +375,8 @@ Auto-generated index of all user stories across feature folders.
 | Priority | Count |
 |----------|-------|
 | Critical | 69 |
-| High | 75 |
-| Medium | 13 |
+| High | 78 |
+| Medium | 15 |
 
 ---
 

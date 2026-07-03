@@ -346,6 +346,7 @@ app.MapPolicyEndpoints();
 app.MapRenewalEndpoints();
 app.MapLobSchemaEndpoints();
 app.MapDocumentEndpoints();
+app.MapOutboundDocumentEndpoints();
 app.MapDashboardEndpoints();
 app.MapTaskEndpoints();
 app.MapUserEndpoints();

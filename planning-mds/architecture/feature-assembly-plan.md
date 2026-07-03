@@ -14,6 +14,39 @@ Define the build order, role handoffs, and integration checkpoints for implement
 
 ---
 
+## F0027 - COI, ACORD & Outbound Document Generation
+
+**Added:** 2026-07-02 - Feature action Step 0 authored the feature-local implementation execution plan after Phase B architecture approval.
+
+> **Implementation Execution Plan:** [`feature-assembly-plan.md`](../features/F0027-coi-acord-and-outbound-document-generation/feature-assembly-plan.md) - detailed slice order, backend/frontend paths, generated-document DTOs, renderer/repository boundaries, preview/issue/regenerate service flows, F0027 authorization gates, and validation checkpoints for outbound document generation.
+
+### Dependencies
+
+| Dependency | Source | What F0027 Needs | Status |
+|------------|--------|------------------|--------|
+| Document subsystem | F0020 / ADR-012 | Templates-as-documents, sidecar JSON, document repository, classification gate, parent-linked document panels | Done and archived |
+| Submission quote/proposal packet | F0019 / ADR-025 | Recorded packet facts for proposal rendering; no workflow/status mutation | Done and archived |
+| Policy/account/submission records | F0016/F0018/F0006 | Source data and parent document surfaces for generated artifacts | Done or archived |
+| Authorization policy | policy.csv + authorization matrix | F0027-specific outbound template/document gates layered over F0020 document gates | Planned in F0027 |
+
+### Assembly Slice Order
+
+1. Backend generated-document DTOs, renderer boundary, and repository generated-write method.
+2. Template governance for outbound families and Admin-only metadata/publish controls.
+3. Outbound generation service and endpoints for preview, issue, regenerate.
+4. Frontend Generate Document Panel, template library metadata controls, and artifact provenance UI.
+5. QE/security/devops evidence and G1-G8 feature closeout.
+
+### Signoff Role Matrix
+
+| Role | Required | Rationale |
+|------|----------|-----------|
+| Quality Engineer | Yes | Preview/issue/regenerate, merge validation, provenance, and immutable history need lifecycle validation |
+| Code Reviewer | Yes | Repository writes, renderer boundary, service orchestration, and UI mutation paths need independent review |
+| Security Reviewer | Yes | Generated artifacts may contain sensitive account/policy/submission data and require layered authorization |
+| DevOps | Yes | Renderer dependency, document storage configuration, and generated binary handling require deployability evidence |
+| Architect | Yes | F0027 must preserve F0019/F0020 boundaries and reconcile as-built KG bindings |
+
 ## F0019 - Submission Quoting, Proposal & Approval Workflow
 
 **Added:** 2026-06-03 - Feature action Step 0 authored the feature-local implementation execution plan after Phase B architecture completed during planning.

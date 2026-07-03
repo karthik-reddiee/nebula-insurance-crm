@@ -643,6 +643,41 @@ The runtime YAML (`<docroot>/configuration/casbin-document-roles.yaml`) is close
 
 Product schema bundles are internal platform configuration. Runtime screens may read active bundles only after the same ABAC and tenant availability filters that govern the parent lifecycle record. Activation, deprecation, retirement, and rollback are steward/admin actions in MVP and must write activation audit rows.
 
+---
+
+## 6. Outbound Document Generation (F0027)
+
+F0027 layers feature-specific actions over the F0020 document/template gates. This preserves the generic template-library behavior while enforcing the F0027 product decision that outbound COI, ACORD, and proposal templates are Admin-governed and operating users issue artifacts from published versions only.
+
+Effective issue/regenerate access:
+
+```text
+allow ⇔ parent_abac(user, parent, read/create)
+     ∧ document_template:read(template)
+     ∧ outbound_document:{issue|regenerate}
+     ∧ classification_policy(role, generatedClassification, create/download)
+```
+
+| Role | outbound_template:manage | outbound_document:preview | outbound_document:issue | outbound_document:regenerate |
+|------|--------------------------|---------------------------|-------------------------|-------------------------------|
+| Admin | ✅ | ✅ | ✅ | ✅ |
+| Underwriter | ❌ | ✅ | ✅ | ✅ |
+| DistributionUser | ❌ | ✅ | ✅ | ✅ |
+| DistributionManager | ❌ | ✅ | ✅ | ✅ |
+| Coordinator | ❌ | ✅ | ✅ | ✅ |
+| RelationshipManager | ❌ | ❌ | ❌ | ❌ |
+| ProgramManager | ❌ | ❌ | ❌ | ❌ |
+| BrokerUser | ❌ | ❌ | ❌ | ❌ |
+| MgaUser | ❌ | ❌ | ❌ | ❌ |
+| ExternalUser | ❌ | ❌ | ❌ | ❌ |
+
+Constraints:
+
+- Preview never stores a document sidecar and never authorizes final issue by itself.
+- Issue and regenerate reassemble source data server-side and must not trust rendered preview output from the client.
+- Generated artifacts inherit ADR-012 classification policy, path safety, sidecar events, and timeline expectations.
+- F0027 proposal rendering may read F0019 quote/proposal packet facts but must not approve packets, transition submissions, compute pricing, or alter bind readiness.
+
 | Role | read active bundles | resolve direct bundle by id | activate / deprecate / retire |
 |------|---------------------|-----------------------------|-------------------------------|
 | Admin | ALLOW | ALLOW | ALLOW |
