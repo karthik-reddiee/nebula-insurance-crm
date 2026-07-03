@@ -1,4 +1,4 @@
-# ADR-028: Communication Activity Capture And Redaction
+# ADR-029: Communication Activity Capture And Redaction
 
 Status: Proposed
 Date: 2026-07-01

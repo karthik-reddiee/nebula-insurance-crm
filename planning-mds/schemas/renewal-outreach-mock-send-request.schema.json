@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nebula.local/schemas/renewal-outreach-mock-send-request.schema.json",
+  "title": "RenewalOutreachMockSendRequest",
+  "description": "Engine request to mock-send a reviewed renewal outreach draft (F0038-S0006). Mock-send COMMITS the real Identified -> Outreach WorkflowTransition (emitting WorkflowTransition + a 'sent (simulated)' ActivityTimelineEvent) but FAKES SMTP delivery — no real email is dispatched. Authorized engine-side by renewal:draft_outreach (Underwriter only); the renewal must be in Identified (valid Identified -> Outreach move). Transition + both events are atomic (all-or-nothing). Requires If-Match (rowVersion) per the renewal mutation contract.",
+  "type": "object",
+  "required": ["final_draft_body", "provenance"],
+  "additionalProperties": false,
+  "properties": {
+    "final_draft_body": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 8000,
+      "description": "The finalized (reviewed/edited) draft content at send time. Same content constraints as the draft."
+    },
+    "draft_timeline_event_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Id of the draft ActivityTimelineEvent (F0038-S0005) this send finalizes; links the draft and the simulated-send events on the timeline."
+    },
+    "simulate_delivery": {
+      "type": "boolean",
+      "const": true,
+      "description": "Always true in v1. The engine MUST guarantee no real SMTP/transport path is invoked when this is set."
+    },
+    "provenance": {
+      "type": "object",
+      "required": ["actor_user_id", "model", "prompt_id", "prompt_version", "content_hash"],
+      "additionalProperties": false,
+      "properties": {
+        "actor_user_id": { "type": "string", "format": "uuid" },
+        "model": { "type": "string" },
+        "prompt_id": { "type": "string" },
+        "prompt_version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+        "content_hash": { "type": "string" },
+        "agent_run_id": { "type": "string", "format": "uuid", "description": "Neuron agent_run id for idempotent cross-store reconciliation (ADR-028)." }
+      }
+    }
+  }
+}

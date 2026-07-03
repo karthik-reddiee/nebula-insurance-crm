@@ -480,7 +480,7 @@ node_bindings:
         architecture:
           - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/feature-assembly-plan.md
           - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/architecture-plan.md
-          - planning-mds/architecture/decisions/ADR-028-communication-activity-capture-and-redaction.md
+          - planning-mds/architecture/decisions/ADR-029-communication-activity-capture-and-redaction.md
         schemas:
           - planning-mds/schemas/communication-event*.schema.json
           - planning-mds/schemas/activity-event-payloads.schema.json

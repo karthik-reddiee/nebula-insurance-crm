@@ -691,6 +691,59 @@ Scalability:
 - Database indexing on high-cardinality lookup fields (license number, status, foreign keys).
 - Transition/timeline tables partition-ready for growth.
 
+### 4.7 Neuron Companion architecture (F0038)
+
+Authored at F0038 Phase B (plan run `2026-06-30-d1dd91f7`). Detailed decisions
+live in the linked artifacts; this is the §4 summary with pointers.
+
+**Service boundary & auth.** Neuron is a **stateless** Python/FastAPI service and a
+**secondary** interface; the .NET engine stays the CRM source of truth. Neuron
+calls the engine **as the user** (forwarded authentik token); Casbin ABAC is
+enforced engine-side, unchanged — no authz is re-implemented in Python. C4 L2/L3
+views: `architecture/c4-neuron-companion.md`. Governing decisions:
+[ADR-027](architecture/decisions/ADR-027-neuron-companion-a2a-orchestration.md)
+(A2A-aligned internal orchestration) and
+[ADR-028](architecture/decisions/ADR-028-neuron-companion-persistence-and-outreach-authorization.md)
+(persistence, cross-store consistency, outreach authorization).
+
+**Orchestration.** A2A-aligned internal profile: CRM scope guard → intent
+classifier → A2A-aware orchestrator → registered specialist heads (Renewals live;
+Tasks/Pipeline/Broker-activity inert stubs) → goal agents → MCP/tool calls.
+Versioned YAML plans (`schemas/neuron-orchestration-plan.schema.json`) and private
+Agent Cards (`schemas/neuron-agent-card.schema.json`) are checked-in, schema-
+validated assets; every referenced head/tool/terminal-state must resolve or the
+service refuses the asset. Public A2A endpoints / Agent Cards are deferred.
+
+**Persistence (two owners, no cross-runtime transaction).** Neuron owns and writes
+its own `neuron.*` schema directly (threads, messages, message_parts, agent_runs,
+tool_calls, provenance_events — data-model §11); the engine owns CRM business
+state. For a gesture that writes both stores, the **engine write is authoritative
+and commits first**; the Neuron record references the engine id and is written
+idempotently (ADR-028 §2).
+
+**Response contract.** Versioned multi-part message envelope
+(`schemas/neuron-message-envelope.schema.json`: `text|app|status|sources|actions`)
+keyed by `thread_id`; zone-dispatch results use
+`schemas/neuron-zone-payload.schema.json`. The React host renders **only registered
+components from validated props** — no model-generated markup or numbers.
+
+**The one write (Underwriter-only).** Draft outreach persists an InternalOnly,
+AI-generated `ActivityTimelineEvent` (no transition); mock-send commits the real
+`Identified → Outreach` `WorkflowTransition` + a "sent (simulated)" event and
+**fakes SMTP** (no real email). Both are gated by the new dedicated
+`renewal:draft_outreach` action (Underwriter only). The engine state machine
+permits `Identified → Outreach` for an Underwriter **only** on the mock-send path
+(ADR-028 §3, authorization-matrix §2.9a) — the general F0007 transition ownership
+is unchanged. Engine endpoints carry the `NeuronCompanion` tag in
+`api/nebula-api.yaml`; the Neuron service surface is `api/neuron-api.yaml`.
+
+**Telemetry & NFRs.** Companion telemetry establishes the baseline
+"needs-attention surfaced → draft-ready" duration plus a minimal secondary set
+(`schemas/neuron-companion-telemetry-event.schema.json`), ingested fire-and-forget
+to Serilog (`POST /internal/telemetry/neuron-companion`, mirrors F0035). Engine
+read endpoints inherit the §4.6 p95 budgets; provenance/telemetry carry ids,
+versions, hashes, model, cost, latency — never raw prompts, raw responses, or PII.
+
 ---
 
 ## 5) Phase C — Implementation Plan (locked order)
