@@ -616,20 +616,63 @@ features:
       - feature:F0006
       - {id: feature:F0018, provenance: extracted, confidence: 1.0, note: "Implemented: Policy parent-record integration fulfilled through ParentDocumentsPanel on PolicyDetailPage"}
   - id: feature:F0022
-    path: planning-mds/features/F0022-work-queues-assignment-rules-and-coverage-management
-    status: planned
+    path: planning-mds/features/archive/F0022-work-queues-assignment-rules-and-coverage-management
+    status: archived-done
     affects:
+      - capability:operations-routing
+      - entity:work-queue
+      - entity:work-queue-member
+      - entity:assignment-rule
+      - entity:coverage-window
+      - entity:queue-work-item
+      - entity:routing-decision-log
       - entity:task-item
       - entity:workflow-sla-threshold
       - workflow:submission
       - workflow:renewal
+      - endpoint:work-queue-list
+      - endpoint:work-queue-create
+      - endpoint:work-queue-items-list
+      - endpoint:assignment-rule-upsert
+      - endpoint:coverage-window-upsert
+      - endpoint:queue-work-item-reassign
+      - endpoint:work-queue-rebalance
+      - endpoint:routing-events-list
     governed_by:
       - adr:013
       - adr:016
+    enforced_by_policy:
+      - policy_rule:queue-read
+      - policy_rule:queue-manage
+      - policy_rule:queue-assign
+    uses_schema:
+      - schema:work-queue
+      - schema:work-queue-upsert-request
+      - schema:queue-member-upsert-request
+      - schema:assignment-rule
+      - schema:assignment-rule-upsert-request
+      - schema:coverage-window
+      - schema:coverage-window-upsert-request
+      - schema:queue-work-item
+      - schema:queue-reassignment-request
+      - schema:queue-rebalance-request
+      - schema:routing-event
     uses_api_contract:
       - api:nebula-rest
     depends_on:
-      - {id: feature:F0032, provenance: inferred, confidence: 0.7}
+      - feature:F0004
+      - feature:F0006
+      - feature:F0007
+      - feature:F0017
+    notes: "Phase A clarification 2026-07-03: F0022 must land before F0032. F0032 governs queue/rule configuration later but is not a prerequisite. Initial routed work types are tasks, submissions, and renewals; no-match work falls back to Unassigned Operations Queue. Phase B 2026-07-03 accepted ADR-013 and bound durable queue/rule/coverage entities, WorkQueues API contracts, queue:* policy rules, and routing audit schemas."
+    stories:
+      - F0022-S0001
+      - F0022-S0002
+      - F0022-S0003
+      - F0022-S0004
+      - F0022-S0005
+      - F0022-S0006
+      - F0022-S0007
   - id: feature:F0023
     path: planning-mds/features/archive/F0023-global-search-saved-views-and-operational-reporting
     status: archived-done

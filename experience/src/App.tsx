@@ -19,6 +19,7 @@ import CreatePolicyPage from './pages/CreatePolicyPage'
 import PolicyImportPage from './pages/PolicyImportPage'
 import PolicyDetailPage from './pages/PolicyDetailPage'
 import TaskCenterPage from './pages/TaskCenterPage'
+import WorkQueuesPage from './pages/WorkQueuesPage'
 import SearchResultsPage from './pages/SearchResultsPage'
 import OperationalReportsPage from './pages/OperationalReportsPage'
 import NotFoundPage from './pages/NotFoundPage'
@@ -75,6 +76,7 @@ function AppInner() {
       <Route path="/brokers/:brokerId" element={<ProtectedRoute><BrokerDetailPage /></ProtectedRoute>} />
       <Route path="/tasks" element={<ProtectedRoute><TaskCenterPage /></ProtectedRoute>} />
       <Route path="/tasks/:taskId" element={<ProtectedRoute><TaskCenterPage /></ProtectedRoute>} />
+      <Route path="/work-queues" element={<ProtectedRoute><WorkQueuesPage /></ProtectedRoute>} />
       <Route path="/search" element={<ProtectedRoute><SearchResultsPage /></ProtectedRoute>} />
       <Route path="/operational-reports" element={<ProtectedRoute><OperationalReportsPage /></ProtectedRoute>} />
 

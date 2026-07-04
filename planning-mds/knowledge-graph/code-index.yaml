@@ -510,6 +510,34 @@ node_bindings:
           - engine/tests/Nebula.Tests/Unit/WorkflowServiceTests.cs
           - engine/tests/Nebula.Tests/Integration/WorkflowEndpointTests.cs
 
+  - id: capability:operations-routing
+    paths:
+      planning:
+        feature:
+          - planning-mds/features/archive/F0022-work-queues-assignment-rules-and-coverage-management/**
+        architecture:
+          - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+          - planning-mds/architecture/data-model.md
+          - planning-mds/architecture/application-assembly-plan.md
+          - planning-mds/architecture/feature-architecture-inventory-f0006-f0032.md
+        api:
+          - planning-mds/api/nebula-api.yaml
+        schemas:
+          - planning-mds/schemas/work-queue.schema.json
+          - planning-mds/schemas/work-queue-upsert-request.schema.json
+          - planning-mds/schemas/queue-member-upsert-request.schema.json
+          - planning-mds/schemas/assignment-rule.schema.json
+          - planning-mds/schemas/assignment-rule-upsert-request.schema.json
+          - planning-mds/schemas/coverage-window.schema.json
+          - planning-mds/schemas/coverage-window-upsert-request.schema.json
+          - planning-mds/schemas/queue-work-item.schema.json
+          - planning-mds/schemas/queue-reassignment-request.schema.json
+          - planning-mds/schemas/queue-rebalance-request.schema.json
+          - planning-mds/schemas/routing-event.schema.json
+        security:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+
   - id: capability:authorization-enforcement
     paths:
       backend:

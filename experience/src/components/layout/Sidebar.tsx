@@ -8,6 +8,7 @@ import {
   ShieldCheck,
   Users,
   ClipboardList,
+  ListChecks,
   PanelLeftClose,
   LogOut,
   ChevronRight,
@@ -23,6 +24,7 @@ const NAV_ITEMS = [
   { label: 'Policies', href: '/policies', icon: ShieldCheck },
   { label: 'Brokers', href: '/brokers', icon: Users },
   { label: 'Tasks', href: '/tasks', icon: ClipboardList },
+  { label: 'Work queues', href: '/work-queues', icon: ListChecks },
 ];
 
 function isActive(href: string, pathname: string) {

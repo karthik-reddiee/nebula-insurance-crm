@@ -227,6 +227,65 @@ entities:
       - adr: adr:014-workflow-sla
         section: "Decision"
         summary: "Extended with LOB dimension so SLA targets vary by line of business rather than being entity-wide defaults."
+  - id: entity:work-queue
+    label: WorkQueue
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+      - planning-mds/schemas/work-queue.schema.json
+    rationale:
+      - adr: adr:013
+        section: "F0022 Execution Contract"
+        summary: "Named queue definitions provide the durable operational target for routing outcomes and the required manager-visible fallback queue."
+  - id: entity:work-queue-member
+    label: WorkQueueMember
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+    rationale:
+      - adr: adr:013
+        section: "F0022 Execution Contract"
+        summary: "Effective-dated queue membership keeps assignment eligibility explicit rather than inferred from inactive-user heuristics."
+  - id: entity:assignment-rule
+    label: AssignmentRule
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+      - planning-mds/schemas/assignment-rule.schema.json
+    rationale:
+      - adr: adr:013
+        section: "F0022 Execution Contract"
+        summary: "Versioned deterministic rules explain routing outcomes by rule version, precedence, selected queue, and match reason."
+  - id: entity:coverage-window
+    label: CoverageWindow
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+      - planning-mds/schemas/coverage-window.schema.json
+    rationale:
+      - adr: adr:013
+        section: "F0022 Execution Contract"
+        summary: "Coverage is explicit and time-bounded; inactivity alone never triggers backup routing."
+  - id: entity:queue-work-item
+    label: QueueWorkItem
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+      - planning-mds/schemas/queue-work-item.schema.json
+    rationale:
+      - adr: adr:013
+        section: "F0022 Execution Contract"
+        summary: "One active queue placement per task/submission/renewal keeps routing idempotent under repeated source workflow events."
+  - id: entity:routing-decision-log
+    label: RoutingDecisionLog
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+      - planning-mds/schemas/routing-event.schema.json
+    rationale:
+      - adr: adr:013
+        section: "F0022 Execution Contract"
+        summary: "Append-only routing evidence records matched, fallback, skipped, reassigned, rebalanced, and exception outcomes for manager diagnostics."
   - id: entity:search-document
     label: SearchDocument
     source_docs:
@@ -729,6 +788,26 @@ capabilities:
     label: SonarQube Reporting
     source_docs:
       - planning-mds/features/archive/F0033-structured-logging-and-qe-toolchain-activation/README.md
+  - id: capability:operations-routing
+    label: Operations Routing
+    source_docs:
+      - planning-mds/features/archive/F0022-work-queues-assignment-rules-and-coverage-management/PRD.md
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+      - planning-mds/architecture/data-model.md
+      - planning-mds/api/nebula-api.yaml
+    rationale:
+      - adr: adr:013
+        section: "Decision"
+        summary: "Shared routing engine prevents task, submission, and renewal modules from implementing divergent assignment rules."
+    related_nodes:
+      - entity:work-queue
+      - entity:assignment-rule
+      - entity:coverage-window
+      - entity:queue-work-item
+      - entity:routing-decision-log
+      - entity:task-item
+      - workflow:submission
+      - workflow:renewal
   - id: capability:product-schema-registry
     label: Product Schema Registry
     source_docs:
@@ -1122,6 +1201,70 @@ glossary_terms:
       - entity:document
 
 endpoints:
+  - id: endpoint:work-queue-list
+    label: GET /work-queues
+    method: GET
+    route: /work-queues
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+    related_nodes: [capability:operations-routing, entity:work-queue, policy_rule:queue-read]
+  - id: endpoint:work-queue-create
+    label: POST /work-queues
+    method: POST
+    route: /work-queues
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+    related_nodes: [capability:operations-routing, entity:work-queue, entity:activity-timeline-event, policy_rule:queue-manage]
+  - id: endpoint:work-queue-items-list
+    label: GET /work-queues/{queueId}/items
+    method: GET
+    route: /work-queues/{queueId}/items
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+    related_nodes: [capability:operations-routing, entity:queue-work-item, entity:task-item, workflow:submission, workflow:renewal, policy_rule:queue-read]
+  - id: endpoint:assignment-rule-upsert
+    label: POST/PUT /assignment-rules
+    method: POST|PUT
+    route: /assignment-rules
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+    related_nodes: [capability:operations-routing, entity:assignment-rule, entity:activity-timeline-event, policy_rule:queue-manage]
+  - id: endpoint:coverage-window-upsert
+    label: POST/PUT /coverage-windows
+    method: POST|PUT
+    route: /coverage-windows
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+    related_nodes: [capability:operations-routing, entity:coverage-window, entity:activity-timeline-event, policy_rule:queue-manage]
+  - id: endpoint:queue-work-item-reassign
+    label: PUT /queue-work-items/{queueItemId}/assignment
+    method: PUT
+    route: /queue-work-items/{queueItemId}/assignment
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+    related_nodes: [capability:operations-routing, entity:queue-work-item, entity:routing-decision-log, entity:activity-timeline-event, policy_rule:queue-assign]
+  - id: endpoint:work-queue-rebalance
+    label: POST /work-queues/{queueId}/rebalance
+    method: POST
+    route: /work-queues/{queueId}/rebalance
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+    related_nodes: [capability:operations-routing, entity:queue-work-item, entity:routing-decision-log, entity:activity-timeline-event, policy_rule:queue-assign]
+  - id: endpoint:routing-events-list
+    label: GET /routing-events
+    method: GET
+    route: /routing-events
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/architecture/decisions/ADR-013-operational-routing-and-queue-engine.md
+    related_nodes: [capability:operations-routing, entity:routing-decision-log, policy_rule:queue-read]
   - id: endpoint:dashboard-kpis
     label: GET /dashboard/kpis
     method: GET
@@ -3811,6 +3954,58 @@ policy_rules:
       - entity:policy
       - capability:authorization-enforcement
     notes: Gates the import-lite CSV ingest path; DistributionManager and Admin only in MVP.
+  - id: policy_rule:queue-read
+    label: queue:read
+    resource: queue
+    action: read
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-user
+      - role:distribution-manager
+      - role:program-manager
+      - role:underwriter
+      - role:relationship-manager
+      - role:admin
+    related_nodes:
+      - capability:operations-routing
+      - entity:work-queue
+      - entity:queue-work-item
+      - capability:authorization-enforcement
+    notes: Queue item details require both queue read authorization and linked source-record ABAC.
+  - id: policy_rule:queue-manage
+    label: queue:manage
+    resource: queue
+    action: manage
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:admin
+    related_nodes:
+      - capability:operations-routing
+      - entity:work-queue
+      - entity:assignment-rule
+      - entity:coverage-window
+      - capability:authorization-enforcement
+  - id: policy_rule:queue-assign
+    label: queue:assign
+    resource: queue
+    action: assign
+    source_docs:
+      - planning-mds/security/policies/policy.csv
+      - planning-mds/security/authorization-matrix.md
+    allowed_roles:
+      - role:distribution-manager
+      - role:admin
+    related_nodes:
+      - capability:operations-routing
+      - entity:queue-work-item
+      - entity:routing-decision-log
+      - entity:activity-timeline-event
+      - capability:authorization-enforcement
   - id: policy_rule:lob-schema-read
     label: lob_schema:read
     resource: lob_schema
@@ -4457,6 +4652,39 @@ schemas:
   - id: schema:task-update-request
     path: planning-mds/schemas/task-update-request.schema.json
     related_nodes: [entity:task-item]
+  - id: schema:work-queue
+    path: planning-mds/schemas/work-queue.schema.json
+    related_nodes: [entity:work-queue, capability:operations-routing]
+  - id: schema:work-queue-upsert-request
+    path: planning-mds/schemas/work-queue-upsert-request.schema.json
+    related_nodes: [entity:work-queue, capability:operations-routing]
+  - id: schema:queue-member-upsert-request
+    path: planning-mds/schemas/queue-member-upsert-request.schema.json
+    related_nodes: [entity:work-queue-member, entity:work-queue, entity:user-profile, capability:operations-routing]
+  - id: schema:assignment-rule
+    path: planning-mds/schemas/assignment-rule.schema.json
+    related_nodes: [entity:assignment-rule, entity:work-queue, capability:operations-routing]
+  - id: schema:assignment-rule-upsert-request
+    path: planning-mds/schemas/assignment-rule-upsert-request.schema.json
+    related_nodes: [entity:assignment-rule, entity:work-queue, capability:operations-routing]
+  - id: schema:coverage-window
+    path: planning-mds/schemas/coverage-window.schema.json
+    related_nodes: [entity:coverage-window, entity:user-profile, entity:work-queue, capability:operations-routing]
+  - id: schema:coverage-window-upsert-request
+    path: planning-mds/schemas/coverage-window-upsert-request.schema.json
+    related_nodes: [entity:coverage-window, entity:user-profile, entity:work-queue, capability:operations-routing]
+  - id: schema:queue-work-item
+    path: planning-mds/schemas/queue-work-item.schema.json
+    related_nodes: [entity:queue-work-item, entity:work-queue, entity:task-item, workflow:submission, workflow:renewal, capability:operations-routing]
+  - id: schema:queue-reassignment-request
+    path: planning-mds/schemas/queue-reassignment-request.schema.json
+    related_nodes: [entity:queue-work-item, entity:user-profile, capability:operations-routing]
+  - id: schema:queue-rebalance-request
+    path: planning-mds/schemas/queue-rebalance-request.schema.json
+    related_nodes: [entity:queue-work-item, entity:user-profile, capability:operations-routing]
+  - id: schema:routing-event
+    path: planning-mds/schemas/routing-event.schema.json
+    related_nodes: [entity:routing-decision-log, entity:queue-work-item, capability:operations-routing]
   - id: schema:timeline-event
     path: planning-mds/schemas/timeline-event.schema.json
     related_nodes: [entity:activity-timeline-event]

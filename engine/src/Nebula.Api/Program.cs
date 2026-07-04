@@ -193,6 +193,7 @@ builder.Services.AddScoped<DistributionNodeService>();
 builder.Services.AddScoped<ProducerOwnershipService>();
 builder.Services.AddScoped<TerritoryService>();
 builder.Services.AddScoped<SessionContinuityTelemetryService>();
+builder.Services.AddScoped<OperationsRoutingService>();
 
 // Current user
 builder.Services.AddHttpContextAccessor();
@@ -348,6 +349,7 @@ app.MapLobSchemaEndpoints();
 app.MapDocumentEndpoints();
 app.MapDashboardEndpoints();
 app.MapTaskEndpoints();
+app.MapWorkQueueEndpoints();
 app.MapUserEndpoints();
 app.MapTimelineEndpoints();
 app.MapSessionTelemetryEndpoints();

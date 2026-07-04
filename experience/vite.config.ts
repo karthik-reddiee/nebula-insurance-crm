@@ -76,14 +76,24 @@ export default defineConfig(() => {
     server: {
       port: 5173,
       proxy: Object.fromEntries(
-        apiProxyPaths.map((pathPrefix) => [
-          pathPrefix,
-          {
-            target: apiProxyTarget,
-            changeOrigin: true,
-            bypass: spaNavigationBypass,
-          },
-        ]),
+        [
+          ...apiProxyPaths.map((pathPrefix) => [
+            pathPrefix,
+            {
+              target: apiProxyTarget,
+              changeOrigin: true,
+              bypass: spaNavigationBypass,
+            },
+          ]),
+          [
+            '/api',
+            {
+              target: apiProxyTarget,
+              changeOrigin: true,
+              rewrite: (path: string) => path.replace(/^\/api/, ''),
+            },
+          ],
+        ],
       ),
       headers: {
         // Development CSP — Vite/React HMR needs inline + eval script allowances.

@@ -189,7 +189,7 @@ Status: Phase C implementation is complete for F0001 (Dashboard), F0002 (Broker 
 - [F0019: Submission Quoting, Proposal & Approval Workflow](features/archive/F0019-submission-quoting-proposal-and-approval/PRD.md) - Done (Archived 2026-06-03; 8 stories: downstream workflow activation, quote/proposal packet, underwriting approval, bind handoff, decline/withdraw, archive/reactivate, pipeline visibility, timeline/audit)
 - [F0020: Document Management & ACORD Intake](features/archive/F0020-document-management-and-acord-intake/PRD.md) - Done (Archived 2026-05-05; 12 stories: single upload, bulk upload, quarantine promote, classification-filtered list, detail/provenance, downloads, immutable replace, metadata update, classification ABAC, completeness signal, retention cleanup, templates library)
 - F0021: Communication Hub & Activity Capture - Planned
-- F0022: Work Queues, Assignment Rules & Coverage Management - Planned
+- [F0022: Work Queues, Assignment Rules & Coverage Management](features/archive/F0022-work-queues-assignment-rules-and-coverage-management/PRD.md) - Done (Archived 2026-07-03; 7 stories: queues/memberships, assignment rules, task/submission/renewal routing, coverage windows, queue worklists/aging, reassignment/rebalance, routing audit/permissions)
 - [F0023: Global Search, Saved Views & Operational Reporting](features/archive/F0023-global-search-saved-views-and-operational-reporting/PRD.md) - Done (archived 2026-06-20; Phase A refined 2026-06-19; 7 stories: global search, filter/open results, personal saved views, team saved views, daily workload report, workflow aging/backlog report, permission-safe behavior)
 
 **CRM Release MVP+ (Planned):**
@@ -447,6 +447,12 @@ This section defines the build-ready technical baseline for the reference implem
   - Provides global search, saved-view CRUD/defaults, and operational-report endpoints.
   - Enforces high-level Casbin feature actions and mandatory query-layer source-record authorization before returning rows, snippets, facets, counts, or drilldowns.
   - Uses PostgreSQL full-text search and read-side projections for MVP; no external search engine is introduced.
+- OperationsRouting module (F0022):
+  - Owns WorkQueue, WorkQueueMember, AssignmentRule, CoverageWindow, QueueWorkItem, and RoutingDecisionLog.
+  - Routes tasks, submissions, and renewals through deterministic rule precedence: manual override, coverage, territory/ownership, workload, fallback.
+  - Reads source work through narrow adapters and updates source assignment only through existing source assignment ports.
+  - Provides WorkQueues API endpoints for manager/admin queue operations before F0032 centralizes governance.
+  - Enforces queue-level Casbin actions plus source-record ABAC before exposing queue work item details.
 - IdentityAuthorization module:
   - Validates authentik JWT tokens (JWKS from `Authentication__Authority/.well-known/openid-configuration`).
   - Normalizes `(iss, sub)` claims to internal `NebulaPrincipal { UserId, Roles, Regions }` via `IClaimsPrincipalNormalizer`.
@@ -457,6 +463,7 @@ This section defines the build-ready technical baseline for the reference implem
 Define tables/fields for:
 
 - Broker, Contact, UserProfile, UserPreference, ActivityTimelineEvent, WorkflowTransition
+- F0022 OperationsRouting entities: WorkQueue, WorkQueueMember, AssignmentRule, CoverageWindow, QueueWorkItem, RoutingDecisionLog
 - Reference tables + seed strategy
 
 Core entities (minimum baseline):
@@ -608,6 +615,7 @@ Primary OpenAPI contract:
 
 Entity coverage in API surface:
 - Account, Broker, MGA, Program, Contact, Submission, Renewal, ActivityTimelineEvent, WorkflowTransition
+- WorkQueue, AssignmentRule, CoverageWindow, QueueWorkItem, RoutingEvent
 
 MVP endpoint pattern examples:
 - GET `/brokers`
