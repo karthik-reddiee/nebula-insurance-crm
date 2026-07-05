@@ -1068,7 +1068,7 @@ features:
       - schema:lob-attribute-envelope
       - schema:lob-schema-bundle
       - schema:lob-validation-problem-details
-  - status: architecture-complete
+  - status: archived-done
     id: feature:F0038
     path: planning-mds/features/archive/F0038-neuron-day-at-a-glance-shell
     affects:

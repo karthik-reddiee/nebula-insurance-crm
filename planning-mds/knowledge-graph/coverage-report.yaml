@@ -6213,6 +6213,21 @@ freshness:
       - docker-compose.yml
       - neuron/Dockerfile
       - neuron/app/__init__.py
+      - neuron/app/__pycache__/__init__.cpython-314.pyc
+      - neuron/app/__pycache__/actions.cpython-314.pyc
+      - neuron/app/__pycache__/auth.cpython-314.pyc
+      - neuron/app/__pycache__/bootstrap.cpython-314.pyc
+      - neuron/app/__pycache__/config.cpython-314.pyc
+      - neuron/app/__pycache__/engine_client.cpython-314.pyc
+      - neuron/app/__pycache__/envelope.cpython-314.pyc
+      - neuron/app/__pycache__/errors.cpython-314.pyc
+      - neuron/app/__pycache__/main.cpython-314.pyc
+      - neuron/app/__pycache__/messages.cpython-314.pyc
+      - neuron/app/__pycache__/outreach_drafter.cpython-314.pyc
+      - neuron/app/__pycache__/runtime.cpython-314.pyc
+      - neuron/app/__pycache__/schemas.cpython-314.pyc
+      - neuron/app/__pycache__/scope_guard.cpython-314.pyc
+      - neuron/app/__pycache__/telemetry.cpython-314.pyc
       - neuron/app/actions.py
       - neuron/app/auth.py
       - neuron/app/bootstrap.py
@@ -6227,9 +6242,20 @@ freshness:
       - neuron/app/main.py
       - neuron/app/messages.py
       - neuron/app/models/__init__.py
+      - neuron/app/models/__pycache__/__init__.cpython-314.pyc
+      - neuron/app/models/__pycache__/mock_provider.cpython-314.pyc
+      - neuron/app/models/__pycache__/router.cpython-314.pyc
       - neuron/app/models/mock_provider.py
       - neuron/app/models/router.py
       - neuron/app/orchestration/__init__.py
+      - neuron/app/orchestration/__pycache__/__init__.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/agent_card.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/glance.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/heads.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/plan.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/registries.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/task_manager.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/zone_heads.cpython-314.pyc
       - neuron/app/orchestration/agent_card.py
       - neuron/app/orchestration/glance.py
       - neuron/app/orchestration/heads.py
@@ -6239,6 +6265,10 @@ freshness:
       - neuron/app/orchestration/zone_heads.py
       - neuron/app/outreach_drafter.py
       - neuron/app/persistence/__init__.py
+      - neuron/app/persistence/__pycache__/__init__.cpython-314.pyc
+      - neuron/app/persistence/__pycache__/in_memory.cpython-314.pyc
+      - neuron/app/persistence/__pycache__/models.cpython-314.pyc
+      - neuron/app/persistence/__pycache__/repository.cpython-314.pyc
       - neuron/app/persistence/in_memory.py
       - neuron/app/persistence/migrations/0001_neuron_schema.sql
       - neuron/app/persistence/models.py
@@ -6248,6 +6278,8 @@ freshness:
       - neuron/app/scope_guard.py
       - neuron/app/telemetry.py
       - neuron/app/tools/__init__.py
+      - neuron/app/tools/__pycache__/__init__.cpython-314.pyc
+      - neuron/app/tools/__pycache__/engine_tools.cpython-314.pyc
       - neuron/app/tools/engine_tools.py
       - neuron/crm_agents/__init__.py
       - neuron/crm_agents/cards/crm.broker_activity.head.card.yaml
@@ -6278,9 +6310,9 @@ freshness:
       - neuron/tests/test_stub_zones.py
       - neuron/tests/test_task_manager.py
       - neuron/tests/test_telemetry.py
-      source_count: 68
-      last_modified: '2026-07-04'
-      source_hash: 41525babf7cd4042
+      source_count: 100
+      last_modified: '2026-07-05'
+      source_hash: a102a48944fb2b01
     capability:neuron-companion-telemetry:
       source_paths:
       - engine/src/Nebula.Api/Endpoints/NeuronCompanionTelemetryEndpoints.cs
@@ -6324,18 +6356,30 @@ freshness:
     capability:neuron-operation-persistence:
       source_paths:
       - neuron/app/persistence/__init__.py
+      - neuron/app/persistence/__pycache__/__init__.cpython-314.pyc
+      - neuron/app/persistence/__pycache__/in_memory.cpython-314.pyc
+      - neuron/app/persistence/__pycache__/models.cpython-314.pyc
+      - neuron/app/persistence/__pycache__/repository.cpython-314.pyc
       - neuron/app/persistence/in_memory.py
       - neuron/app/persistence/migrations/0001_neuron_schema.sql
       - neuron/app/persistence/models.py
       - neuron/app/persistence/repository.py
       - neuron/tests/test_persistence.py
-      source_count: 6
-      last_modified: '2026-07-04'
-      source_hash: fd1d20bb267d34f0
+      source_count: 10
+      last_modified: '2026-07-05'
+      source_hash: ce12fd5e33215be8
     capability:neuron-orchestration-runtime:
       source_paths:
       - neuron/app/bootstrap.py
       - neuron/app/orchestration/__init__.py
+      - neuron/app/orchestration/__pycache__/__init__.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/agent_card.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/glance.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/heads.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/plan.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/registries.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/task_manager.cpython-314.pyc
+      - neuron/app/orchestration/__pycache__/zone_heads.cpython-314.pyc
       - neuron/app/orchestration/agent_card.py
       - neuron/app/orchestration/glance.py
       - neuron/app/orchestration/heads.py
@@ -6358,9 +6402,9 @@ freshness:
       - neuron/tests/test_plan_validation.py
       - neuron/tests/test_registries.py
       - neuron/tests/test_task_manager.py
-      source_count: 24
-      last_modified: '2026-07-04'
-      source_hash: b442ba1bbbf2c29d
+      source_count: 32
+      last_modified: '2026-07-05'
+      source_hash: 8b43d0f7233aaa08
     capability:neuron-outreach-drafter:
       source_paths:
       - engine/src/Nebula.Application/DTOs/RenewalOutreachDtos.cs
