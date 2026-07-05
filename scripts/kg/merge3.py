@@ -26,6 +26,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -110,11 +111,13 @@ def _owning_role(record_id: str | None, path: str, target_basename: str) -> str:
     if "excluded_features" in path:
         return "product-manager+architect"
     rid = record_id or ""
-    if rid.startswith(("feature:", "story:")):
+    if rid.startswith(("feature:", "story:")) or re.fullmatch(r"F\d{4}", rid):
         return "product-manager"
     if rid:
         return "architect"
-    return "product-manager" if target_basename == "feature-mappings.yaml" else "architect"
+    if target_basename == "feature-mappings.yaml" or target_basename.endswith(".md"):
+        return "product-manager"  # trackers are PM territory (S0002)
+    return "architect"
 
 
 def _display(value: Any) -> Any:
@@ -605,11 +608,11 @@ def semantic_diff(old_doc: Any, new_doc: Any) -> dict[str, list[str]]:
 # ──────────────────────────────────────────────────────────────
 
 
-def _resolve_input(spec: str, target: Path) -> Any:
-    """Load YAML from a file path, or from a git ref via `git show REF:target`."""
+def _resolve_text(spec: str, target: Path) -> str:
+    """Read raw content from a file path, or from a git ref via `git show REF:target`."""
     candidate = Path(spec)
     if candidate.exists():
-        return yaml.safe_load(candidate.read_text(encoding="utf-8")) or {}
+        return candidate.read_text(encoding="utf-8")
     rel = repo_relative(target)
     proc = subprocess.run(
         ["git", "-C", str(REPO_ROOT), "show", f"{spec}:{rel}"],
@@ -621,7 +624,12 @@ def _resolve_input(spec: str, target: Path) -> Any:
             f"merge3: `{spec}` is neither a file nor a resolvable git ref for {rel}: "
             f"{proc.stderr.strip()}"
         )
-    return yaml.safe_load(proc.stdout) or {}
+    return proc.stdout
+
+
+def _resolve_input(spec: str, target: Path) -> Any:
+    """Load YAML from a file path or git ref."""
+    return yaml.safe_load(_resolve_text(spec, target)) or {}
 
 
 def _atomic_write(path: Path, content: str) -> None:
@@ -711,6 +719,72 @@ def _write_json_report(
     path.write_text(json.dumps(payload, indent=2, ensure_ascii=False, default=str) + "\n", encoding="utf-8")
 
 
+def _finish_semantic_diff(diff: dict[str, list[str]], json_path: str | None) -> int:
+    differences = sum(len(entries) for entries in diff.values())
+    for kind in ("added", "removed", "changed", "meta"):
+        for rid in diff[kind]:
+            print(f"{kind}: {rid}")
+    print(f"merge3 --semantic-diff: {differences} semantic difference(s)")
+    if json_path:
+        Path(json_path).write_text(
+            json.dumps(diff, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+    return EXIT_CLEAN if differences == 0 else EXIT_CONFLICTS
+
+
+def _run_tracker_mode(parser: argparse.ArgumentParser, args: argparse.Namespace, target: Path) -> int:
+    """Markdown tracker targets (REGISTRY.md / ROADMAP.md) — S0002."""
+    from tracker_merge import (
+        GENERATED_TRACKER_BASENAMES,
+        TrackerFormatError,
+        merge_tracker_documents,
+        tracker_semantic_diff,
+    )
+
+    if target.name in GENERATED_TRACKER_BASENAMES:
+        parser.exit(
+            EXIT_USAGE,
+            f"merge3: {target.name} is generated (generate-story-index.py) — "
+            "regenerate it after the merge; never merge it\n",
+        )
+
+    try:
+        if args.semantic_diff:
+            diff = tracker_semantic_diff(
+                _resolve_text(args.semantic_diff[0], target),
+                _resolve_text(args.semantic_diff[1], target),
+                target.name,
+            )
+            return _finish_semantic_diff(diff, args.json)
+
+        if not (args.base and args.ours and args.theirs):
+            parser.exit(EXIT_USAGE, "merge3: --base, --ours, and --theirs are all required\n")
+
+        result = merge_tracker_documents(
+            _resolve_text(args.base, target),
+            _resolve_text(args.ours, target),
+            _resolve_text(args.theirs, target),
+            target.name,
+        )
+    except TrackerFormatError as exc:
+        _die(f"merge3: {exc}")
+
+    wrote: Path | None = None
+    output = Path(args.output) if args.output else target
+    if not result.conflicts and not args.dry_run:
+        if args.full_validate:
+            if _run_full_validate(result, target, output, result.merged_text, args.validate_cmd.split()):
+                wrote = output
+        else:
+            _atomic_write(output, result.merged_text)
+            wrote = output
+
+    _print_report(result, wrote)
+    if args.json:
+        _write_json_report(Path(args.json), target, args, result, wrote)
+    return EXIT_CONFLICTS if result.conflicts else EXIT_CLEAN
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Three-way semantic merge of curated knowledge-graph YAML."
@@ -749,20 +823,15 @@ def main(argv: list[str] | None = None) -> int:
             "never merge inputs; regenerate it after merging the curated sources\n",
         )
 
+    if target.suffix == ".md":
+        return _run_tracker_mode(parser, args, target)
+
     if args.semantic_diff:
-        old_doc = _resolve_input(args.semantic_diff[0], target)
-        new_doc = _resolve_input(args.semantic_diff[1], target)
-        diff = semantic_diff(old_doc, new_doc)
-        differences = sum(len(entries) for entries in diff.values())
-        for kind in ("added", "removed", "changed", "meta"):
-            for rid in diff[kind]:
-                print(f"{kind}: {rid}")
-        print(f"merge3 --semantic-diff: {differences} semantic difference(s)")
-        if args.json:
-            Path(args.json).write_text(
-                json.dumps(diff, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
-            )
-        return EXIT_CLEAN if differences == 0 else EXIT_CONFLICTS
+        diff = semantic_diff(
+            _resolve_input(args.semantic_diff[0], target),
+            _resolve_input(args.semantic_diff[1], target),
+        )
+        return _finish_semantic_diff(diff, args.json)
 
     if not (args.base and args.ours and args.theirs):
         parser.exit(EXIT_USAGE, "merge3: --base, --ours, and --theirs are all required\n")

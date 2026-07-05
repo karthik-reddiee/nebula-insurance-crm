@@ -58,6 +58,31 @@ python3 scripts/kg/merge3.py planning-mds/knowledge-graph/feature-mappings.yaml 
   --semantic-diff HEAD planning-mds/knowledge-graph/feature-mappings.yaml
 ```
 
+## Tracker-table merge — `merge3.py` on markdown trackers (F0006-S0002)
+
+The same CLI merges `REGISTRY.md` and `ROADMAP.md`: pass the tracker path as
+the target and merge3 dispatches by file type. Feature tables are merged as
+records keyed by feature ID (a row is a record, cells are fields, same
+conflict taxonomy, every conflict routes to the **PM**). Row ordering is
+never a conflict — it is recomputed per table:
+
+| Table | Order rule |
+|-------|-----------|
+| REGISTRY Active / Planned / Legacy | feature-ID ascending |
+| REGISTRY Retired / Archived | newest-first by date column, feature-ID-desc tiebreak |
+| ROADMAP Now / Next / Later / Abandoned / Completed | manual (operator priority): a changed side's order is adopted; both-sides-added rows are woven in (ours first at equal anchors); real double reorders conflict |
+
+Also handled: `**Next Available Feature Number:**` merges to the max
+(monotonic counter); section membership is a field (a feature moved to two
+different sections conflicts); table column changes conflict; prose merges
+with an append-tolerant rule and conflicts to the PM otherwise; unknown
+tracker files and unkeyable rows fail loudly (no silent text merge).
+`STORY-INDEX.md` is generated — merge3 rejects it; regenerate with
+`generate-story-index.py` after merging.
+
+Per-table rules live in `TRACKER_CONFIGS` (`scripts/kg/tracker_merge.py`);
+new tracker tables must be registered there before they can merge.
+
 ## Canonical serialization (`kg_common.py`)
 
 `canonicalize_document` / `canonical_dump` / `canonical_equal`: one
