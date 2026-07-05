@@ -79,12 +79,12 @@
   "conflicts_routed": [],
   "prepared_merge_sha": "b0bcee11fdf3238a048c6ebfbe690e594d86a417",
   "gate2": {
-    "result": "pending",
-    "exercised": null,
-    "recorded_by": null,
-    "date": null
+    "result": "pass",
+    "exercised": "F0021 Communication panel in Accounts exercised on the prepared merge (integrate/pr-47 incl. 6185480)",
+    "recorded_by": "maintainer (gajakannan)",
+    "date": "2026-07-05"
   },
   "pushed": false,
   "supersedes_run": "integrate-20260705-195057 (dry run)",
-  "outcome": "merged-pending-gate2"
+  "outcome": "merged-gate2-passed"
 }
