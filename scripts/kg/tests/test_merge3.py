@@ -310,6 +310,54 @@ def test_semantic_duplicate_warning_is_non_blocking(tmp_path: Path) -> None:
     assert any(w["kind"] == "SemanticDuplicateWarning" for w in payload["warnings"])
 
 
+def test_object_form_edge_refs_are_not_record_definitions(tmp_path: Path) -> None:
+    """`depends_on: [{id:, provenance:}]` is a reference, not a definition —
+    it must not collide with the real record of the same id (PR #47 replay bug)."""
+    base = {
+        "features": [
+            {"id": "feature:F0900", "path": "p", "status": "planned"},
+            {
+                "id": "feature:F0901",
+                "path": "q",
+                "status": "planned",
+                "depends_on": [{"id": "feature:F0900", "provenance": "inferred", "confidence": 0.6}],
+            },
+        ]
+    }
+    ours = deep(base)
+    theirs = deep(base)
+    theirs["features"][1]["status"] = "in-progress"
+
+    code, _, payload = run_merge(
+        tmp_path, base, ours, theirs, target_name="feature-mappings.yaml"
+    )
+    assert code == 0
+    assert payload["conflicts"] == []
+
+
+def test_orphan_check_sees_object_form_refs(tmp_path: Path) -> None:
+    sibling = {
+        "features": [
+            {
+                "id": "feature:F0900",
+                "path": "p",
+                "status": "planned",
+                "depends_on": [{"id": "entity:beta", "provenance": "inferred", "confidence": 0.9}],
+            }
+        ]
+    }
+    write_doc(tmp_path / "feature-mappings.yaml", sibling)
+
+    ours = deep(BASE_DOC)
+    theirs = deep(BASE_DOC)
+    theirs["entities"] = [e for e in theirs["entities"] if e["id"] != "entity:beta"]
+
+    code, _, payload = run_merge(tmp_path, BASE_DOC, ours, theirs)
+    assert code == 1
+    orphans = [c for c in payload["conflicts"] if c["kind"] == "OrphanEdge"]
+    assert orphans and orphans[0]["record_id"] == "entity:beta"
+
+
 # ── guards, validation, exit codes ───────────────────────────────
 
 

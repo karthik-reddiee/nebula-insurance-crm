@@ -386,26 +386,33 @@ def _set_merge(base: list[Any], ours: list[Any], theirs: list[Any]) -> list[Any]
 
 
 def collect_records(doc: Any, path: str = "") -> dict[str, list[tuple[str, dict[str, Any]]]]:
-    """Map record id -> [(list-path, record)] for every record list in doc."""
+    """Map record id -> [(list-path, record)] for every record list in doc.
+
+    Subtrees under reference fields are skipped: an edge-ref object such as
+    `depends_on: [{id: feature:F0008, provenance: inferred}]` is a reference,
+    not a record definition.
+    """
     found: dict[str, list[tuple[str, dict[str, Any]]]] = {}
 
-    def walk(value: Any, current: str) -> None:
+    def walk(value: Any, current: str, field: str | None) -> None:
+        if field in REF_SCAN_FIELDS:
+            return
         if isinstance(value, dict):
             for key, child in value.items():
-                walk(child, f"{current}.{key}" if current else key)
+                walk(child, f"{current}.{key}" if current else key, key)
         elif is_record_list(value):
             for record in value:
                 rid = str(record["id"])
                 found.setdefault(rid, []).append((current, record))
                 for key, child in record.items():
                     if isinstance(child, (dict, list)):
-                        walk(child, f"{current}[{rid}].{key}")
+                        walk(child, f"{current}[{rid}].{key}", key)
         elif isinstance(value, list):
             for item in value:
                 if isinstance(item, (dict, list)):
-                    walk(item, current)
+                    walk(item, current, field)
 
-    walk(doc, path)
+    walk(doc, path, None)
     return found
 
 
@@ -415,6 +422,9 @@ def collect_refs(doc: Any, include_record_ids: bool = False) -> set[str]:
 
     def walk(value: Any, field: str | None) -> None:
         if isinstance(value, dict):
+            # Object-form edge refs ({id:, provenance:, ...}) under ref fields.
+            if field in REF_SCAN_FIELDS and isinstance(value.get("id"), str):
+                refs.add(value["id"])
             for key, child in value.items():
                 if key == "id" and include_record_ids and isinstance(child, str):
                     refs.add(child)
