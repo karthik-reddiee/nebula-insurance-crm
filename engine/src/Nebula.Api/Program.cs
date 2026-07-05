@@ -349,6 +349,7 @@ app.MapLobSchemaEndpoints();
 app.MapDocumentEndpoints();
 app.MapDashboardEndpoints();
 app.MapTaskEndpoints();
+app.MapCommunicationEndpoints();
 app.MapUserEndpoints();
 app.MapTimelineEndpoints();
 app.MapSessionTelemetryEndpoints();

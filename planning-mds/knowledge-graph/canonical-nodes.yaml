@@ -92,6 +92,9 @@ adrs:
   - id: adr:028
     label: Neuron Companion Persistence Schema, Cross-Store Write Consistency, and Outreach-Draft Authorization
     path: planning-mds/architecture/decisions/ADR-028-neuron-companion-persistence-and-outreach-authorization.md
+  - id: adr:029
+    label: Communication Activity Capture And Redaction
+    path: planning-mds/architecture/decisions/ADR-029-communication-activity-capture-and-redaction.md
   - id: adr:auth-token-storage
     label: Auth Token Storage
     path: planning-mds/architecture/decisions/ADR-Auth-Token-Storage.md
@@ -968,6 +971,56 @@ endpoints:
     source_docs:
       - planning-mds/api/nebula-api.yaml
       - planning-mds/features/archive/F0002-broker-relationship-management/README.md
+  - id: endpoint:communication-correction
+    label: POST /communications/{communicationId}/corrections
+    method: POST
+    related_nodes:
+      - entity:communication-event
+      - policy_rule:communication-event-correct
+      - policy_rule:communication-event-redact
+    route: /communications/{communicationId}/corrections
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/api-schema-deltas.md
+  - id: endpoint:communication-create
+    label: POST /communications
+    method: POST
+    related_nodes:
+      - entity:communication-event
+      - entity:communication-link
+      - entity:communication-participant
+      - policy_rule:communication-event-create
+    route: /communications
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/api-schema-deltas.md
+  - id: endpoint:communication-detail
+    label: GET /communications/{communicationId}
+    method: GET
+    related_nodes:
+      - entity:communication-event
+      - policy_rule:communication-event-read
+    route: /communications/{communicationId}
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/api-schema-deltas.md
+  - id: endpoint:communication-follow-up
+    label: POST /communications/{communicationId}/follow-up-task
+    method: POST
+    related_nodes:
+      - entity:communication-event
+      - entity:task-item
+      - policy_rule:communication-event-create-follow-up
+      - policy_rule:task-create
+    route: /communications/{communicationId}/follow-up-task
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/api-schema-deltas.md
+  - id: endpoint:communication-list
+    label: GET /communications
+    method: GET
+    related_nodes:
+      - entity:communication-event
+      - policy_rule:communication-event-read
+    route: /communications
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/api-schema-deltas.md
   - id: endpoint:dashboard-kpis
     label: GET /dashboard/kpis
     method: GET
@@ -1275,6 +1328,17 @@ endpoints:
     source_docs:
       - planning-mds/api/nebula-api.yaml
       - planning-mds/features/archive/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+  - id: endpoint:policy-timeline
+    label: GET /policies/{policyId}/timeline
+    method: GET
+    related_nodes:
+      - entity:activity-timeline-event
+      - entity:policy
+      - policy_rule:timeline-event-read
+    route: /policies/{policyId}/timeline
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/archive/F0018-policy-lifecycle-and-policy-360/F0018-S0010-policy-activity-timeline-and-audit.md
   - id: endpoint:producer-ownership-assign
     label: POST /producer-ownership
     method: POST
@@ -1785,6 +1849,25 @@ entities:
     source_docs:
       - planning-mds/architecture/data-model.md
       - planning-mds/architecture/decisions/ADR-018-policy-aggregate-versioning-and-reinstatement-window.md
+  - id: entity:communication-event
+    label: CommunicationEvent
+    notes: Durable source record for structured notes, calls, meetings, and email-linked references; projected
+      into ActivityTimelineEvent for timelines.
+    source_docs:
+      - planning-mds/architecture/decisions/ADR-029-communication-activity-capture-and-redaction.md
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/architecture-plan.md
+  - id: entity:communication-link
+    label: CommunicationLink
+    notes: Link between a communication source record and approved CRM records such as broker, account,
+      submission, policy, renewal, or task.
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/architecture-plan.md
+  - id: entity:communication-participant
+    label: CommunicationParticipant
+    notes: Structured participant metadata for captured communication; not an outbound delivery recipient
+      model.
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/architecture-plan.md
   - id: entity:contact
     label: Contact
     source_docs:
@@ -2872,6 +2955,113 @@ policy_rules:
     resource: broker
     source_docs:
       - planning-mds/security/authorization-matrix.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:communication-event-correct
+    label: communication_event:correct
+    action: correct
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Corrections are append-only audit actions and cannot delete prior evidence.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:communication-event
+    resource: communication_event
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:communication-event-create
+    label: communication_event:create
+    action: create
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Create also requires read access to every linked CRM record.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:communication-event
+      - entity:communication-link
+    resource: communication_event
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:communication-event-create-follow-up
+    label: communication_event:create_follow_up
+    action: create_follow_up
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Also requires task:create and linked entity read access.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:communication-event
+      - entity:task-item
+    resource: communication_event
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:communication-event-link
+    label: communication_event:link
+    action: link
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Link targets must be approved CRM entity types and pass linked-entity read scope.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:communication-event
+      - entity:communication-link
+    resource: communication_event
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:communication-event-read
+    label: communication_event:read
+    action: read
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Read also requires access to at least one linked CRM record; external roles are denied for
+      MVP.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:communication-event
+    resource: communication_event
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:communication-event-redact
+    label: communication_event:redact
+    action: redact
+    allowed_roles:
+      - role:admin
+    notes: Redaction is Admin-only in MVP and requires Security Reviewer signoff in feature action.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:communication-event
+    resource: communication_event
+    source_docs:
+      - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/authorization-deltas.md
       - planning-mds/security/policies/policy.csv
   - id: policy_rule:contact-create
     label: contact:create
@@ -4152,6 +4342,27 @@ schemas:
     related_nodes:
       - entity:carrier-ref
       - entity:policy
+  - id: schema:communication-event
+    path: planning-mds/schemas/communication-event.schema.json
+    related_nodes:
+      - entity:communication-event
+      - entity:communication-link
+      - entity:communication-participant
+  - id: schema:communication-event-correction-request
+    path: planning-mds/schemas/communication-event-correction-request.schema.json
+    related_nodes:
+      - entity:communication-event
+  - id: schema:communication-event-create-request
+    path: planning-mds/schemas/communication-event-create-request.schema.json
+    related_nodes:
+      - entity:communication-event
+      - entity:communication-link
+      - entity:communication-participant
+  - id: schema:communication-event-follow-up-request
+    path: planning-mds/schemas/communication-event-follow-up-request.schema.json
+    related_nodes:
+      - entity:communication-event
+      - entity:task-item
   - id: schema:contact
     path: planning-mds/schemas/contact.schema.json
     related_nodes:

@@ -1,17 +1,17 @@
 version: 0
-generated_at: '2026-07-02T22:01:11+00:00'
+generated_at: '2026-07-05T20:31:33+00:00'
 summary:
-  total_invocations: 52
+  total_invocations: 51
   by_language:
     csharp: 50
-    typescript: 2
-  source_files: 12
-  bound_targets: 21
+    typescript: 1
+  source_files: 11
+  bound_targets: 20
   refreshed_languages:
   - csharp
   - python
-  preserved_languages:
   - typescript
+  preserved_languages: []
 invocations:
 - source_file: engine/src/Nebula.Api/Endpoints/DistributionEndpoints.cs
   source_line: 37
@@ -263,13 +263,8 @@ invocations:
   language: csharp
   target_symbol: symbol:capability-global-search:search-projection-service.backfill-async
   target_node: capability:global-search
-- source_file: experience/src/features/session-continuity/dirtyFormRegistry.tsx
-  source_line: 41
+- source_file: experience/src/test-setup.ts
+  source_line: 58
   language: typescript
-  target_symbol: symbol:capability-session-continuity:session-restore.snapshot-dirty-form
-  target_node: capability:session-continuity
-- source_file: experience/src/features/session-continuity/tests/sessionContinuity.smoke.test.tsx
-  source_line: 144
-  language: typescript
-  target_symbol: symbol:capability-session-continuity:session-restore.build-restore-key
-  target_node: capability:session-continuity
+  target_symbol: symbol:config_key-document-metadata-schema-registry:documents.reset-document-mock-state
+  target_node: config_key:document-metadata-schema-registry

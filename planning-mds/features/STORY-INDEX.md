@@ -2,7 +2,7 @@
 
 Auto-generated index of all user stories across feature folders.
 
-**Total Stories:** 161
+**Total Stories:** 166
 
 ---
 
@@ -260,6 +260,18 @@ Auto-generated index of all user stories across feature folders.
 
 ---
 
+## F0021 — Communication Hub & Activity Capture
+
+| Story ID | Title | Priority | Phase | Persona |
+|----------|-------|----------|-------|---------|
+| [F0021-S0001](./archive/F0021-communication-hub-and-activity-capture/F0021-S0001-capture-communication-event.md) | Capture a structured communication event | High | MVP | distribution user, coordinator, underwriter, or relationship manager |
+| [F0021-S0002](./archive/F0021-communication-hub-and-activity-capture/F0021-S0002-view-contextual-communication-history.md) | View contextual communication history | High | MVP | distribution user, coordinator, underwriter, or relationship manager |
+| [F0021-S0003](./archive/F0021-communication-hub-and-activity-capture/F0021-S0003-link-communications-to-related-records-and-participants.md) | Link communications to related records and participants | High | MVP | relationship manager or underwriter |
+| [F0021-S0004](./archive/F0021-communication-hub-and-activity-capture/F0021-S0004-create-follow-up-task-from-communication.md) | Create a follow-up task from a communication | High | MVP | coordinator, underwriter, or relationship manager |
+| [F0021-S0005](./archive/F0021-communication-hub-and-activity-capture/F0021-S0005-correct-or-redact-communication-with-audit.md) | Correct or redact communication content with audit | High | MVP | distribution manager, compliance-aware operator, or authorized internal user |
+
+---
+
 ## F0023 - Global Search, Saved Views & Operational Reporting
 
 | Story ID | Title | Priority | Phase | Persona |
@@ -349,7 +361,7 @@ Auto-generated index of all user stories across feature folders.
 | CRM Release MVP | 57 |
 | Future | 1 |
 | Infrastructure | 11 |
-| MVP | 69 |
+| MVP | 74 |
 | MVP Hardening | 1 |
 | Phase 1 | 11 |
 | Platform Foundation | 7 |
@@ -362,7 +374,7 @@ Auto-generated index of all user stories across feature folders.
 | Priority | Count |
 |----------|-------|
 | Critical | 69 |
-| High | 75 |
+| High | 80 |
 | Medium | 13 |
 
 ---

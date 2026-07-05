@@ -1473,6 +1473,44 @@ node_bindings:
           - experience/src/features/brokers/tests/BrokerListPage*.tsx
           - experience/src/pages/tests/BrokerDetailPage.integration.test.tsx
           - experience/src/pages/tests/CreateBrokerPage.integration.test.tsx
+  - id: entity:communication-event
+    paths:
+      backend:
+        api:
+          - engine/src/Nebula.Api/Endpoints/CommunicationEndpoints.cs
+        application:
+          - engine/src/Nebula.Application/DTOs/Communication*.cs
+          - engine/src/Nebula.Application/Interfaces/ICommunicationRepository.cs
+          - engine/src/Nebula.Application/Services/CommunicationService.cs
+          - engine/src/Nebula.Application/Validators/Communication*.cs
+        domain:
+          - engine/src/Nebula.Domain/Entities/Communication*.cs
+        infrastructure:
+          - engine/src/Nebula.Infrastructure/Persistence/Configurations/Communication*.cs
+          - engine/src/Nebula.Infrastructure/Persistence/Migrations/*F0021*Communication*.cs
+          - engine/src/Nebula.Infrastructure/Repositories/CommunicationRepository.cs
+        tests:
+          - engine/tests/Nebula.Tests/**/Communication*.cs
+      docs:
+        architecture:
+          - planning-mds/architecture/decisions/ADR-029-communication-activity-capture-and-redaction.md
+          - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/architecture-plan.md
+          - planning-mds/features/archive/F0021-communication-hub-and-activity-capture/feature-assembly-plan.md
+        authz:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+        schemas:
+          - planning-mds/schemas/activity-event-payloads.schema.json
+          - planning-mds/schemas/communication-event*.schema.json
+      frontend:
+        feature:
+          - experience/src/features/communications/**
+        pages:
+          - experience/src/pages/AccountDetailPage.tsx
+          - experience/src/pages/BrokerDetailPage.tsx
+          - experience/src/pages/PolicyDetailPage.tsx
+          - experience/src/pages/RenewalDetailPage.tsx
+          - experience/src/pages/SubmissionDetailPage.tsx
   - id: entity:document
     paths:
       backend:
