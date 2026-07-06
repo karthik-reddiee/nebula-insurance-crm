@@ -350,6 +350,7 @@ app.MapCarrierMarketEndpoints();
 app.MapRenewalEndpoints();
 app.MapLobSchemaEndpoints();
 app.MapDocumentEndpoints();
+app.MapOutboundDocumentEndpoints();
 app.MapDashboardEndpoints();
 app.MapTaskEndpoints();
 app.MapCommunicationEndpoints();

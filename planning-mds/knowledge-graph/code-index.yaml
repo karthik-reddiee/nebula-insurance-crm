@@ -302,6 +302,33 @@ node_bindings:
         security:
           - planning-mds/security/authorization-matrix.md
           - planning-mds/security/policies/policy.csv
+  - id: capability:outbound-document-generation
+    paths:
+      backend:
+        api:
+          - engine/src/Nebula.Api/Endpoints/OutboundDocumentEndpoints.cs
+          - engine/src/Nebula.Api/Program.cs
+        application:
+          - engine/src/Nebula.Application/DTOs/GeneratedDocumentDtos.cs
+          - engine/src/Nebula.Application/Interfaces/IDocumentRenderer.cs
+          - engine/src/Nebula.Application/Interfaces/IOutboundMergeDataAssembler.cs
+          - engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+          - engine/src/Nebula.Application/Services/OutboundTemplateGovernanceService.cs
+        config:
+          - engine/src/Nebula.Api/data/documents/configuration/metadata-schemas/generated-document.v1.schema.json
+          - engine/src/Nebula.Api/data/documents/configuration/metadata-schemas/registry.yaml
+          - engine/src/Nebula.Api/data/documents/configuration/taxonomy.yaml
+        infrastructure:
+          - engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
+          - engine/src/Nebula.Infrastructure/Documents/OutboundMergeDataAssembler.cs
+          - engine/src/Nebula.Infrastructure/Documents/SimplePdfDocumentRenderer.cs
+        tests:
+          - engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+      frontend:
+        feature:
+          - experience/src/features/documents/**
+        tests:
+          - experience/src/features/documents/tests/ParentDocumentsPanel.test.tsx
   - id: capability:product-schema-registry
     paths:
       backend:

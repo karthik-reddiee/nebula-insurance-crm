@@ -1,20 +1,20 @@
 version: 0
-generated_at: '2026-07-06T01:32:00+00:00'
+generated_at: '2026-07-06T01:37:18+00:00'
 summary:
-  total_symbols: 4504
+  total_symbols: 4608
   by_language:
     python:
       files: 52
       parsed: 0
       cached: 52
     typescript:
-      files: 293
-      parsed: 8
-      cached: 285
+      files: 295
+      parsed: 7
+      cached: 288
     csharp:
-      files: 372
-      parsed: 6
-      cached: 366
+      files: 381
+      parsed: 14
+      cached: 367
   disambiguated_ids: 20
   compilation_roots_by_language:
     python: []
@@ -828,6 +828,8 @@ symbols:
   - symbol:capability-neuron-renewals-head:renewal-endpoints.has-access-async
   - symbol:capability-neuron-renewals-head:renewal-service.get-companion-context-async
   - symbol:capability-neuron-renewals-head:renewal-service.get-needs-attention-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.can-outbound-async
+  - symbol:capability-outbound-document-generation:outbound-template-governance-service.can-manage-async
   - symbol:capability-product-schema-registry:lob-schema-endpoints.has-access-async
   - symbol:capability-saved-views:saved-view-service.authorize-async
   - symbol:capability-task-center:task-endpoints.create-task
@@ -849,6 +851,7 @@ symbols:
   - symbol:capability-authorization-enforcement:casbin-authorization-service.authorize-async
   - symbol:capability-authorization-enforcement:policy-authorization-service.authorize-async
   - symbol:capability-neuron-renewals-head:stub-authz.authorize-async
+  - symbol:capability-outbound-document-generation:allowing-authorization-service.authorize-async
   - symbol:capability-saved-views:sv-authz.authorize-async
   - symbol:capability-task-center:stub-authorization-service.authorize-async
   - symbol:entity-service-case:f0024-authorization-service.authorize-async
@@ -3913,9 +3916,9 @@ symbols:
   - symbol:capability-dashboard-home:dashboard-repository-breakdown-and-aging-tests.get-opportunity-breakdown-async-submission-supports-all-group-by-dimensions
   callees: []
   instantiates:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
 - id: symbol:capability-dashboard-home:dashboard-repository-breakdown-and-aging-tests.new-renewal
   node: capability:dashboard-home
   kind: method
@@ -5081,7 +5084,7 @@ symbols:
   - symbol:capability-dashboard-home:dashboard-scope-filtering-tests.add-scope-submission-if-missing
   - symbol:capability-dashboard-home:dashboard-scope-filtering-tests.upsert-user-profile
   instantiates:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
   - symbol:entity-account:account.account
   - symbol:entity-broker:broker-region.broker-region
   - symbol:entity-broker:broker.broker
@@ -9426,11 +9429,11 @@ symbols:
   kind: function
   name: DocumentDetailView
   file: experience/src/features/documents/components/DocumentDetailView.tsx
-  line: 21
+  line: 22
   signature: export function DocumentDetailView()
   visibility: export
   language: typescript
-  end_line: 250
+  end_line: 253
   callers: []
   callees:
   - symbol:capability-document-management:account-detail-page.format-date
@@ -9458,11 +9461,11 @@ symbols:
   kind: function
   name: DocumentPreview
   file: experience/src/features/documents/components/DocumentDetailView.tsx
-  line: 261
+  line: 264
   signature: function DocumentPreview(
   visibility: local
   language: typescript
-  end_line: 294
+  end_line: 297
   callers: []
   callees:
   - symbol:capability-document-management:document-detail-view.preview-kind-of
@@ -9475,11 +9478,11 @@ symbols:
   kind: function
   name: formatBytes
   file: experience/src/features/documents/components/DocumentDetailView.tsx
-  line: 314
+  line: 317
   signature: 'function formatBytes(value: number)'
   visibility: local
   language: typescript
-  end_line: 318
+  end_line: 321
   callers:
   - symbol:capability-document-management:document-detail-view.document-detail-view
   callees: []
@@ -9488,11 +9491,11 @@ symbols:
   kind: function
   name: formatDate
   file: experience/src/features/documents/components/DocumentDetailView.tsx
-  line: 320
+  line: 323
   signature: 'function formatDate(value: string)'
   visibility: local
   language: typescript
-  end_line: 322
+  end_line: 325
   callers:
   - symbol:capability-document-management:account-detail-page.account-detail-page
   - symbol:capability-document-management:document-detail-view.document-detail-view
@@ -9506,11 +9509,11 @@ symbols:
   kind: function
   name: parentLink
   file: experience/src/features/documents/components/DocumentDetailView.tsx
-  line: 296
+  line: 299
   signature: 'function parentLink(parent:'
   visibility: local
   language: typescript
-  end_line: 300
+  end_line: 303
   callers:
   - symbol:capability-document-management:document-detail-view.document-detail-view
   callees: []
@@ -9519,11 +9522,11 @@ symbols:
   kind: function
   name: parseTags
   file: experience/src/features/documents/components/DocumentDetailView.tsx
-  line: 302
+  line: 305
   signature: 'function parseTags(value: string)'
   visibility: local
   language: typescript
-  end_line: 304
+  end_line: 307
   callers:
   - symbol:capability-document-management:document-detail-view.document-detail-view
   - symbol:capability-document-management:document-templates-library.document-templates-library
@@ -9533,11 +9536,11 @@ symbols:
   kind: function
   name: Pill
   file: experience/src/features/documents/components/DocumentDetailView.tsx
-  line: 306
+  line: 309
   signature: function Pill(
   visibility: local
   language: typescript
-  end_line: 312
+  end_line: 315
   callers: []
   callees: []
 - id: symbol:capability-document-management:document-detail-view.preview-kind
@@ -9545,11 +9548,11 @@ symbols:
   kind: type
   name: PreviewKind
   file: experience/src/features/documents/components/DocumentDetailView.tsx
-  line: 252
+  line: 255
   signature: type PreviewKind = 'pdf' | 'image'
   visibility: local
   language: typescript
-  end_line: 252
+  end_line: 255
   callers: []
   callees: []
 - id: symbol:capability-document-management:document-detail-view.preview-kind-of
@@ -9557,11 +9560,11 @@ symbols:
   kind: function
   name: previewKindOf
   file: experience/src/features/documents/components/DocumentDetailView.tsx
-  line: 254
+  line: 257
   signature: 'function previewKindOf(fileName: string): PreviewKind | null'
   visibility: local
   language: typescript
-  end_line: 259
+  end_line: 262
   callers:
   - symbol:capability-document-management:document-detail-view.document-detail-view
   - symbol:capability-document-management:document-detail-view.document-preview
@@ -10603,7 +10606,7 @@ symbols:
   signature: public class DocumentServiceTests
   visibility: public
   language: csharp
-  end_line: 215
+  end_line: 218
   is_test: true
   callers: []
   callees: []
@@ -10631,7 +10634,7 @@ symbols:
   visibility: private
   language: csharp
   container: DocumentServiceTests
-  end_line: 214
+  end_line: 217
   is_test: true
   callers: []
   callees: []
@@ -10771,6 +10774,7 @@ symbols:
   - symbol:capability-document-management:document-service.upload-async
   - symbol:capability-document-management:document-template-service.link-to-parent-async
   - symbol:capability-document-management:document-template-service.upload-template-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
   callees:
   - symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
   - symbol:entity-document:document-ids.stable-guid
@@ -11621,6 +11625,7 @@ symbols:
   - symbol:capability-document-management:document-detail-view.document-detail-view
   - symbol:capability-document-management:document-templates-library.document-templates-library
   - symbol:capability-document-management:document-upload-dialog.document-upload-dialog
+  - symbol:capability-document-management:generate-document-panel.generate-document-panel
   callees: []
 - id: symbol:capability-document-management:document-upload-dialog.document-upload-dialog
   node: capability:document-management
@@ -11749,13 +11754,13 @@ symbols:
   kind: method
   name: AppendEventAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 197
+  line: 200
   signature: public Task<DocumentSidecarDto?> AppendEventAsync(string documentId,
     DocumentEventDto evt, CancellationToken ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 198
+  end_line: 201
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.append-event-async
@@ -11772,13 +11777,13 @@ symbols:
   kind: method
   name: AppendReplacementAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 191
+  line: 194
   signature: public Task<DocumentWriteResult> AppendReplacementAsync(string documentId,
     DocumentReplaceCommand command, Stream binary, CancellationToken ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 192
+  end_line: 195
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.append-replacement-async
@@ -11804,6 +11809,29 @@ symbols:
   is_test: true
   callers: []
   callees: []
+- id: symbol:capability-document-management:fake-document-repository.create-generated-available-async
+  node: capability:document-management
+  kind: method
+  name: CreateGeneratedAvailableAsync
+  file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
+  line: 179
+  signature: public Task<DocumentWriteResult> CreateGeneratedAvailableAsync(DocumentGeneratedWriteCommand
+    command, Stream binary, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 180
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.create-generated-available-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.create-generated-available-async
+  instantiates:
+  - symbol:capability-document-management:i-document-repository.document-write-result
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.document-generated-write-command
+  - symbol:capability-document-management:i-document-repository.document-write-result
 - id: symbol:capability-document-management:fake-document-repository.create-quarantined-async
   node: capability:document-management
   kind: method
@@ -11832,13 +11860,13 @@ symbols:
   kind: method
   name: FindSidecarAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 185
+  line: 188
   signature: public Task<DocumentSidecarDto?> FindSidecarAsync(string documentId,
     CancellationToken ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 186
+  end_line: 189
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.find-sidecar-async
@@ -11853,13 +11881,13 @@ symbols:
   kind: method
   name: IncrementTemplateUseAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 200
+  line: 203
   signature: public Task<DocumentSidecarDto?> IncrementTemplateUseAsync(string templateId,
     string newDocumentId, Guid byUserId, CancellationToken ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 201
+  end_line: 204
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.increment-template-use-async
@@ -11874,13 +11902,13 @@ symbols:
   kind: method
   name: ListParentSidecarsAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 179
+  line: 182
   signature: public Task<IReadOnlyList<DocumentSidecarDto>> ListParentSidecarsAsync(DocumentParentRefDto
     parent, CancellationToken ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 180
+  end_line: 183
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.list-parent-sidecars-async
@@ -11897,13 +11925,13 @@ symbols:
   kind: method
   name: ListPromotableQuarantineEntriesAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 203
+  line: 206
   signature: public Task<IReadOnlyList<QuarantineEntryDto>> ListPromotableQuarantineEntriesAsync(DateTime
     nowUtc, TimeSpan hold, CancellationToken ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 204
+  end_line: 207
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.list-promotable-quarantine-entries-async
@@ -11917,13 +11945,13 @@ symbols:
   kind: method
   name: ListRetentionCandidatesAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 209
+  line: 212
   signature: public Task<IReadOnlyList<RetentionCandidateDto>> ListRetentionCandidatesAsync(CancellationToken
     ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 210
+  end_line: 213
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.list-retention-candidates-async
@@ -11937,13 +11965,13 @@ symbols:
   kind: method
   name: ListTemplateSidecarsAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 182
+  line: 185
   signature: public Task<IReadOnlyList<DocumentSidecarDto>> ListTemplateSidecarsAsync(CancellationToken
     ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 183
+  end_line: 186
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.list-template-sidecars-async
@@ -11958,13 +11986,13 @@ symbols:
   kind: method
   name: OpenVersionForReadAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 188
+  line: 191
   signature: public Task<DocumentBinaryRead?> OpenVersionForReadAsync(string documentId,
     string versionRef, CancellationToken ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 189
+  end_line: 192
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.open-version-for-read-async
@@ -11978,13 +12006,13 @@ symbols:
   kind: method
   name: PromoteAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 206
+  line: 209
   signature: public Task<PromoteResult> PromoteAsync(QuarantineEntryDto entry, CancellationToken
     ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 207
+  end_line: 210
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.promote-async
@@ -12001,13 +12029,13 @@ symbols:
   kind: method
   name: SweepAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 212
+  line: 215
   signature: public Task<RetentionSweepResultDto> SweepAsync(IReadOnlyList<RetentionCandidateDto>
     candidates, bool dryRun, CancellationToken ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 213
+  end_line: 216
   is_test: true
   callers:
   - symbol:capability-document-management:document-retention-hosted-service.execute-async
@@ -12025,13 +12053,13 @@ symbols:
   kind: method
   name: UpdateMetadataAsync
   file: engine/tests/Nebula.Tests/Unit/DocumentServiceTests.cs
-  line: 194
+  line: 197
   signature: public Task<DocumentSidecarDto?> UpdateMetadataAsync(string documentId,
     DocumentMetadataPatch patch, CancellationToken ct = default)
   visibility: public
   language: csharp
   container: FakeDocumentRepository
-  end_line: 195
+  end_line: 198
   is_test: true
   callers:
   - symbol:capability-document-management:i-document-repository.update-metadata-async
@@ -12138,16 +12166,82 @@ symbols:
   - symbol:entity-activity-timeline-event:i-timeline-repository.list-events-paged-async
   type_refs:
   - symbol:entity-activity-timeline-event:activity-timeline-event.activity-timeline-event
+- id: symbol:capability-document-management:generate-document-panel.generate-document-panel
+  node: capability:document-management
+  kind: function
+  name: GenerateDocumentPanel
+  file: experience/src/features/documents/components/GenerateDocumentPanel.tsx
+  line: 26
+  signature: export function GenerateDocumentPanel(
+  visibility: export
+  language: typescript
+  end_line: 143
+  callers: []
+  callees:
+  - symbol:capability-document-management:document-upload-dialog.describe-document-error
+  - symbol:capability-document-management:hooks.use-document-templates
+  - symbol:capability-document-management:hooks.use-issue-generated-document
+  - symbol:capability-document-management:hooks.use-preview-generated-document
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-parent-ref-dto
+  - symbol:capability-document-management:types.document-classification
+  - symbol:capability-document-management:types.document-parent-ref-dto
+  - symbol:capability-document-management:types.generated-artifact-family
+  - symbol:capability-document-management:types.generated-document-preview-response-dto
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-preview-response-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+- id: symbol:capability-document-management:generated-artifact-provenance.field
+  node: capability:document-management
+  kind: function
+  name: Field
+  file: experience/src/features/documents/components/GeneratedArtifactProvenance.tsx
+  line: 21
+  signature: function Field(
+  visibility: local
+  language: typescript
+  end_line: 28
+  callers: []
+  callees: []
+- id: symbol:capability-document-management:generated-artifact-provenance.generated-artifact-provenance
+  node: capability:document-management
+  kind: function
+  name: GeneratedArtifactProvenance
+  file: experience/src/features/documents/components/GeneratedArtifactProvenance.tsx
+  line: 3
+  signature: export function GeneratedArtifactProvenance(
+  visibility: export
+  language: typescript
+  end_line: 19
+  callers: []
+  callees:
+  - symbol:capability-document-management:generated-artifact-provenance.string-value
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+- id: symbol:capability-document-management:generated-artifact-provenance.string-value
+  node: capability:document-management
+  kind: function
+  name: stringValue
+  file: experience/src/features/documents/components/GeneratedArtifactProvenance.tsx
+  line: 30
+  signature: 'function stringValue(value: unknown): string | null'
+  visibility: local
+  language: typescript
+  end_line: 32
+  callers:
+  - symbol:capability-document-management:generated-artifact-provenance.generated-artifact-provenance
+  callees: []
 - id: symbol:capability-document-management:hooks.document-preview-state
   node: capability:document-management
   kind: interface
   name: DocumentPreviewState
   file: experience/src/features/documents/hooks.ts
-  line: 134
+  line: 137
   signature: interface DocumentPreviewState
   visibility: local
   language: typescript
-  end_line: 138
+  end_line: 141
   callers: []
   callees: []
 - id: symbol:capability-document-management:hooks.invalidate-parent
@@ -12155,14 +12249,16 @@ symbols:
   kind: function
   name: invalidateParent
   file: experience/src/features/documents/hooks.ts
-  line: 223
+  line: 255
   signature: 'function invalidateParent(queryClient: ReturnType<typeof useQueryClient>,
     parent: DocumentParentRefDto)'
   visibility: local
   language: typescript
-  end_line: 226
+  end_line: 258
   callers:
+  - symbol:capability-document-management:hooks.use-issue-generated-document
   - symbol:capability-document-management:hooks.use-link-document-template
+  - symbol:capability-document-management:hooks.use-regenerate-generated-document
   - symbol:capability-document-management:hooks.use-replace-document
   - symbol:capability-document-management:hooks.use-update-document-metadata
   - symbol:capability-document-management:hooks.use-upload-documents
@@ -12175,11 +12271,11 @@ symbols:
   kind: function
   name: parentParams
   file: experience/src/features/documents/hooks.ts
-  line: 216
+  line: 248
   signature: 'function parentParams(parent: DocumentParentRefDto): URLSearchParams'
   visibility: local
   language: typescript
-  end_line: 221
+  end_line: 253
   callers:
   - symbol:capability-document-management:hooks.use-document-completeness
   - symbol:capability-document-management:hooks.use-documents
@@ -12193,12 +12289,12 @@ symbols:
   kind: function
   name: useDocumentCompleteness
   file: experience/src/features/documents/hooks.ts
-  line: 47
+  line: 50
   signature: 'export function useDocumentCompleteness(parent: DocumentParentRefDto,
     enabled = true)'
   visibility: export
   language: typescript
-  end_line: 54
+  end_line: 57
   callers:
   - symbol:capability-document-management:parent-documents-panel.parent-documents-panel
   callees:
@@ -12213,11 +12309,11 @@ symbols:
   kind: function
   name: useDocumentDetail
   file: experience/src/features/documents/hooks.ts
-  line: 56
+  line: 59
   signature: 'export function useDocumentDetail(documentId: string)'
   visibility: export
   language: typescript
-  end_line: 62
+  end_line: 65
   callers:
   - symbol:capability-document-management:document-detail-view.document-detail-view
   callees: []
@@ -12229,11 +12325,11 @@ symbols:
   kind: function
   name: useDocumentMetadataSchemas
   file: experience/src/features/documents/hooks.ts
-  line: 64
+  line: 67
   signature: export function useDocumentMetadataSchemas()
   visibility: export
   language: typescript
-  end_line: 69
+  end_line: 72
   callers:
   - symbol:capability-document-management:document-detail-view.document-detail-view
   - symbol:capability-document-management:document-upload-dialog.document-upload-dialog
@@ -12246,12 +12342,12 @@ symbols:
   kind: function
   name: useDocumentPreviewUrl
   file: experience/src/features/documents/hooks.ts
-  line: 140
+  line: 143
   signature: 'export function useDocumentPreviewUrl(documentId: string, version: number
     | null): DocumentPreviewState'
   visibility: export
   language: typescript
-  end_line: 171
+  end_line: 174
   callers:
   - symbol:capability-document-management:document-detail-view.document-preview
   callees: []
@@ -12262,13 +12358,14 @@ symbols:
   kind: function
   name: useDocumentTemplates
   file: experience/src/features/documents/hooks.ts
-  line: 173
+  line: 176
   signature: export function useDocumentTemplates(
   visibility: export
   language: typescript
-  end_line: 189
+  end_line: 192
   callers:
   - symbol:capability-document-management:document-templates-library.document-templates-library
+  - symbol:capability-document-management:generate-document-panel.generate-document-panel
   callees: []
   type_refs:
   - symbol:capability-document-management:document-dtos.paginated-document-template-list-dto
@@ -12278,11 +12375,11 @@ symbols:
   kind: function
   name: useDocuments
   file: experience/src/features/documents/hooks.ts
-  line: 26
+  line: 29
   signature: export function useDocuments(
   visibility: export
   language: typescript
-  end_line: 45
+  end_line: 48
   callers:
   - symbol:capability-document-management:parent-documents-panel.parent-documents-panel
   callees:
@@ -12296,11 +12393,11 @@ symbols:
   kind: interface
   name: UseDocumentsOptions
   file: experience/src/features/documents/hooks.ts
-  line: 17
+  line: 20
   signature: interface UseDocumentsOptions
   visibility: local
   language: typescript
-  end_line: 24
+  end_line: 27
   callers: []
   callees: []
 - id: symbol:capability-document-management:hooks.use-download-document-version
@@ -12308,24 +12405,45 @@ symbols:
   kind: function
   name: useDownloadDocumentVersion
   file: experience/src/features/documents/hooks.ts
-  line: 127
+  line: 130
   signature: export function useDownloadDocumentVersion()
   visibility: export
   language: typescript
-  end_line: 132
+  end_line: 135
   callers:
   - symbol:capability-document-management:document-detail-view.document-detail-view
   callees: []
+- id: symbol:capability-document-management:hooks.use-issue-generated-document
+  node: capability:document-management
+  kind: function
+  name: useIssueGeneratedDocument
+  file: experience/src/features/documents/hooks.ts
+  line: 226
+  signature: 'export function useIssueGeneratedDocument(parent: DocumentParentRefDto)'
+  visibility: export
+  language: typescript
+  end_line: 233
+  callers:
+  - symbol:capability-document-management:generate-document-panel.generate-document-panel
+  callees:
+  - symbol:capability-document-management:hooks.invalidate-parent
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-parent-ref-dto
+  - symbol:capability-document-management:types.document-parent-ref-dto
+  - symbol:capability-document-management:types.generated-document-issue-response-dto
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-issue-response-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
 - id: symbol:capability-document-management:hooks.use-link-document-template
   node: capability:document-management
   kind: function
   name: useLinkDocumentTemplate
   file: experience/src/features/documents/hooks.ts
-  line: 205
+  line: 208
   signature: 'export function useLinkDocumentTemplate(parent: DocumentParentRefDto)'
   visibility: export
   language: typescript
-  end_line: 214
+  end_line: 217
   callers: []
   callees:
   - symbol:capability-document-management:hooks.invalidate-parent
@@ -12333,16 +12451,55 @@ symbols:
   type_refs:
   - symbol:capability-document-management:document-dtos.document-parent-ref-dto
   - symbol:capability-document-management:types.document-parent-ref-dto
+- id: symbol:capability-document-management:hooks.use-preview-generated-document
+  node: capability:document-management
+  kind: function
+  name: usePreviewGeneratedDocument
+  file: experience/src/features/documents/hooks.ts
+  line: 219
+  signature: export function usePreviewGeneratedDocument()
+  visibility: export
+  language: typescript
+  end_line: 224
+  callers:
+  - symbol:capability-document-management:generate-document-panel.generate-document-panel
+  callees: []
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-preview-response-dto
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-preview-response-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+- id: symbol:capability-document-management:hooks.use-regenerate-generated-document
+  node: capability:document-management
+  kind: function
+  name: useRegenerateGeneratedDocument
+  file: experience/src/features/documents/hooks.ts
+  line: 235
+  signature: 'export function useRegenerateGeneratedDocument(documentId: string, parent:
+    DocumentParentRefDto)'
+  visibility: export
+  language: typescript
+  end_line: 246
+  callers: []
+  callees:
+  - symbol:capability-document-management:hooks.invalidate-parent
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-parent-ref-dto
+  - symbol:capability-document-management:types.document-parent-ref-dto
+  - symbol:capability-document-management:types.generated-document-issue-response-dto
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-issue-response-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
 - id: symbol:capability-document-management:hooks.use-replace-document
   node: capability:document-management
   kind: function
   name: useReplaceDocument
   file: experience/src/features/documents/hooks.ts
-  line: 101
+  line: 104
   signature: 'export function useReplaceDocument(documentId: string, parent?: DocumentParentRefDto)'
   visibility: export
   language: typescript
-  end_line: 114
+  end_line: 117
   callers:
   - symbol:capability-document-management:document-detail-view.document-detail-view
   callees:
@@ -12355,12 +12512,12 @@ symbols:
   kind: function
   name: useUpdateDocumentMetadata
   file: experience/src/features/documents/hooks.ts
-  line: 116
+  line: 119
   signature: 'export function useUpdateDocumentMetadata(documentId: string, parent?:
     DocumentParentRefDto)'
   visibility: export
   language: typescript
-  end_line: 125
+  end_line: 128
   callers:
   - symbol:capability-document-management:document-detail-view.document-detail-view
   callees:
@@ -12377,11 +12534,11 @@ symbols:
   kind: function
   name: useUploadDocumentTemplate
   file: experience/src/features/documents/hooks.ts
-  line: 191
+  line: 194
   signature: export function useUploadDocumentTemplate()
   visibility: export
   language: typescript
-  end_line: 203
+  end_line: 206
   callers:
   - symbol:capability-document-management:document-templates-library.document-templates-library
   callees: []
@@ -12392,11 +12549,11 @@ symbols:
   kind: function
   name: useUploadDocuments
   file: experience/src/features/documents/hooks.ts
-  line: 71
+  line: 74
   signature: 'export function useUploadDocuments(parent: DocumentParentRefDto)'
   visibility: export
   language: typescript
-  end_line: 99
+  end_line: 102
   callers:
   - symbol:capability-document-management:document-upload-dialog.document-upload-dialog
   callees:
@@ -12427,9 +12584,11 @@ symbols:
   - symbol:capability-document-management:document-service.update-metadata-async
   - symbol:capability-document-management:document-service.upload-async
   - symbol:capability-document-management:document-template-service.link-to-parent-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.validate-request-async
   callees:
   - symbol:capability-document-management:allowing-document-gate.authorize-document-async
   - symbol:capability-document-management:document-classification-gate.authorize-document-async
+  - symbol:capability-outbound-document-generation:allowing-document-gate.authorize-document-async
   type_refs:
   - symbol:capability-document-management:document-dtos.document-parent-ref-dto
   - symbol:capability-document-management:i-document-classification-gate.document-access-decision
@@ -12450,9 +12609,11 @@ symbols:
   - symbol:capability-document-management:document-template-service.link-to-parent-async
   - symbol:capability-document-management:document-template-service.list-async
   - symbol:capability-document-management:document-template-service.upload-template-async
+  - symbol:capability-outbound-document-generation:outbound-template-governance-service.validate-published-template-async
   callees:
   - symbol:capability-document-management:allowing-document-gate.authorize-template-async
   - symbol:capability-document-management:document-classification-gate.authorize-template-async
+  - symbol:capability-outbound-document-generation:allowing-document-gate.authorize-template-async
   type_refs:
   - symbol:capability-document-management:i-document-classification-gate.document-access-decision
   - symbol:entity-user-profile:i-current-user-service.i-current-user-service
@@ -12563,9 +12724,11 @@ symbols:
   - symbol:capability-document-management:document-template-service.link-to-parent-async
   - symbol:capability-document-management:document-template-service.upload-template-async
   - symbol:capability-document-management:quarantine-promotion-worker.execute-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.generated-schema-async
   callees:
   - symbol:capability-document-management:fake-document-configuration-provider.get-snapshot-async
   - symbol:capability-document-management:yaml-document-configuration-provider.get-snapshot-async
+  - symbol:capability-outbound-document-generation:fake-document-configuration-provider.get-snapshot-async
   type_refs:
   - symbol:capability-document-management:i-document-configuration-provider.document-configuration-snapshot
 - id: symbol:capability-document-management:i-document-configuration-provider.i-document-configuration-provider
@@ -12625,22 +12788,56 @@ symbols:
   end_line: 13
   callers: []
   callees: []
+- id: symbol:capability-document-management:i-document-renderer.i-document-renderer
+  node: capability:document-management
+  kind: interface
+  name: IDocumentRenderer
+  file: engine/src/Nebula.Application/Interfaces/IDocumentRenderer.cs
+  line: 5
+  signature: public interface IDocumentRenderer
+  visibility: public
+  language: csharp
+  end_line: 11
+  callers: []
+  callees: []
+- id: symbol:capability-document-management:i-document-renderer.render-async
+  node: capability:document-management
+  kind: method
+  name: RenderAsync
+  file: engine/src/Nebula.Application/Interfaces/IDocumentRenderer.cs
+  line: 7
+  signature: Task<RenderedDocumentBinary> RenderAsync(
+  visibility: internal
+  language: csharp
+  container: IDocumentRenderer
+  end_line: 10
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  callees:
+  - symbol:capability-document-management:simple-pdf-document-renderer.render-async
+  - symbol:capability-outbound-document-generation:static-renderer.render-async
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-merge-context
+  - symbol:capability-outbound-document-generation:generated-document-dtos.rendered-document-binary
 - id: symbol:capability-document-management:i-document-repository.append-event-async
   node: capability:document-management
   kind: method
   name: AppendEventAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 37
+  line: 42
   signature: Task<DocumentSidecarDto?> AppendEventAsync(
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 40
+  end_line: 45
   callers:
   - symbol:capability-document-management:document-service.open-download-async
   callees:
   - symbol:capability-document-management:fake-document-repository.append-event-async
   - symbol:capability-document-management:local-file-system-document-repository.append-event-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.append-event-async
   type_refs:
   - symbol:capability-document-management:document-dtos.document-event-dto
   - symbol:capability-document-management:document-dtos.document-sidecar-dto
@@ -12651,19 +12848,40 @@ symbols:
   kind: method
   name: AppendReplacementAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 26
+  line: 31
   signature: Task<DocumentWriteResult> AppendReplacementAsync(
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 30
+  end_line: 35
   callers:
   - symbol:capability-document-management:document-service.replace-async
   callees:
   - symbol:capability-document-management:fake-document-repository.append-replacement-async
   - symbol:capability-document-management:local-file-system-document-repository.append-replacement-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.append-replacement-async
   type_refs:
   - symbol:capability-document-management:i-document-repository.document-replace-command
+  - symbol:capability-document-management:i-document-repository.document-write-result
+- id: symbol:capability-document-management:i-document-repository.create-generated-available-async
+  node: capability:document-management
+  kind: method
+  name: CreateGeneratedAvailableAsync
+  file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
+  line: 13
+  signature: Task<DocumentWriteResult> CreateGeneratedAvailableAsync(
+  visibility: internal
+  language: csharp
+  container: IDocumentRepository
+  end_line: 16
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  callees:
+  - symbol:capability-document-management:fake-document-repository.create-generated-available-async
+  - symbol:capability-document-management:local-file-system-document-repository.create-generated-available-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.create-generated-available-async
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.document-generated-write-command
   - symbol:capability-document-management:i-document-repository.document-write-result
 - id: symbol:capability-document-management:i-document-repository.create-quarantined-async
   node: capability:document-management
@@ -12683,6 +12901,7 @@ symbols:
   callees:
   - symbol:capability-document-management:fake-document-repository.create-quarantined-async
   - symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.create-quarantined-async
   type_refs:
   - symbol:capability-document-management:i-document-repository.document-upload-command
   - symbol:capability-document-management:i-document-repository.document-write-result
@@ -12691,12 +12910,24 @@ symbols:
   kind: record
   name: DocumentBinaryRead
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 94
+  line: 114
   signature: public sealed record DocumentBinaryRead(Stream Stream, string ContentType,
     string DownloadFileName, int Version, long SizeBytes)
   visibility: public
   language: csharp
-  end_line: 94
+  end_line: 114
+  callers: []
+  callees: []
+- id: symbol:capability-document-management:i-document-repository.document-generated-write-command
+  node: capability:document-management
+  kind: record
+  name: DocumentGeneratedWriteCommand
+  file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
+  line: 83
+  signature: public sealed record DocumentGeneratedWriteCommand(
+  visibility: public
+  language: csharp
+  end_line: 96
   callers: []
   callees: []
 - id: symbol:capability-document-management:i-document-repository.document-metadata-patch
@@ -12704,11 +12935,11 @@ symbols:
   kind: record
   name: DocumentMetadataPatch
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 84
+  line: 104
   signature: public sealed record DocumentMetadataPatch(
   visibility: public
   language: csharp
-  end_line: 90
+  end_line: 110
   callers: []
   callees: []
 - id: symbol:capability-document-management:i-document-repository.document-replace-command
@@ -12716,11 +12947,11 @@ symbols:
   kind: record
   name: DocumentReplaceCommand
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 78
+  line: 98
   signature: public sealed record DocumentReplaceCommand(
   visibility: public
   language: csharp
-  end_line: 82
+  end_line: 102
   callers: []
   callees: []
 - id: symbol:capability-document-management:i-document-repository.document-upload-command
@@ -12728,11 +12959,11 @@ symbols:
   kind: record
   name: DocumentUploadCommand
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 63
+  line: 68
   signature: public sealed record DocumentUploadCommand(
   visibility: public
   language: csharp
-  end_line: 76
+  end_line: 81
   callers: []
   callees: []
 - id: symbol:capability-document-management:i-document-repository.document-write-result
@@ -12740,12 +12971,12 @@ symbols:
   kind: record
   name: DocumentWriteResult
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 92
+  line: 112
   signature: public sealed record DocumentWriteResult(string? DocumentId, int? Version,
     string? ErrorCode, string? Detail)
   visibility: public
   language: csharp
-  end_line: 92
+  end_line: 112
   callers: []
   callees: []
 - id: symbol:capability-document-management:i-document-repository.find-sidecar-async
@@ -12753,13 +12984,13 @@ symbols:
   kind: method
   name: FindSidecarAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 19
+  line: 24
   signature: Task<DocumentSidecarDto?> FindSidecarAsync(string documentId, CancellationToken
     ct = default)
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 19
+  end_line: 24
   callers:
   - symbol:capability-document-management:document-service.get-detail-async
   - symbol:capability-document-management:document-service.open-download-async
@@ -12768,9 +12999,12 @@ symbols:
   - symbol:capability-document-management:document-template-service.link-to-parent-async
   - symbol:capability-document-management:document-template-service.upload-template-async
   - symbol:capability-document-management:quarantine-promotion-worker.promote-due-entries-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.regenerate-async
+  - symbol:capability-outbound-document-generation:outbound-template-governance-service.validate-published-template-async
   callees:
   - symbol:capability-document-management:fake-document-repository.find-sidecar-async
   - symbol:capability-document-management:local-file-system-document-repository.find-sidecar-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.find-sidecar-async
   type_refs:
   - symbol:capability-document-management:document-dtos.document-sidecar-dto
   - symbol:capability-document-management:types.document-sidecar-dto
@@ -12783,7 +13017,7 @@ symbols:
   signature: public interface IDocumentRepository
   visibility: public
   language: csharp
-  end_line: 61
+  end_line: 66
   callers: []
   callees: []
 - id: symbol:capability-document-management:i-document-repository.increment-template-use-async
@@ -12791,17 +13025,19 @@ symbols:
   kind: method
   name: IncrementTemplateUseAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 42
+  line: 47
   signature: Task<DocumentSidecarDto?> IncrementTemplateUseAsync(
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 46
+  end_line: 51
   callers:
   - symbol:capability-document-management:document-template-service.link-to-parent-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
   callees:
   - symbol:capability-document-management:fake-document-repository.increment-template-use-async
   - symbol:capability-document-management:local-file-system-document-repository.increment-template-use-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.increment-template-use-async
   type_refs:
   - symbol:capability-document-management:document-dtos.document-sidecar-dto
   - symbol:capability-document-management:types.document-sidecar-dto
@@ -12810,17 +13046,18 @@ symbols:
   kind: method
   name: ListParentSidecarsAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 13
+  line: 18
   signature: Task<IReadOnlyList<DocumentSidecarDto>> ListParentSidecarsAsync(
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 15
+  end_line: 20
   callers:
   - symbol:capability-document-management:document-service.list-async
   callees:
   - symbol:capability-document-management:fake-document-repository.list-parent-sidecars-async
   - symbol:capability-document-management:local-file-system-document-repository.list-parent-sidecars-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.list-parent-sidecars-async
   type_refs:
   - symbol:capability-document-management:document-dtos.document-parent-ref-dto
   - symbol:capability-document-management:document-dtos.document-sidecar-dto
@@ -12831,17 +13068,18 @@ symbols:
   kind: method
   name: ListPromotableQuarantineEntriesAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 48
+  line: 53
   signature: Task<IReadOnlyList<QuarantineEntryDto>> ListPromotableQuarantineEntriesAsync(
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 51
+  end_line: 56
   callers:
   - symbol:capability-document-management:quarantine-promotion-worker.promote-due-entries-async
   callees:
   - symbol:capability-document-management:fake-document-repository.list-promotable-quarantine-entries-async
   - symbol:capability-document-management:local-file-system-document-repository.list-promotable-quarantine-entries-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.list-promotable-quarantine-entries-async
   type_refs:
   - symbol:capability-document-management:i-document-repository.quarantine-entry-dto
 - id: symbol:capability-document-management:i-document-repository.list-retention-candidates-async
@@ -12849,18 +13087,19 @@ symbols:
   kind: method
   name: ListRetentionCandidatesAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 55
+  line: 60
   signature: Task<IReadOnlyList<RetentionCandidateDto>> ListRetentionCandidatesAsync(CancellationToken
     ct = default)
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 55
+  end_line: 60
   callers:
   - symbol:capability-document-management:document-retention-service.sweep-async
   callees:
   - symbol:capability-document-management:fake-document-repository.list-retention-candidates-async
   - symbol:capability-document-management:local-file-system-document-repository.list-retention-candidates-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.list-retention-candidates-async
   type_refs:
   - symbol:capability-document-management:i-document-repository.retention-candidate-dto
 - id: symbol:capability-document-management:i-document-repository.list-template-sidecars-async
@@ -12868,18 +13107,19 @@ symbols:
   kind: method
   name: ListTemplateSidecarsAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 17
+  line: 22
   signature: Task<IReadOnlyList<DocumentSidecarDto>> ListTemplateSidecarsAsync(CancellationToken
     ct = default)
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 17
+  end_line: 22
   callers:
   - symbol:capability-document-management:document-template-service.list-async
   callees:
   - symbol:capability-document-management:fake-document-repository.list-template-sidecars-async
   - symbol:capability-document-management:local-file-system-document-repository.list-template-sidecars-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.list-template-sidecars-async
   type_refs:
   - symbol:capability-document-management:document-dtos.document-sidecar-dto
   - symbol:capability-document-management:types.document-sidecar-dto
@@ -12888,18 +13128,19 @@ symbols:
   kind: method
   name: OpenVersionForReadAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 21
+  line: 26
   signature: Task<DocumentBinaryRead?> OpenVersionForReadAsync(
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 24
+  end_line: 29
   callers:
   - symbol:capability-document-management:document-service.open-download-async
   - symbol:capability-document-management:document-template-service.link-to-parent-async
   callees:
   - symbol:capability-document-management:fake-document-repository.open-version-for-read-async
   - symbol:capability-document-management:local-file-system-document-repository.open-version-for-read-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.open-version-for-read-async
   type_refs:
   - symbol:capability-document-management:i-document-repository.document-binary-read
 - id: symbol:capability-document-management:i-document-repository.promote-async
@@ -12907,18 +13148,19 @@ symbols:
   kind: method
   name: PromoteAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 53
+  line: 58
   signature: Task<PromoteResult> PromoteAsync(QuarantineEntryDto entry, CancellationToken
     ct = default)
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 53
+  end_line: 58
   callers:
   - symbol:capability-document-management:quarantine-promotion-worker.promote-due-entries-async
   callees:
   - symbol:capability-document-management:fake-document-repository.promote-async
   - symbol:capability-document-management:local-file-system-document-repository.promote-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.promote-async
   type_refs:
   - symbol:capability-document-management:i-document-repository.promote-result
   - symbol:capability-document-management:i-document-repository.quarantine-entry-dto
@@ -12927,11 +13169,11 @@ symbols:
   kind: record
   name: PromoteResult
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 98
+  line: 118
   signature: public sealed record PromoteResult(bool Promoted, string? ErrorCode)
   visibility: public
   language: csharp
-  end_line: 98
+  end_line: 118
   callers: []
   callees: []
 - id: symbol:capability-document-management:i-document-repository.quarantine-entry-dto
@@ -12939,12 +13181,12 @@ symbols:
   kind: record
   name: QuarantineEntryDto
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 96
+  line: 116
   signature: public sealed record QuarantineEntryDto(string DocumentId, int Version,
     string QuarantinePath, DateTime UploadedAtUtc)
   visibility: public
   language: csharp
-  end_line: 96
+  end_line: 116
   callers: []
   callees: []
 - id: symbol:capability-document-management:i-document-repository.retention-candidate-dto
@@ -12952,11 +13194,11 @@ symbols:
   kind: record
   name: RetentionCandidateDto
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 100
+  line: 120
   signature: public sealed record RetentionCandidateDto(
   visibility: public
   language: csharp
-  end_line: 105
+  end_line: 125
   callers: []
   callees: []
 - id: symbol:capability-document-management:i-document-repository.sweep-async
@@ -12964,18 +13206,19 @@ symbols:
   kind: method
   name: SweepAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 57
+  line: 62
   signature: Task<RetentionSweepResultDto> SweepAsync(
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 60
+  end_line: 65
   callers:
   - symbol:capability-document-management:document-retention-hosted-service.execute-async
   - symbol:capability-document-management:document-retention-service.sweep-async
   callees:
   - symbol:capability-document-management:fake-document-repository.sweep-async
   - symbol:capability-document-management:local-file-system-document-repository.sweep-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.sweep-async
   type_refs:
   - symbol:capability-document-management:document-dtos.retention-sweep-result-dto
   - symbol:capability-document-management:i-document-repository.retention-candidate-dto
@@ -12984,17 +13227,18 @@ symbols:
   kind: method
   name: UpdateMetadataAsync
   file: engine/src/Nebula.Application/Interfaces/IDocumentRepository.cs
-  line: 32
+  line: 37
   signature: Task<DocumentSidecarDto?> UpdateMetadataAsync(
   visibility: internal
   language: csharp
   container: IDocumentRepository
-  end_line: 35
+  end_line: 40
   callers:
   - symbol:capability-document-management:document-service.update-metadata-async
   callees:
   - symbol:capability-document-management:fake-document-repository.update-metadata-async
   - symbol:capability-document-management:local-file-system-document-repository.update-metadata-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.update-metadata-async
   type_refs:
   - symbol:capability-document-management:document-dtos.document-sidecar-dto
   - symbol:capability-document-management:i-document-repository.document-metadata-patch
@@ -13018,12 +13262,12 @@ symbols:
   kind: method
   name: AppendEventAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 280
+  line: 336
   signature: public async Task<DocumentSidecarDto?> AppendEventAsync(
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 304
+  end_line: 360
   callers:
   - symbol:capability-document-management:i-document-repository.append-event-async
   - symbol:capability-document-management:local-file-system-document-repository.increment-template-use-async
@@ -13043,12 +13287,12 @@ symbols:
   kind: method
   name: AppendReplacementAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 145
+  line: 201
   signature: public async Task<DocumentWriteResult> AppendReplacementAsync(
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 197
+  end_line: 253
   callers:
   - symbol:capability-document-management:i-document-repository.append-replacement-async
   callees:
@@ -13073,12 +13317,12 @@ symbols:
   kind: method
   name: AppendSweepAudit
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 546
+  line: 602
   signature: private void AppendSweepAudit(RetentionCandidateDto candidate, bool dryRun)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 561
+  end_line: 617
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.sweep-async
   callees: []
@@ -13089,12 +13333,12 @@ symbols:
   kind: method
   name: ContentType
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 579
+  line: 635
   signature: private static string ContentType(string fileName)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 590
+  end_line: 646
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.open-version-for-read-async
   callees: []
@@ -13103,17 +13347,55 @@ symbols:
   kind: method
   name: CopyAndHashAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 563
+  line: 619
   signature: private static async Task<string> CopyAndHashAsync(Stream input, string
     targetPath, CancellationToken ct)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 577
+  end_line: 633
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.append-replacement-async
+  - symbol:capability-document-management:local-file-system-document-repository.create-generated-available-async
   - symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
   callees: []
+- id: symbol:capability-document-management:local-file-system-document-repository.create-generated-available-async
+  node: capability:document-management
+  kind: method
+  name: CreateGeneratedAvailableAsync
+  file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
+  line: 80
+  signature: public async Task<DocumentWriteResult> CreateGeneratedAvailableAsync(
+  visibility: public
+  language: csharp
+  container: LocalFileSystemDocumentRepository
+  end_line: 134
+  callers:
+  - symbol:capability-document-management:i-document-repository.create-generated-available-async
+  callees:
+  - symbol:capability-document-management:local-file-system-document-repository.copy-and-hash-async
+  - symbol:capability-document-management:local-file-system-document-repository.disambiguate-logical-name
+  - symbol:capability-document-management:local-file-system-document-repository.make-safe-logical-name
+  - symbol:capability-document-management:local-file-system-document-repository.normalize-metadata
+  - symbol:capability-document-management:local-file-system-document-repository.parent-directory
+  - symbol:capability-document-management:local-file-system-document-repository.sidecar-path
+  - symbol:capability-document-management:local-file-system-document-repository.write-sidecar-async
+  - symbol:entity-document:document-ids.new-document-id
+  implements:
+  - symbol:capability-document-management:i-document-repository.create-generated-available-async
+  instantiates:
+  - symbol:capability-document-management:document-dtos.document-audit-timestamps-dto
+  - symbol:capability-document-management:document-dtos.document-event-dto
+  - symbol:capability-document-management:document-dtos.document-provenance-dto
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:document-dtos.document-version-dto
+  - symbol:capability-document-management:i-document-repository.document-write-result
+  - symbol:capability-document-management:types.document-event-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+  - symbol:capability-document-management:types.document-version-dto
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.document-generated-write-command
+  - symbol:capability-document-management:i-document-repository.document-write-result
 - id: symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
   node: capability:document-management
   kind: method
@@ -13157,14 +13439,15 @@ symbols:
   kind: method
   name: DisambiguateLogicalName
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 592
+  line: 648
   signature: private static string DisambiguateLogicalName(string directory, string
     logicalName)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 599
+  end_line: 655
   callers:
+  - symbol:capability-document-management:local-file-system-document-repository.create-generated-available-async
   - symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
   callees: []
 - id: symbol:capability-document-management:local-file-system-document-repository.empty-metadata
@@ -13172,12 +13455,12 @@ symbols:
   kind: method
   name: EmptyMetadata
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 504
+  line: 560
   signature: private static JsonElement EmptyMetadata()
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 508
+  end_line: 564
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.normalize-metadata
   callees: []
@@ -13186,13 +13469,13 @@ symbols:
   kind: method
   name: FindSidecarAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 100
+  line: 156
   signature: public async Task<DocumentSidecarDto?> FindSidecarAsync(string documentId,
     CancellationToken ct = default)
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 115
+  end_line: 171
   callers:
   - symbol:capability-document-management:i-document-repository.find-sidecar-async
   - symbol:capability-document-management:local-file-system-document-repository.append-event-async
@@ -13214,12 +13497,12 @@ symbols:
   kind: method
   name: IncrementTemplateUseAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 306
+  line: 362
   signature: public async Task<DocumentSidecarDto?> IncrementTemplateUseAsync(
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 320
+  end_line: 376
   callers:
   - symbol:capability-document-management:i-document-repository.increment-template-use-async
   callees:
@@ -13239,12 +13522,12 @@ symbols:
   kind: method
   name: IsUnderRoot
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 539
+  line: 595
   signature: private bool IsUnderRoot(string path)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 544
+  end_line: 600
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.open-version-for-read-async
   callees: []
@@ -13253,12 +13536,12 @@ symbols:
   kind: method
   name: JsonEquals
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 510
+  line: 566
   signature: private static bool JsonEquals(JsonElement left, JsonElement right)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 511
+  end_line: 567
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.update-metadata-async
   callees:
@@ -13268,12 +13551,12 @@ symbols:
   kind: method
   name: ListParentSidecarsAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 80
+  line: 136
   signature: public async Task<IReadOnlyList<DocumentSidecarDto>> ListParentSidecarsAsync(
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 89
+  end_line: 145
   callers:
   - symbol:capability-document-management:i-document-repository.list-parent-sidecars-async
   callees:
@@ -13291,12 +13574,12 @@ symbols:
   kind: method
   name: ListPromotableQuarantineEntriesAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 322
+  line: 378
   signature: public async Task<IReadOnlyList<QuarantineEntryDto>> ListPromotableQuarantineEntriesAsync(
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 338
+  end_line: 394
   callers:
   - symbol:capability-document-management:i-document-repository.list-promotable-quarantine-entries-async
   callees:
@@ -13313,13 +13596,13 @@ symbols:
   kind: method
   name: ListRetentionCandidatesAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 386
+  line: 442
   signature: public async Task<IReadOnlyList<RetentionCandidateDto>> ListRetentionCandidatesAsync(CancellationToken
     ct = default)
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 398
+  end_line: 454
   callers:
   - symbol:capability-document-management:i-document-repository.list-retention-candidates-async
   callees:
@@ -13335,13 +13618,13 @@ symbols:
   kind: method
   name: ListTemplateSidecarsAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 91
+  line: 147
   signature: public async Task<IReadOnlyList<DocumentSidecarDto>> ListTemplateSidecarsAsync(CancellationToken
     ct = default)
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 98
+  end_line: 154
   callers:
   - symbol:capability-document-management:i-document-repository.list-template-sidecars-async
   callees:
@@ -13360,7 +13643,7 @@ symbols:
   signature: 'public sealed class LocalFileSystemDocumentRepository : IDocumentRepository'
   visibility: public
   language: csharp
-  end_line: 619
+  end_line: 675
   callers: []
   callees: []
 - id: symbol:capability-document-management:local-file-system-document-repository.make-safe-logical-name
@@ -13368,13 +13651,14 @@ symbols:
   kind: method
   name: MakeSafeLogicalName
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 601
+  line: 657
   signature: private static string MakeSafeLogicalName(string value)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 611
+  end_line: 667
   callers:
+  - symbol:capability-document-management:local-file-system-document-repository.create-generated-available-async
   - symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
   callees: []
 - id: symbol:capability-document-management:local-file-system-document-repository.make-safe-segment
@@ -13382,12 +13666,12 @@ symbols:
   kind: method
   name: MakeSafeSegment
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 613
+  line: 669
   signature: private static string MakeSafeSegment(string value)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 618
+  end_line: 674
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.parent-directory
   callees: []
@@ -13396,13 +13680,13 @@ symbols:
   kind: method
   name: MarkPromoteFailed
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 434
+  line: 490
   signature: private async Task<PromoteResult> MarkPromoteFailed(DocumentSidecarDto
     sidecar, DocumentVersionDto version, string error, CancellationToken ct)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 448
+  end_line: 504
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.promote-async
   callees:
@@ -13423,13 +13707,14 @@ symbols:
   kind: method
   name: NormalizeMetadata
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 501
+  line: 557
   signature: private static JsonElement NormalizeMetadata(JsonElement metadata)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 502
+  end_line: 558
   callers:
+  - symbol:capability-document-management:local-file-system-document-repository.create-generated-available-async
   - symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
   - symbol:capability-document-management:local-file-system-document-repository.json-equals
   - symbol:capability-document-management:local-file-system-document-repository.normalize-sidecar
@@ -13441,13 +13726,13 @@ symbols:
   kind: method
   name: NormalizeSidecar
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 490
+  line: 546
   signature: private static DocumentSidecarDto NormalizeSidecar(DocumentSidecarDto
     sidecar)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 499
+  end_line: 555
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.read-sidecar-async
   callees:
@@ -13463,12 +13748,12 @@ symbols:
   kind: method
   name: OpenVersionForReadAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 117
+  line: 173
   signature: public async Task<DocumentBinaryRead?> OpenVersionForReadAsync(
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 143
+  end_line: 199
   callers:
   - symbol:capability-document-management:i-document-repository.open-version-for-read-async
   callees:
@@ -13487,13 +13772,14 @@ symbols:
   kind: method
   name: ParentDirectory
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 513
+  line: 569
   signature: private string ParentDirectory(DocumentParentRefDto parent)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 518
+  end_line: 574
   callers:
+  - symbol:capability-document-management:local-file-system-document-repository.create-generated-available-async
   - symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
   - symbol:capability-document-management:local-file-system-document-repository.list-parent-sidecars-async
   - symbol:capability-document-management:local-file-system-document-repository.sidecar-path
@@ -13508,13 +13794,13 @@ symbols:
   kind: method
   name: PromoteAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 340
+  line: 396
   signature: public async Task<PromoteResult> PromoteAsync(QuarantineEntryDto entry,
     CancellationToken ct = default)
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 384
+  end_line: 440
   callers:
   - symbol:capability-document-management:i-document-repository.promote-async
   callees:
@@ -13537,13 +13823,13 @@ symbols:
   kind: method
   name: QuarantinePath
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 536
+  line: 592
   signature: private string QuarantinePath(string documentId, int version, string
     extension)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 537
+  end_line: 593
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.append-replacement-async
   - symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
@@ -13554,13 +13840,13 @@ symbols:
   kind: method
   name: ReadSidecarAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 465
+  line: 521
   signature: private static async Task<DocumentSidecarDto?> ReadSidecarAsync(string
     path, CancellationToken ct)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 477
+  end_line: 533
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.find-sidecar-async
   - symbol:capability-document-management:local-file-system-document-repository.read-sidecars-async
@@ -13574,13 +13860,13 @@ symbols:
   kind: method
   name: ReadSidecarsAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 450
+  line: 506
   signature: private async Task<IReadOnlyList<DocumentSidecarDto>> ReadSidecarsAsync(IEnumerable<string>
     files, CancellationToken ct)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 463
+  end_line: 519
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.list-parent-sidecars-async
   - symbol:capability-document-management:local-file-system-document-repository.list-promotable-quarantine-entries-async
@@ -13596,15 +13882,16 @@ symbols:
   kind: method
   name: SidecarPath
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 520
+  line: 576
   signature: private string SidecarPath(DocumentSidecarDto sidecar)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 526
+  end_line: 582
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.append-event-async
   - symbol:capability-document-management:local-file-system-document-repository.append-replacement-async
+  - symbol:capability-document-management:local-file-system-document-repository.create-generated-available-async
   - symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
   - symbol:capability-document-management:local-file-system-document-repository.increment-template-use-async
   - symbol:capability-document-management:local-file-system-document-repository.mark-promote-failed
@@ -13621,12 +13908,12 @@ symbols:
   kind: method
   name: SweepAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 400
+  line: 456
   signature: public async Task<RetentionSweepResultDto> SweepAsync(
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 432
+  end_line: 488
   callers:
   - symbol:capability-document-management:document-retention-hosted-service.execute-async
   - symbol:capability-document-management:i-document-repository.sweep-async
@@ -13647,12 +13934,12 @@ symbols:
   kind: method
   name: UpdateMetadataAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 199
+  line: 255
   signature: public async Task<DocumentSidecarDto?> UpdateMetadataAsync(
   visibility: public
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 278
+  end_line: 334
   callers:
   - symbol:capability-document-management:i-document-repository.update-metadata-async
   callees:
@@ -13675,13 +13962,13 @@ symbols:
   kind: method
   name: VersionPath
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 528
+  line: 584
   signature: private string VersionPath(DocumentSidecarDto sidecar, DocumentVersionDto
     version)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 534
+  end_line: 590
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.open-version-for-read-async
   - symbol:capability-document-management:local-file-system-document-repository.promote-async
@@ -13698,16 +13985,17 @@ symbols:
   kind: method
   name: WriteSidecarAsync
   file: engine/src/Nebula.Infrastructure/Documents/LocalFileSystemDocumentRepository.cs
-  line: 479
+  line: 535
   signature: private static async Task WriteSidecarAsync(string path, DocumentSidecarDto
     sidecar, CancellationToken ct)
   visibility: private
   language: csharp
   container: LocalFileSystemDocumentRepository
-  end_line: 488
+  end_line: 544
   callers:
   - symbol:capability-document-management:local-file-system-document-repository.append-event-async
   - symbol:capability-document-management:local-file-system-document-repository.append-replacement-async
+  - symbol:capability-document-management:local-file-system-document-repository.create-generated-available-async
   - symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
   - symbol:capability-document-management:local-file-system-document-repository.increment-template-use-async
   - symbol:capability-document-management:local-file-system-document-repository.mark-promote-failed
@@ -13751,16 +14039,50 @@ symbols:
   type_refs:
   - symbol:capability-document-management:i-document-repository.quarantine-entry-dto
   - symbol:entity-document:i-quarantine-scanner.scan-result
+- id: symbol:capability-document-management:outbound-merge-data-assembler.assemble-async
+  node: capability:document-management
+  kind: method
+  name: AssembleAsync
+  file: engine/src/Nebula.Infrastructure/Documents/OutboundMergeDataAssembler.cs
+  line: 11
+  signature: public Task<OutboundMergeContext> AssembleAsync(
+  visibility: public
+  language: csharp
+  container: OutboundMergeDataAssembler
+  end_line: 38
+  callers:
+  - symbol:capability-outbound-document-generation:i-outbound-merge-data-assembler.assemble-async
+  callees: []
+  implements:
+  - symbol:capability-outbound-document-generation:i-outbound-merge-data-assembler.assemble-async
+  instantiates:
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-merge-context
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-merge-context
+- id: symbol:capability-document-management:outbound-merge-data-assembler.outbound-merge-data-assembler
+  node: capability:document-management
+  kind: class
+  name: OutboundMergeDataAssembler
+  file: engine/src/Nebula.Infrastructure/Documents/OutboundMergeDataAssembler.cs
+  line: 9
+  signature: 'public sealed class OutboundMergeDataAssembler : IOutboundMergeDataAssembler'
+  visibility: public
+  language: csharp
+  end_line: 39
+  callers: []
+  callees: []
 - id: symbol:capability-document-management:parent-documents-panel.document-row
   node: capability:document-management
   kind: function
   name: DocumentRow
   file: experience/src/features/documents/components/ParentDocumentsPanel.tsx
-  line: 78
+  line: 81
   signature: function DocumentRow(
   visibility: local
   language: typescript
-  end_line: 98
+  end_line: 101
   callers: []
   callees:
   - symbol:capability-document-management:account-detail-page.format-date
@@ -13777,11 +14099,11 @@ symbols:
   kind: function
   name: formatDate
   file: experience/src/features/documents/components/ParentDocumentsPanel.tsx
-  line: 123
+  line: 126
   signature: 'function formatDate(value: string)'
   visibility: local
   language: typescript
-  end_line: 125
+  end_line: 128
   callers:
   - symbol:capability-document-management:account-detail-page.account-detail-page
   - symbol:capability-document-management:document-detail-view.document-detail-view
@@ -13795,11 +14117,11 @@ symbols:
   kind: function
   name: Metric
   file: experience/src/features/documents/components/ParentDocumentsPanel.tsx
-  line: 100
+  line: 103
   signature: function Metric(
   visibility: local
   language: typescript
-  end_line: 106
+  end_line: 109
   callers: []
   callees: []
 - id: symbol:capability-document-management:parent-documents-panel.parent-documents-panel
@@ -13807,11 +14129,11 @@ symbols:
   kind: function
   name: ParentDocumentsPanel
   file: experience/src/features/documents/components/ParentDocumentsPanel.tsx
-  line: 17
+  line: 18
   signature: export function ParentDocumentsPanel(
   visibility: export
   language: typescript
-  end_line: 76
+  end_line: 79
   callers: []
   callees:
   - symbol:capability-document-management:hooks.use-document-completeness
@@ -13823,11 +14145,11 @@ symbols:
   kind: interface
   name: ParentDocumentsPanelProps
   file: experience/src/features/documents/components/ParentDocumentsPanel.tsx
-  line: 11
+  line: 12
   signature: interface ParentDocumentsPanelProps
   visibility: local
   language: typescript
-  end_line: 15
+  end_line: 16
   callers: []
   callees: []
 - id: symbol:capability-document-management:parent-documents-panel.status-pill
@@ -13835,11 +14157,11 @@ symbols:
   kind: function
   name: StatusPill
   file: experience/src/features/documents/components/ParentDocumentsPanel.tsx
-  line: 108
+  line: 111
   signature: function StatusPill(
   visibility: local
   language: typescript
-  end_line: 121
+  end_line: 124
   callers: []
   callees: []
 - id: symbol:capability-document-management:policy-detail-page.action-modal
@@ -14113,6 +14435,56 @@ symbols:
   visibility: local
   language: typescript
   end_line: 50
+  callers: []
+  callees: []
+- id: symbol:capability-document-management:simple-pdf-document-renderer.escape-pdf-text
+  node: capability:document-management
+  kind: method
+  name: EscapePdfText
+  file: engine/src/Nebula.Infrastructure/Documents/SimplePdfDocumentRenderer.cs
+  line: 51
+  signature: private static string EscapePdfText(string value)
+  visibility: private
+  language: csharp
+  container: SimplePdfDocumentRenderer
+  end_line: 54
+  callers:
+  - symbol:capability-document-management:simple-pdf-document-renderer.render-async
+  callees: []
+- id: symbol:capability-document-management:simple-pdf-document-renderer.render-async
+  node: capability:document-management
+  kind: method
+  name: RenderAsync
+  file: engine/src/Nebula.Infrastructure/Documents/SimplePdfDocumentRenderer.cs
+  line: 10
+  signature: public Task<RenderedDocumentBinary> RenderAsync(
+  visibility: public
+  language: csharp
+  container: SimplePdfDocumentRenderer
+  end_line: 49
+  callers:
+  - symbol:capability-document-management:i-document-renderer.render-async
+  callees:
+  - symbol:capability-document-management:simple-pdf-document-renderer.escape-pdf-text
+  implements:
+  - symbol:capability-document-management:i-document-renderer.render-async
+  instantiates:
+  - symbol:capability-outbound-document-generation:generated-document-dtos.rendered-document-binary
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-merge-context
+  - symbol:capability-outbound-document-generation:generated-document-dtos.rendered-document-binary
+- id: symbol:capability-document-management:simple-pdf-document-renderer.simple-pdf-document-renderer
+  node: capability:document-management
+  kind: class
+  name: SimplePdfDocumentRenderer
+  file: engine/src/Nebula.Infrastructure/Documents/SimplePdfDocumentRenderer.cs
+  line: 8
+  signature: 'public sealed class SimplePdfDocumentRenderer : IDocumentRenderer'
+  visibility: public
+  language: csharp
+  end_line: 55
   callers: []
   callees: []
 - id: symbol:capability-document-management:submission-detail-page.can-archive-submission
@@ -14527,11 +14899,11 @@ symbols:
   kind: interface
   name: DocumentCompletenessSignalDto
   file: experience/src/features/documents/types.ts
-  line: 157
+  line: 198
   signature: export interface DocumentCompletenessSignalDto
   visibility: export
   language: typescript
-  end_line: 166
+  end_line: 207
   callers: []
   callees: []
 - id: symbol:capability-document-management:types.document-detail-dto
@@ -14539,11 +14911,11 @@ symbols:
   kind: interface
   name: DocumentDetailDto
   file: experience/src/features/documents/types.ts
-  line: 127
+  line: 168
   signature: export interface DocumentDetailDto
   visibility: export
   language: typescript
-  end_line: 130
+  end_line: 171
   callers: []
   callees: []
 - id: symbol:capability-document-management:types.document-event-dto
@@ -14661,11 +15033,11 @@ symbols:
   kind: interface
   name: DocumentMetadataUpdateRequestDto
   file: experience/src/features/documents/types.ts
-  line: 150
+  line: 191
   signature: export interface DocumentMetadataUpdateRequestDto
   visibility: export
   language: typescript
-  end_line: 155
+  end_line: 196
   callers: []
   callees: []
 - id: symbol:capability-document-management:types.document-metadata-value
@@ -14710,11 +15082,11 @@ symbols:
   kind: interface
   name: DocumentSidecarDto
   file: experience/src/features/documents/types.ts
-  line: 102
+  line: 143
   signature: export interface DocumentSidecarDto
   visibility: export
   language: typescript
-  end_line: 125
+  end_line: 166
   callers: []
   callees: []
 - id: symbol:capability-document-management:types.document-status
@@ -14734,11 +15106,11 @@ symbols:
   kind: interface
   name: DocumentTemplateDto
   file: experience/src/features/documents/types.ts
-  line: 168
+  line: 209
   signature: export interface DocumentTemplateDto
   visibility: export
   language: typescript
-  end_line: 178
+  end_line: 219
   callers: []
   callees: []
 - id: symbol:capability-document-management:types.document-upload-accepted-item-dto
@@ -14746,11 +15118,11 @@ symbols:
   kind: interface
   name: DocumentUploadAcceptedItemDto
   file: experience/src/features/documents/types.ts
-  line: 132
+  line: 173
   signature: export interface DocumentUploadAcceptedItemDto
   visibility: export
   language: typescript
-  end_line: 136
+  end_line: 177
   callers: []
   callees: []
 - id: symbol:capability-document-management:types.document-upload-rejected-item-dto
@@ -14758,11 +15130,11 @@ symbols:
   kind: interface
   name: DocumentUploadRejectedItemDto
   file: experience/src/features/documents/types.ts
-  line: 138
+  line: 179
   signature: export interface DocumentUploadRejectedItemDto
   visibility: export
   language: typescript
-  end_line: 143
+  end_line: 184
   callers: []
   callees: []
 - id: symbol:capability-document-management:types.document-upload-response-dto
@@ -14770,11 +15142,11 @@ symbols:
   kind: interface
   name: DocumentUploadResponseDto
   file: experience/src/features/documents/types.ts
-  line: 145
+  line: 186
   signature: export interface DocumentUploadResponseDto
   visibility: export
   language: typescript
-  end_line: 148
+  end_line: 189
   callers: []
   callees: []
 - id: symbol:capability-document-management:types.document-version-dto
@@ -14787,6 +15159,66 @@ symbols:
   visibility: export
   language: typescript
   end_line: 48
+  callers: []
+  callees: []
+- id: symbol:capability-document-management:types.generated-artifact-family
+  node: capability:document-management
+  kind: type
+  name: GeneratedArtifactFamily
+  file: experience/src/features/documents/types.ts
+  line: 102
+  signature: export type GeneratedArtifactFamily = 'coi' | 'acord' | 'proposal'
+  visibility: export
+  language: typescript
+  end_line: 102
+  callers: []
+  callees: []
+- id: symbol:capability-document-management:types.generated-document-issue-response-dto
+  node: capability:document-management
+  kind: interface
+  name: GeneratedDocumentIssueResponseDto
+  file: experience/src/features/documents/types.ts
+  line: 131
+  signature: export interface GeneratedDocumentIssueResponseDto
+  visibility: export
+  language: typescript
+  end_line: 141
+  callers: []
+  callees: []
+- id: symbol:capability-document-management:types.generated-document-merge-diagnostic-dto
+  node: capability:document-management
+  kind: interface
+  name: GeneratedDocumentMergeDiagnosticDto
+  file: experience/src/features/documents/types.ts
+  line: 114
+  signature: export interface GeneratedDocumentMergeDiagnosticDto
+  visibility: export
+  language: typescript
+  end_line: 118
+  callers: []
+  callees: []
+- id: symbol:capability-document-management:types.generated-document-preview-response-dto
+  node: capability:document-management
+  kind: interface
+  name: GeneratedDocumentPreviewResponseDto
+  file: experience/src/features/documents/types.ts
+  line: 120
+  signature: export interface GeneratedDocumentPreviewResponseDto
+  visibility: export
+  language: typescript
+  end_line: 129
+  callers: []
+  callees: []
+- id: symbol:capability-document-management:types.generated-document-request-dto
+  node: capability:document-management
+  kind: interface
+  name: GeneratedDocumentRequestDto
+  file: experience/src/features/documents/types.ts
+  line: 104
+  signature: export interface GeneratedDocumentRequestDto
+  visibility: export
+  language: typescript
+  end_line: 112
   callers: []
   callees: []
 - id: symbol:capability-document-management:types.paginated-document-list-dto
@@ -14806,11 +15238,11 @@ symbols:
   kind: interface
   name: PaginatedDocumentTemplateListDto
   file: experience/src/features/documents/types.ts
-  line: 180
+  line: 221
   signature: export interface PaginatedDocumentTemplateListDto
   visibility: export
   language: typescript
-  end_line: 183
+  end_line: 224
   callers: []
   callees: []
 - id: symbol:capability-document-management:types.pagination-dto
@@ -30331,6 +30763,1513 @@ symbols:
   - symbol:capability-operational-reporting:hooks.use-workload-report
   type_refs:
   - symbol:capability-operational-reporting:types.operational-report-params
+- id: symbol:capability-outbound-document-generation:allowing-authorization-service.authorize-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: AuthorizeAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 105
+  signature: public Task<bool> AuthorizeAsync(string userRole, string resourceType,
+    string action, IDictionary<string, object>? resourceAttributes = null)
+  visibility: public
+  language: csharp
+  container: AllowingAuthorizationService
+  end_line: 106
+  is_test: true
+  callers:
+  - symbol:capability-authorization-enforcement:i-authorization-service.authorize-async
+  callees: []
+  implements:
+  - symbol:capability-authorization-enforcement:i-authorization-service.authorize-async
+- id: symbol:capability-outbound-document-generation:allowing-document-gate.authorize-document-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: AuthorizeDocumentAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 111
+  signature: public Task<DocumentAccessDecision> AuthorizeDocumentAsync(ICurrentUserService
+    user, DocumentParentRefDto parent, string classification, string operation, CancellationToken
+    ct = default)
+  visibility: public
+  language: csharp
+  container: AllowingDocumentGate
+  end_line: 112
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-classification-gate.authorize-document-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-classification-gate.authorize-document-async
+  instantiates:
+  - symbol:capability-document-management:i-document-classification-gate.document-access-decision
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-parent-ref-dto
+  - symbol:capability-document-management:i-document-classification-gate.document-access-decision
+  - symbol:capability-document-management:types.document-parent-ref-dto
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:allowing-document-gate.authorize-template-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: AuthorizeTemplateAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 114
+  signature: public Task<DocumentAccessDecision> AuthorizeTemplateAsync(ICurrentUserService
+    user, string classification, string operation, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: AllowingDocumentGate
+  end_line: 115
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-classification-gate.authorize-template-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-classification-gate.authorize-template-async
+  instantiates:
+  - symbol:capability-document-management:i-document-classification-gate.document-access-decision
+  type_refs:
+  - symbol:capability-document-management:i-document-classification-gate.document-access-decision
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:fake-document-configuration-provider.get-snapshot-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: GetSnapshotAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 140
+  signature: public Task<DocumentConfigurationSnapshot> GetSnapshotAsync(CancellationToken
+    ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentConfigurationProvider
+  end_line: 150
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-configuration-provider.get-snapshot-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-configuration-provider.get-snapshot-async
+  instantiates:
+  - symbol:capability-document-management:i-document-configuration-provider.document-configuration-snapshot
+  - symbol:capability-document-management:i-document-configuration-provider.document-metadata-schema-definition
+  - symbol:capability-document-management:i-document-configuration-provider.document-metadata-schema-registry
+  - symbol:capability-document-management:i-document-configuration-provider.document-retention-policy
+  type_refs:
+  - symbol:capability-document-management:i-document-configuration-provider.document-configuration-snapshot
+- id: symbol:capability-outbound-document-generation:fake-document-repository.append-event-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: AppendEventAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 204
+  signature: public Task<DocumentSidecarDto?> AppendEventAsync(string documentId,
+    DocumentEventDto evt, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 205
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.append-event-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.append-event-async
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-event-dto
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-event-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+- id: symbol:capability-outbound-document-generation:fake-document-repository.append-replacement-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: AppendReplacementAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 198
+  signature: public Task<DocumentWriteResult> AppendReplacementAsync(string documentId,
+    DocumentReplaceCommand command, Stream binary, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 199
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.append-replacement-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.append-replacement-async
+  instantiates:
+  - symbol:capability-document-management:i-document-repository.document-write-result
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.document-replace-command
+  - symbol:capability-document-management:i-document-repository.document-write-result
+- id: symbol:capability-outbound-document-generation:fake-document-repository.create-generated-available-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: CreateGeneratedAvailableAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 179
+  signature: public Task<DocumentWriteResult> CreateGeneratedAvailableAsync(DocumentGeneratedWriteCommand
+    command, Stream binary, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 184
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.create-generated-available-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.create-generated-available-async
+  instantiates:
+  - symbol:capability-document-management:i-document-repository.document-write-result
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.document-generated-write-command
+  - symbol:capability-document-management:i-document-repository.document-write-result
+- id: symbol:capability-outbound-document-generation:fake-document-repository.create-quarantined-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: CreateQuarantinedAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 176
+  signature: public Task<DocumentWriteResult> CreateQuarantinedAsync(DocumentUploadCommand
+    command, Stream binary, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 177
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.create-quarantined-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.create-quarantined-async
+  instantiates:
+  - symbol:capability-document-management:i-document-repository.document-write-result
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.document-upload-command
+  - symbol:capability-document-management:i-document-repository.document-write-result
+- id: symbol:capability-outbound-document-generation:fake-document-repository.find-sidecar-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: FindSidecarAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 192
+  signature: public Task<DocumentSidecarDto?> FindSidecarAsync(string documentId,
+    CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 193
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.find-sidecar-async
+  callees:
+  - symbol:capability-outbound-document-generation:fake-document-repository.template-sidecar
+  implements:
+  - symbol:capability-document-management:i-document-repository.find-sidecar-async
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+- id: symbol:capability-outbound-document-generation:fake-document-repository.generated-writes
+  node: capability:outbound-document-generation
+  kind: property
+  name: GeneratedWrites
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 172
+  signature: public int GeneratedWrites
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 172
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:fake-document-repository.increment-template-use-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: IncrementTemplateUseAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 207
+  signature: public Task<DocumentSidecarDto?> IncrementTemplateUseAsync(string templateId,
+    string newDocumentId, Guid byUserId, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 211
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.increment-template-use-async
+  callees:
+  - symbol:capability-outbound-document-generation:fake-document-repository.template-sidecar
+  implements:
+  - symbol:capability-document-management:i-document-repository.increment-template-use-async
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+- id: symbol:capability-outbound-document-generation:fake-document-repository.last-generated-command
+  node: capability:outbound-document-generation
+  kind: property
+  name: LastGeneratedCommand
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 174
+  signature: public DocumentGeneratedWriteCommand? LastGeneratedCommand
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 174
+  is_test: true
+  callers: []
+  callees: []
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.document-generated-write-command
+- id: symbol:capability-outbound-document-generation:fake-document-repository.list-parent-sidecars-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: ListParentSidecarsAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 186
+  signature: public Task<IReadOnlyList<DocumentSidecarDto>> ListParentSidecarsAsync(DocumentParentRefDto
+    parent, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 187
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.list-parent-sidecars-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.list-parent-sidecars-async
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-parent-ref-dto
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-parent-ref-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+- id: symbol:capability-outbound-document-generation:fake-document-repository.list-promotable-quarantine-entries-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: ListPromotableQuarantineEntriesAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 213
+  signature: public Task<IReadOnlyList<QuarantineEntryDto>> ListPromotableQuarantineEntriesAsync(DateTime
+    nowUtc, TimeSpan hold, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 214
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.list-promotable-quarantine-entries-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.list-promotable-quarantine-entries-async
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.quarantine-entry-dto
+- id: symbol:capability-outbound-document-generation:fake-document-repository.list-retention-candidates-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: ListRetentionCandidatesAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 219
+  signature: public Task<IReadOnlyList<RetentionCandidateDto>> ListRetentionCandidatesAsync(CancellationToken
+    ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 220
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.list-retention-candidates-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.list-retention-candidates-async
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.retention-candidate-dto
+- id: symbol:capability-outbound-document-generation:fake-document-repository.list-template-sidecars-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: ListTemplateSidecarsAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 189
+  signature: public Task<IReadOnlyList<DocumentSidecarDto>> ListTemplateSidecarsAsync(CancellationToken
+    ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 190
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.list-template-sidecars-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.list-template-sidecars-async
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+- id: symbol:capability-outbound-document-generation:fake-document-repository.open-version-for-read-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: OpenVersionForReadAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 195
+  signature: public Task<DocumentBinaryRead?> OpenVersionForReadAsync(string documentId,
+    string versionRef, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 196
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.open-version-for-read-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.open-version-for-read-async
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.document-binary-read
+- id: symbol:capability-outbound-document-generation:fake-document-repository.promote-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: PromoteAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 216
+  signature: public Task<PromoteResult> PromoteAsync(QuarantineEntryDto entry, CancellationToken
+    ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 217
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.promote-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.promote-async
+  instantiates:
+  - symbol:capability-document-management:i-document-repository.promote-result
+  type_refs:
+  - symbol:capability-document-management:i-document-repository.promote-result
+  - symbol:capability-document-management:i-document-repository.quarantine-entry-dto
+- id: symbol:capability-outbound-document-generation:fake-document-repository.sweep-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: SweepAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 222
+  signature: public Task<RetentionSweepResultDto> SweepAsync(IReadOnlyList<RetentionCandidateDto>
+    candidates, bool dryRun, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 223
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.sweep-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.sweep-async
+  instantiates:
+  - symbol:capability-document-management:document-dtos.retention-sweep-result-dto
+  type_refs:
+  - symbol:capability-document-management:document-dtos.retention-sweep-result-dto
+  - symbol:capability-document-management:i-document-repository.retention-candidate-dto
+- id: symbol:capability-outbound-document-generation:fake-document-repository.template-published
+  node: capability:outbound-document-generation
+  kind: property
+  name: TemplatePublished
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 171
+  signature: public bool TemplatePublished
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 171
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:fake-document-repository.template-sidecar
+  node: capability:outbound-document-generation
+  kind: method
+  name: TemplateSidecar
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 225
+  signature: private DocumentSidecarDto TemplateSidecar()
+  visibility: private
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 248
+  is_test: true
+  callers:
+  - symbol:capability-outbound-document-generation:fake-document-repository.find-sidecar-async
+  - symbol:capability-outbound-document-generation:fake-document-repository.increment-template-use-async
+  callees: []
+  instantiates:
+  - symbol:capability-document-management:document-dtos.document-audit-timestamps-dto
+  - symbol:capability-document-management:document-dtos.document-metadata-schema-ref-dto
+  - symbol:capability-document-management:document-dtos.document-parent-ref-dto
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:document-dtos.document-version-dto
+  - symbol:capability-document-management:types.document-metadata-schema-ref-dto
+  - symbol:capability-document-management:types.document-parent-ref-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+  - symbol:capability-document-management:types.document-version-dto
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+- id: symbol:capability-outbound-document-generation:fake-document-repository.template-use-increments
+  node: capability:outbound-document-generation
+  kind: property
+  name: TemplateUseIncrements
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 173
+  signature: public int TemplateUseIncrements
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 173
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:fake-document-repository.update-metadata-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: UpdateMetadataAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 201
+  signature: public Task<DocumentSidecarDto?> UpdateMetadataAsync(string documentId,
+    DocumentMetadataPatch patch, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeDocumentRepository
+  end_line: 202
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-repository.update-metadata-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-repository.update-metadata-async
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:i-document-repository.document-metadata-patch
+  - symbol:capability-document-management:types.document-sidecar-dto
+- id: symbol:capability-outbound-document-generation:fake-timeline-repository.add-event-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: AddEventAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 162
+  signature: public Task AddEventAsync(ActivityTimelineEvent evt, CancellationToken
+    ct = default)
+  visibility: public
+  language: csharp
+  container: FakeTimelineRepository
+  end_line: 166
+  is_test: true
+  callers:
+  - symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
+  callees: []
+  implements:
+  - symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
+  type_refs:
+  - symbol:entity-activity-timeline-event:activity-timeline-event.activity-timeline-event
+- id: symbol:capability-outbound-document-generation:fake-timeline-repository.events
+  node: capability:outbound-document-generation
+  kind: property
+  name: Events
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 155
+  signature: public List<ActivityTimelineEvent> Events
+  visibility: public
+  language: csharp
+  container: FakeTimelineRepository
+  end_line: 155
+  is_test: true
+  callers: []
+  callees: []
+  type_refs:
+  - symbol:entity-activity-timeline-event:activity-timeline-event.activity-timeline-event
+- id: symbol:capability-outbound-document-generation:fake-timeline-repository.list-events-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: ListEventsAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 156
+  signature: public Task<IReadOnlyList<ActivityTimelineEvent>> ListEventsAsync(string
+    entityType, Guid? entityId, int limit, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeTimelineRepository
+  end_line: 157
+  is_test: true
+  callers:
+  - symbol:entity-activity-timeline-event:i-timeline-repository.list-events-async
+  callees: []
+  implements:
+  - symbol:entity-activity-timeline-event:i-timeline-repository.list-events-async
+  type_refs:
+  - symbol:entity-activity-timeline-event:activity-timeline-event.activity-timeline-event
+- id: symbol:capability-outbound-document-generation:fake-timeline-repository.list-events-for-broker-user-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: ListEventsForBrokerUserAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 160
+  signature: public Task<IReadOnlyList<ActivityTimelineEvent>> ListEventsForBrokerUserAsync(IReadOnlyList<Guid>
+    brokerIds, int limit, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeTimelineRepository
+  end_line: 161
+  is_test: true
+  callers:
+  - symbol:entity-activity-timeline-event:i-timeline-repository.list-events-for-broker-user-async
+  callees: []
+  implements:
+  - symbol:entity-activity-timeline-event:i-timeline-repository.list-events-for-broker-user-async
+  type_refs:
+  - symbol:entity-activity-timeline-event:activity-timeline-event.activity-timeline-event
+- id: symbol:capability-outbound-document-generation:fake-timeline-repository.list-events-paged-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: ListEventsPagedAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 158
+  signature: public Task<PaginatedResult<ActivityTimelineEvent>> ListEventsPagedAsync(string
+    entityType, Guid? entityId, int page, int pageSize, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: FakeTimelineRepository
+  end_line: 159
+  is_test: true
+  callers:
+  - symbol:entity-activity-timeline-event:i-timeline-repository.list-events-paged-async
+  callees: []
+  implements:
+  - symbol:entity-activity-timeline-event:i-timeline-repository.list-events-paged-async
+  type_refs:
+  - symbol:entity-activity-timeline-event:activity-timeline-event.activity-timeline-event
+- id: symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-issue-response-dto
+  node: capability:outbound-document-generation
+  kind: record
+  name: GeneratedDocumentIssueResponseDto
+  file: engine/src/Nebula.Application/DTOs/GeneratedDocumentDtos.cs
+  line: 29
+  signature: public sealed record GeneratedDocumentIssueResponseDto(
+  visibility: public
+  language: csharp
+  end_line: 38
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-merge-diagnostic-dto
+  node: capability:outbound-document-generation
+  kind: record
+  name: GeneratedDocumentMergeDiagnosticDto
+  file: engine/src/Nebula.Application/DTOs/GeneratedDocumentDtos.cs
+  line: 14
+  signature: public sealed record GeneratedDocumentMergeDiagnosticDto(
+  visibility: public
+  language: csharp
+  end_line: 17
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-metadata
+  node: capability:outbound-document-generation
+  kind: class
+  name: GeneratedDocumentMetadata
+  file: engine/src/Nebula.Application/DTOs/GeneratedDocumentDtos.cs
+  line: 55
+  signature: public static class GeneratedDocumentMetadata
+  visibility: public
+  language: csharp
+  end_line: 75
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-preview-response-dto
+  node: capability:outbound-document-generation
+  kind: record
+  name: GeneratedDocumentPreviewResponseDto
+  file: engine/src/Nebula.Application/DTOs/GeneratedDocumentDtos.cs
+  line: 19
+  signature: public sealed record GeneratedDocumentPreviewResponseDto(
+  visibility: public
+  language: csharp
+  end_line: 27
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  node: capability:outbound-document-generation
+  kind: record
+  name: GeneratedDocumentRequestDto
+  file: engine/src/Nebula.Application/DTOs/GeneratedDocumentDtos.cs
+  line: 5
+  signature: public sealed record GeneratedDocumentRequestDto(
+  visibility: public
+  language: csharp
+  end_line: 12
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:generated-document-dtos.outbound-document-service-result
+  node: capability:outbound-document-generation
+  kind: record
+  name: OutboundDocumentServiceResult
+  file: engine/src/Nebula.Application/DTOs/GeneratedDocumentDtos.cs
+  line: 53
+  signature: public sealed record OutboundDocumentServiceResult<T>(T? Value, string?
+    ErrorCode, string? Detail = null)
+  visibility: public
+  language: csharp
+  end_line: 53
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:generated-document-dtos.outbound-merge-context
+  node: capability:outbound-document-generation
+  kind: record
+  name: OutboundMergeContext
+  file: engine/src/Nebula.Application/DTOs/GeneratedDocumentDtos.cs
+  line: 40
+  signature: public sealed record OutboundMergeContext(
+  visibility: public
+  language: csharp
+  end_line: 45
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:generated-document-dtos.rendered-document-binary
+  node: capability:outbound-document-generation
+  kind: record
+  name: RenderedDocumentBinary
+  file: engine/src/Nebula.Application/DTOs/GeneratedDocumentDtos.cs
+  line: 47
+  signature: public sealed record RenderedDocumentBinary(
+  visibility: public
+  language: csharp
+  end_line: 51
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:generated-document-metadata.create
+  node: capability:outbound-document-generation
+  kind: method
+  name: Create
+  file: engine/src/Nebula.Application/DTOs/GeneratedDocumentDtos.cs
+  line: 57
+  signature: public static JsonElement Create(
+  visibility: public
+  language: csharp
+  container: GeneratedDocumentMetadata
+  end_line: 74
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  callees: []
+- id: symbol:capability-outbound-document-generation:i-outbound-merge-data-assembler.assemble-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: AssembleAsync
+  file: engine/src/Nebula.Application/Interfaces/IOutboundMergeDataAssembler.cs
+  line: 7
+  signature: Task<OutboundMergeContext> AssembleAsync(
+  visibility: internal
+  language: csharp
+  container: IOutboundMergeDataAssembler
+  end_line: 9
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.preview-async
+  callees:
+  - symbol:capability-document-management:outbound-merge-data-assembler.assemble-async
+  - symbol:capability-outbound-document-generation:static-merge-data-assembler.assemble-async
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-merge-context
+- id: symbol:capability-outbound-document-generation:i-outbound-merge-data-assembler.i-outbound-merge-data-assembler
+  node: capability:outbound-document-generation
+  kind: interface
+  name: IOutboundMergeDataAssembler
+  file: engine/src/Nebula.Application/Interfaces/IOutboundMergeDataAssembler.cs
+  line: 5
+  signature: public interface IOutboundMergeDataAssembler
+  visibility: public
+  language: csharp
+  end_line: 10
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-endpoints.issue
+  node: capability:outbound-document-generation
+  kind: method
+  name: Issue
+  file: engine/src/Nebula.Api/Endpoints/OutboundDocumentEndpoints.cs
+  line: 33
+  signature: private static async Task<IResult> Issue(
+  visibility: private
+  language: csharp
+  container: OutboundDocumentEndpoints
+  end_line: 43
+  callers: []
+  callees:
+  - symbol:capability-outbound-document-generation:outbound-document-endpoints.problem
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.outbound-document-generation-service
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:outbound-document-endpoints.map-outbound-document-endpoints
+  node: capability:outbound-document-generation
+  kind: method
+  name: MapOutboundDocumentEndpoints
+  file: engine/src/Nebula.Api/Endpoints/OutboundDocumentEndpoints.cs
+  line: 9
+  signature: public static IEndpointRouteBuilder MapOutboundDocumentEndpoints(this
+    IEndpointRouteBuilder app)
+  visibility: public
+  language: csharp
+  container: OutboundDocumentEndpoints
+  end_line: 21
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-endpoints.outbound-document-endpoints
+  node: capability:outbound-document-generation
+  kind: class
+  name: OutboundDocumentEndpoints
+  file: engine/src/Nebula.Api/Endpoints/OutboundDocumentEndpoints.cs
+  line: 7
+  signature: public static class OutboundDocumentEndpoints
+  visibility: public
+  language: csharp
+  end_line: 73
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-endpoints.preview
+  node: capability:outbound-document-generation
+  kind: method
+  name: Preview
+  file: engine/src/Nebula.Api/Endpoints/OutboundDocumentEndpoints.cs
+  line: 23
+  signature: private static async Task<IResult> Preview(
+  visibility: private
+  language: csharp
+  container: OutboundDocumentEndpoints
+  end_line: 31
+  callers: []
+  callees:
+  - symbol:capability-outbound-document-generation:outbound-document-endpoints.problem
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.preview-async
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.outbound-document-generation-service
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:outbound-document-endpoints.problem
+  node: capability:outbound-document-generation
+  kind: method
+  name: Problem
+  file: engine/src/Nebula.Api/Endpoints/OutboundDocumentEndpoints.cs
+  line: 58
+  signature: private static IResult Problem(string code, string? detail = null)
+  visibility: private
+  language: csharp
+  container: OutboundDocumentEndpoints
+  end_line: 72
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-endpoints.issue
+  - symbol:capability-outbound-document-generation:outbound-document-endpoints.preview
+  - symbol:capability-outbound-document-generation:outbound-document-endpoints.regenerate
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-endpoints.regenerate
+  node: capability:outbound-document-generation
+  kind: method
+  name: Regenerate
+  file: engine/src/Nebula.Api/Endpoints/OutboundDocumentEndpoints.cs
+  line: 45
+  signature: private static async Task<IResult> Regenerate(
+  visibility: private
+  language: csharp
+  container: OutboundDocumentEndpoints
+  end_line: 56
+  callers: []
+  callees:
+  - symbol:capability-outbound-document-generation:outbound-document-endpoints.problem
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.regenerate-async
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.outbound-document-generation-service
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.allowing-authorization-service
+  node: capability:outbound-document-generation
+  kind: class
+  name: AllowingAuthorizationService
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 103
+  signature: 'private sealed class AllowingAuthorizationService : IAuthorizationService'
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 107
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.allowing-document-gate
+  node: capability:outbound-document-generation
+  kind: class
+  name: AllowingDocumentGate
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 109
+  signature: 'private sealed class AllowingDocumentGate : IDocumentClassificationGate'
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 116
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.create-service
+  node: capability:outbound-document-generation
+  kind: method
+  name: CreateService
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 59
+  signature: private static OutboundDocumentGenerationService CreateService(
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 82
+  is_test: true
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.issue-async-creates-available-generated-document
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.issue-async-rejects-unpublished-template
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.preview-async-returns-ready-preview-for-published-template
+  callees: []
+  instantiates:
+  - symbol:capability-document-management:document-service.document-service
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.allowing-authorization-service
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.allowing-document-gate
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-document-configuration-provider
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-timeline-repository
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.static-merge-data-assembler
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.static-renderer
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.outbound-document-generation-service
+  - symbol:capability-outbound-document-generation:outbound-template-governance-service.outbound-template-governance-service
+  type_refs:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-document-repository
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-timeline-repository
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.outbound-document-generation-service
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-document-configuration-provider
+  node: capability:outbound-document-generation
+  kind: class
+  name: FakeDocumentConfigurationProvider
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 138
+  signature: 'private sealed class FakeDocumentConfigurationProvider : IDocumentConfigurationProvider'
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 151
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-document-repository
+  node: capability:outbound-document-generation
+  kind: class
+  name: FakeDocumentRepository
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 169
+  signature: 'private sealed class FakeDocumentRepository : IDocumentRepository'
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 249
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-timeline-repository
+  node: capability:outbound-document-generation
+  kind: class
+  name: FakeTimelineRepository
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 153
+  signature: 'private sealed class FakeTimelineRepository : ITimelineRepository'
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 167
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.issue-async-creates-available-generated-document
+  node: capability:outbound-document-generation
+  kind: method
+  name: IssueAsync_CreatesAvailableGeneratedDocument
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 28
+  signature: public async Task IssueAsync_CreatesAvailableGeneratedDocument()
+  visibility: public
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 44
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.create-service
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.request
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  instantiates:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-document-repository
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-timeline-repository
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.test-user
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.issue-async-rejects-unpublished-template
+  node: capability:outbound-document-generation
+  kind: method
+  name: IssueAsync_RejectsUnpublishedTemplate
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 46
+  signature: public async Task IssueAsync_RejectsUnpublishedTemplate()
+  visibility: public
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 57
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.create-service
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.request
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  instantiates:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-document-repository
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.test-user
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.outbound-document-generation-service-tests
+  node: capability:outbound-document-generation
+  kind: class
+  name: OutboundDocumentGenerationServiceTests
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 12
+  signature: public class OutboundDocumentGenerationServiceTests
+  visibility: public
+  language: csharp
+  end_line: 250
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.preview-async-returns-ready-preview-for-published-template
+  node: capability:outbound-document-generation
+  kind: method
+  name: PreviewAsync_ReturnsReadyPreviewForPublishedTemplate
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 14
+  signature: public async Task PreviewAsync_ReturnsReadyPreviewForPublishedTemplate()
+  visibility: public
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 26
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.create-service
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.request
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.preview-async
+  instantiates:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.fake-document-repository
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.test-user
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.request
+  node: capability:outbound-document-generation
+  kind: method
+  name: Request
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 84
+  signature: private static GeneratedDocumentRequestDto Request()
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 92
+  is_test: true
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.issue-async-creates-available-generated-document
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.issue-async-rejects-unpublished-template
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.preview-async-returns-ready-preview-for-published-template
+  callees: []
+  instantiates:
+  - symbol:capability-document-management:document-dtos.document-parent-ref-dto
+  - symbol:capability-document-management:types.document-parent-ref-dto
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.static-merge-data-assembler
+  node: capability:outbound-document-generation
+  kind: class
+  name: StaticMergeDataAssembler
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 118
+  signature: 'private sealed class StaticMergeDataAssembler : IOutboundMergeDataAssembler'
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 127
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.static-renderer
+  node: capability:outbound-document-generation
+  kind: class
+  name: StaticRenderer
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 129
+  signature: 'private sealed class StaticRenderer : IDocumentRenderer'
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 136
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.test-user
+  node: capability:outbound-document-generation
+  kind: class
+  name: TestUser
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 94
+  signature: 'private sealed class TestUser : ICurrentUserService'
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationServiceTests
+  end_line: 101
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.can-outbound-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: CanOutboundAsync
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 180
+  signature: private async Task<bool> CanOutboundAsync(ICurrentUserService user, string
+    operation)
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationService
+  end_line: 189
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.validate-request-async
+  callees:
+  - symbol:capability-authorization-enforcement:i-authorization-service.authorize-async
+  type_refs:
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.generated-schema-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: GeneratedSchemaAsync
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 171
+  signature: private async Task<DocumentMetadataSchemaRefDto> GeneratedSchemaAsync(CancellationToken
+    ct)
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationService
+  end_line: 178
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  callees:
+  - symbol:capability-document-management:i-document-configuration-provider.get-snapshot-async
+  instantiates:
+  - symbol:capability-document-management:document-dtos.document-metadata-schema-ref-dto
+  - symbol:capability-document-management:types.document-metadata-schema-ref-dto
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-metadata-schema-ref-dto
+  - symbol:capability-document-management:types.document-metadata-schema-ref-dto
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: IssueAsync
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 44
+  signature: public async Task<OutboundDocumentServiceResult<GeneratedDocumentIssueResponseDto>>
+    IssueAsync(
+  visibility: public
+  language: csharp
+  container: OutboundDocumentGenerationService
+  end_line: 118
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-endpoints.issue
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.issue-async-creates-available-generated-document
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.issue-async-rejects-unpublished-template
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.regenerate-async
+  callees:
+  - symbol:capability-document-management:document-service.add-timeline-async
+  - symbol:capability-document-management:i-document-renderer.render-async
+  - symbol:capability-document-management:i-document-repository.create-generated-available-async
+  - symbol:capability-document-management:i-document-repository.increment-template-use-async
+  - symbol:capability-outbound-document-generation:generated-document-metadata.create
+  - symbol:capability-outbound-document-generation:i-outbound-merge-data-assembler.assemble-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.generated-schema-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.latest-available-version
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.normalize-classification
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.normalize-family
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.title-parent
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.validate-request-async
+  instantiates:
+  - symbol:capability-document-management:i-document-repository.document-generated-write-command
+  - symbol:capability-document-management:types.generated-document-issue-response-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-issue-response-dto
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-issue-response-dto
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-issue-response-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-document-service-result
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.latest-available-version
+  node: capability:outbound-document-generation
+  kind: method
+  name: LatestAvailableVersion
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 191
+  signature: private static int LatestAvailableVersion(DocumentSidecarDto template)
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationService
+  end_line: 192
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  callees: []
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.normalize-classification
+  node: capability:outbound-document-generation
+  kind: method
+  name: NormalizeClassification
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 196
+  signature: private static string NormalizeClassification(string classification)
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationService
+  end_line: 196
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.validate-request-async
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.normalize-family
+  node: capability:outbound-document-generation
+  kind: method
+  name: NormalizeFamily
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 194
+  signature: private static string NormalizeFamily(string family)
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationService
+  end_line: 194
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.preview-async
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.outbound-document-generation-service
+  node: capability:outbound-document-generation
+  kind: class
+  name: OutboundDocumentGenerationService
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 8
+  signature: public sealed class OutboundDocumentGenerationService(
+  visibility: public
+  language: csharp
+  end_line: 200
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.preview-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: PreviewAsync
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 18
+  signature: public async Task<OutboundDocumentServiceResult<GeneratedDocumentPreviewResponseDto>>
+    PreviewAsync(
+  visibility: public
+  language: csharp
+  container: OutboundDocumentGenerationService
+  end_line: 42
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-endpoints.preview
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service-tests.preview-async-returns-ready-preview-for-published-template
+  callees:
+  - symbol:capability-outbound-document-generation:i-outbound-merge-data-assembler.assemble-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.normalize-family
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.validate-request-async
+  instantiates:
+  - symbol:capability-document-management:types.generated-document-preview-response-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-preview-response-dto
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-preview-response-dto
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-preview-response-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-document-service-result
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.regenerate-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: RegenerateAsync
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 120
+  signature: public async Task<OutboundDocumentServiceResult<GeneratedDocumentIssueResponseDto>>
+    RegenerateAsync(
+  visibility: public
+  language: csharp
+  container: OutboundDocumentGenerationService
+  end_line: 140
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-endpoints.regenerate
+  callees:
+  - symbol:capability-document-management:i-document-repository.find-sidecar-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-issue-response-dto
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-issue-response-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-document-service-result
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.title-parent
+  node: capability:outbound-document-generation
+  kind: method
+  name: TitleParent
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 198
+  signature: private static string TitleParent(string type)
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationService
+  end_line: 199
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-document-generation-service.validate-request-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: ValidateRequestAsync
+  file: engine/src/Nebula.Application/Services/OutboundDocumentGenerationService.cs
+  line: 142
+  signature: private async Task<OutboundDocumentServiceResult<DocumentSidecarDto>>
+    ValidateRequestAsync(
+  visibility: private
+  language: csharp
+  container: OutboundDocumentGenerationService
+  end_line: 169
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.issue-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.preview-async
+  callees:
+  - symbol:capability-document-management:i-document-classification-gate.authorize-document-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.can-outbound-async
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.normalize-classification
+  - symbol:capability-outbound-document-generation:outbound-template-governance-service.validate-published-template-async
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-document-service-result
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:outbound-template-governance-service.can-manage-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: CanManageAsync
+  file: engine/src/Nebula.Application/Services/OutboundTemplateGovernanceService.cs
+  line: 55
+  signature: public async Task<bool> CanManageAsync(ICurrentUserService user)
+  visibility: public
+  language: csharp
+  container: OutboundTemplateGovernanceService
+  end_line: 64
+  callers: []
+  callees:
+  - symbol:capability-authorization-enforcement:i-authorization-service.authorize-async
+  type_refs:
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:outbound-template-governance-service.metadata-equals
+  node: capability:outbound-document-generation
+  kind: method
+  name: MetadataEquals
+  file: engine/src/Nebula.Application/Services/OutboundTemplateGovernanceService.cs
+  line: 66
+  signature: private static bool MetadataEquals(DocumentSidecarDto sidecar, string
+    propertyName, string expected)
+  visibility: private
+  language: csharp
+  container: OutboundTemplateGovernanceService
+  end_line: 73
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-template-governance-service.validate-published-template-async
+  callees: []
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+- id: symbol:capability-outbound-document-generation:outbound-template-governance-service.outbound-template-governance-service
+  node: capability:outbound-document-generation
+  kind: class
+  name: OutboundTemplateGovernanceService
+  file: engine/src/Nebula.Application/Services/OutboundTemplateGovernanceService.cs
+  line: 7
+  signature: public sealed class OutboundTemplateGovernanceService(
+  visibility: public
+  language: csharp
+  end_line: 74
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:outbound-template-governance-service.validate-published-template-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: ValidatePublishedTemplateAsync
+  file: engine/src/Nebula.Application/Services/OutboundTemplateGovernanceService.cs
+  line: 19
+  signature: public async Task<OutboundDocumentServiceResult<DocumentSidecarDto>>
+    ValidatePublishedTemplateAsync(
+  visibility: public
+  language: csharp
+  container: OutboundTemplateGovernanceService
+  end_line: 53
+  callers:
+  - symbol:capability-outbound-document-generation:outbound-document-generation-service.validate-request-async
+  callees:
+  - symbol:capability-document-management:i-document-classification-gate.authorize-template-async
+  - symbol:capability-document-management:i-document-repository.find-sidecar-async
+  - symbol:capability-outbound-document-generation:outbound-template-governance-service.metadata-equals
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-document-service-result
+  - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-outbound-document-generation:program.program
+  node: capability:outbound-document-generation
+  kind: class
+  name: Program
+  file: engine/src/Nebula.Api/Program.cs
+  line: 369
+  signature: public partial class Program
+  visibility: public
+  language: csharp
+  end_line: 369
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:static-merge-data-assembler.assemble-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: AssembleAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 120
+  signature: public Task<OutboundMergeContext> AssembleAsync(GeneratedDocumentRequestDto
+    request, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: StaticMergeDataAssembler
+  end_line: 126
+  is_test: true
+  callers:
+  - symbol:capability-outbound-document-generation:i-outbound-merge-data-assembler.assemble-async
+  callees: []
+  implements:
+  - symbol:capability-outbound-document-generation:i-outbound-merge-data-assembler.assemble-async
+  instantiates:
+  - symbol:capability-document-management:types.generated-document-merge-diagnostic-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-merge-diagnostic-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-merge-context
+  type_refs:
+  - symbol:capability-document-management:types.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.generated-document-request-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-merge-context
+- id: symbol:capability-outbound-document-generation:static-renderer.render-async
+  node: capability:outbound-document-generation
+  kind: method
+  name: RenderAsync
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 131
+  signature: public Task<RenderedDocumentBinary> RenderAsync(DocumentSidecarDto template,
+    OutboundMergeContext context, CancellationToken ct = default)
+  visibility: public
+  language: csharp
+  container: StaticRenderer
+  end_line: 135
+  is_test: true
+  callers:
+  - symbol:capability-document-management:i-document-renderer.render-async
+  callees: []
+  implements:
+  - symbol:capability-document-management:i-document-renderer.render-async
+  instantiates:
+  - symbol:capability-outbound-document-generation:generated-document-dtos.rendered-document-binary
+  type_refs:
+  - symbol:capability-document-management:document-dtos.document-sidecar-dto
+  - symbol:capability-document-management:types.document-sidecar-dto
+  - symbol:capability-outbound-document-generation:generated-document-dtos.outbound-merge-context
+  - symbol:capability-outbound-document-generation:generated-document-dtos.rendered-document-binary
+- id: symbol:capability-outbound-document-generation:test-user.broker-tenant-id
+  node: capability:outbound-document-generation
+  kind: property
+  name: BrokerTenantId
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 100
+  signature: public string? BrokerTenantId
+  visibility: public
+  language: csharp
+  container: TestUser
+  end_line: 100
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:test-user.display-name
+  node: capability:outbound-document-generation
+  kind: property
+  name: DisplayName
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 97
+  signature: public string? DisplayName
+  visibility: public
+  language: csharp
+  container: TestUser
+  end_line: 97
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:test-user.regions
+  node: capability:outbound-document-generation
+  kind: property
+  name: Regions
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 99
+  signature: public IReadOnlyList<string> Regions
+  visibility: public
+  language: csharp
+  container: TestUser
+  end_line: 99
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:test-user.roles
+  node: capability:outbound-document-generation
+  kind: property
+  name: Roles
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 98
+  signature: public IReadOnlyList<string> Roles
+  visibility: public
+  language: csharp
+  container: TestUser
+  end_line: 98
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:capability-outbound-document-generation:test-user.user-id
+  node: capability:outbound-document-generation
+  kind: property
+  name: UserId
+  file: engine/tests/Nebula.Tests/Unit/OutboundDocumentGenerationServiceTests.cs
+  line: 96
+  signature: public Guid UserId
+  visibility: public
+  language: csharp
+  container: TestUser
+  end_line: 96
+  is_test: true
+  callers: []
+  callees: []
 - id: symbol:capability-product-schema-registry:20260507030000-f0034-product-schema-registry-and-lob-attributes.f0034-product-schema-registry-and-lob-attributes
   node: capability:product-schema-registry
   kind: class
@@ -35053,18 +36992,6 @@ symbols:
   callees:
   - symbol:capability-session-continuity:problem-details-helper.ext
   - symbol:capability-session-continuity:problem-details-helper.ext-2
-- id: symbol:capability-session-continuity:program.program
-  node: capability:session-continuity
-  kind: class
-  name: Program
-  file: engine/src/Nebula.Api/Program.cs
-  line: 368
-  signature: public partial class Program
-  visibility: public
-  language: csharp
-  end_line: 368
-  callers: []
-  callees: []
 - id: symbol:capability-session-continuity:session-continuity-provider.session-continuity-provider
   node: capability:session-continuity
   kind: function
@@ -40763,7 +42690,7 @@ symbols:
   - symbol:config_key-authentication-authority:auth-endpoints.append-clear-cookie
   - symbol:config_key-authentication-authority:auth-endpoints.revoke-refresh-token-async
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
 - id: symbol:config_key-authentication-authority:auth-endpoints.map-auth-endpoints
   node: config_key:authentication-authority
   kind: method
@@ -48469,7 +50396,7 @@ symbols:
   implements:
   - symbol:entity-mga:i-reference-data-repository.get-program-by-id-async
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
 - id: symbol:endpoint-submission-approval:stub-reference-data-repository.get-programs-async
   node: endpoint:submission-approval
   kind: method
@@ -48489,7 +50416,7 @@ symbols:
   implements:
   - symbol:entity-mga:i-reference-data-repository.get-programs-async
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
 - id: symbol:endpoint-submission-approval:stub-reference-data-repository.get-renewal-statuses-async
   node: endpoint:submission-approval
   kind: method
@@ -51764,7 +53691,7 @@ symbols:
   instantiates:
   - symbol:entity-broker:broker.broker
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
   - symbol:entity-broker:broker.broker
 - id: symbol:entity-account:dev-seed-data.build-contacts
   node: entity:account
@@ -52318,7 +54245,7 @@ symbols:
   - symbol:entity-account:dev-seed-data.patch-recent-transitions-entity-id
   - symbol:entity-account:dev-seed-data.random-step-days
   instantiates:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
   - symbol:entity-activity-timeline-event:activity-timeline-event.activity-timeline-event
   - symbol:entity-renewal:renewal.renewal
   - symbol:entity-submission:submission.submission
@@ -53150,6 +55077,7 @@ symbols:
   - symbol:event-contact-created:contact-service.update-async
   callees:
   - symbol:capability-document-management:fake-timeline-repository.add-event-async
+  - symbol:capability-outbound-document-generation:fake-timeline-repository.add-event-async
   - symbol:capability-task-center:stub-timeline-repository.add-event-async
   - symbol:endpoint-timeline-events:timeline-repository.add-event-async
   - symbol:entity-service-case:f0024-timeline-repository.add-event-async
@@ -53183,6 +55111,7 @@ symbols:
   - symbol:capability-neuron-renewals-head:renewal-service.get-companion-context-async
   callees:
   - symbol:capability-document-management:fake-timeline-repository.list-events-async
+  - symbol:capability-outbound-document-generation:fake-timeline-repository.list-events-async
   - symbol:capability-task-center:stub-timeline-repository.list-events-async
   - symbol:endpoint-timeline-events:timeline-repository.list-events-async
   - symbol:entity-service-case:f0024-timeline-repository.list-events-async
@@ -53204,6 +55133,7 @@ symbols:
   - symbol:endpoint-account-timeline:timeline-service.list-events-for-broker-user-async
   callees:
   - symbol:capability-document-management:fake-timeline-repository.list-events-for-broker-user-async
+  - symbol:capability-outbound-document-generation:fake-timeline-repository.list-events-for-broker-user-async
   - symbol:capability-task-center:stub-timeline-repository.list-events-for-broker-user-async
   - symbol:endpoint-timeline-events:timeline-repository.list-events-for-broker-user-async
   - symbol:entity-service-case:f0024-timeline-repository.list-events-for-broker-user-async
@@ -53225,6 +55155,7 @@ symbols:
   - symbol:endpoint-account-timeline:timeline-service.list-events-paged-async
   callees:
   - symbol:capability-document-management:fake-timeline-repository.list-events-paged-async
+  - symbol:capability-outbound-document-generation:fake-timeline-repository.list-events-paged-async
   - symbol:capability-task-center:stub-timeline-repository.list-events-paged-async
   - symbol:endpoint-timeline-events:timeline-repository.list-events-paged-async
   - symbol:entity-service-case:f0024-timeline-repository.list-events-paged-async
@@ -53835,7 +55766,7 @@ symbols:
   callers: []
   callees: []
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
 - id: symbol:entity-broker:broker.primary-program-id
   node: entity:broker
   kind: property
@@ -56502,7 +58433,7 @@ symbols:
   visibility: public
   language: csharp
   container: DependencyInjection
-  end_line: 70
+  end_line: 74
   callers: []
   callees: []
 - id: symbol:entity-document:dependency-injection.dependency-injection
@@ -56514,7 +58445,7 @@ symbols:
   signature: public static class DependencyInjection
   visibility: public
   language: csharp
-  end_line: 71
+  end_line: 75
   callers: []
   callees: []
 - id: symbol:entity-document:document-constants.document-constants
@@ -56581,6 +58512,7 @@ symbols:
   container: DocumentIds
   end_line: 10
   callers:
+  - symbol:capability-document-management:local-file-system-document-repository.create-generated-available-async
   - symbol:capability-document-management:local-file-system-document-repository.create-quarantined-async
   callees:
   - symbol:entity-document:document-ids.new-ulid-like-string
@@ -56820,7 +58752,7 @@ symbols:
   - symbol:endpoint-submission-approval:stub-reference-data-repository.get-program-by-id-async
   - symbol:entity-mga:reference-data-repository.get-program-by-id-async
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
 - id: symbol:entity-mga:i-reference-data-repository.get-programs-async
   node: entity:mga
   kind: method
@@ -56839,7 +58771,7 @@ symbols:
   - symbol:endpoint-submission-approval:stub-reference-data-repository.get-programs-async
   - symbol:entity-mga:reference-data-repository.get-programs-async
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
 - id: symbol:entity-mga:i-reference-data-repository.get-renewal-statuses-async
   node: entity:mga
   kind: method
@@ -57006,7 +58938,7 @@ symbols:
   implements:
   - symbol:entity-mga:i-reference-data-repository.get-program-by-id-async
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
 - id: symbol:entity-mga:reference-data-repository.get-programs-async
   node: entity:mga
   kind: method
@@ -57025,7 +58957,7 @@ symbols:
   implements:
   - symbol:entity-mga:i-reference-data-repository.get-programs-async
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
 - id: symbol:entity-mga:reference-data-repository.get-renewal-statuses-async
   node: entity:mga
   kind: method
@@ -71430,7 +73362,7 @@ symbols:
   callers: []
   callees: []
   type_refs:
-  - symbol:capability-session-continuity:program.program
+  - symbol:capability-outbound-document-generation:program.program
 - id: symbol:entity-submission:submission.program-id
   node: entity:submission
   kind: property

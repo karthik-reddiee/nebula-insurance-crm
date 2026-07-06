@@ -1431,6 +1431,41 @@ endpoints:
     source_docs:
       - planning-mds/api/nebula-api.yaml
       - planning-mds/features/archive/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+  - id: endpoint:outbound-documents-issue
+    label: POST /outbound-documents/issue
+    method: POST
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document
+      - entity:document-template
+      - entity:generated-document-artifact
+    route: /outbound-documents/issue
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+  - id: endpoint:outbound-documents-preview
+    label: POST /outbound-documents/preview
+    method: POST
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document-template
+      - entity:submission-quote-packet
+    route: /outbound-documents/preview
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+  - id: endpoint:outbound-documents-regenerate
+    label: POST /outbound-documents/{documentId}/regenerate
+    method: POST
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document
+      - entity:document-template
+      - entity:generated-document-artifact
+    route: /outbound-documents/{documentId}/regenerate
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
   - id: endpoint:policy-timeline
     label: GET /policies/{policyId}/timeline
     method: GET
@@ -2129,6 +2164,17 @@ entities:
     source_docs:
       - planning-mds/architecture/decisions/ADR-012-shared-document-storage-and-metadata-architecture.md
       - planning-mds/features/archive/F0020-document-management-and-acord-intake/F0020-S0012-document-templates-library.md
+  - id: entity:generated-document-artifact
+    label: GeneratedDocumentArtifact
+    rationale:
+      - adr: adr:012
+        section: Decision §2, §8, §9, §10
+        summary: F0027 issued artifacts are parent-linked ADR-012 documents with generated-document metadata,
+          immutable binaries, sidecar events, and source-record timeline events; no per-feature document
+          table is introduced.
+    source_docs:
+      - planning-mds/api/nebula-api.yaml
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
   - id: entity:lob-bundle-activation-event
     label: LobBundleActivationEvent
     rationale:
@@ -2772,6 +2818,18 @@ glossary_terms:
       - entity:document-template
     source_docs:
       - planning-mds/features/archive/F0020-document-management-and-acord-intake/F0020-S0012-document-templates-library.md
+  - id: capability:outbound-document-generation
+    label: Outbound Document Generation
+    related_nodes:
+      - capability:document-management
+      - capability:document-templates
+      - entity:document
+      - entity:document-template
+      - entity:generated-document-artifact
+      - entity:submission-quote-packet
+    source_docs:
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/PRD.md
   - id: glossary_term:acord-form
     label: ACORD Form
     related_nodes:
@@ -3947,6 +4005,72 @@ policy_rules:
       - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
       - planning-mds/security/authorization-matrix.md
       - planning-mds/security/policies/policy.csv
+  - id: policy_rule:outbound-document-issue
+    label: outbound_document:issue
+    action: issue
+    allowed_roles:
+      - role:admin
+      - role:coordinator
+      - role:distribution-manager
+      - role:distribution-user
+      - role:underwriter
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document
+      - entity:generated-document-artifact
+    resource: outbound_document
+    source_docs:
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:outbound-document-preview
+    label: outbound_document:preview
+    action: preview
+    allowed_roles:
+      - role:admin
+      - role:coordinator
+      - role:distribution-manager
+      - role:distribution-user
+      - role:underwriter
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document-template
+    resource: outbound_document
+    source_docs:
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:outbound-document-regenerate
+    label: outbound_document:regenerate
+    action: regenerate
+    allowed_roles:
+      - role:admin
+      - role:coordinator
+      - role:distribution-manager
+      - role:distribution-user
+      - role:underwriter
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document
+      - entity:generated-document-artifact
+    resource: outbound_document
+    source_docs:
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:outbound-template-manage
+    label: outbound_template:manage
+    action: manage
+    allowed_roles:
+      - role:admin
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document-template
+    resource: outbound_template
+    source_docs:
+      - planning-mds/features/archive/F0027-coi-acord-and-outbound-document-generation/ARCHITECTURE.md
+      - planning-mds/security/authorization-matrix.md
+      - planning-mds/security/policies/policy.csv
   - id: policy_rule:policy-cancel
     label: policy:cancel
     action: cancel
@@ -5018,6 +5142,23 @@ schemas:
     path: planning-mds/schemas/document-template.schema.json
     related_nodes:
       - entity:document-template
+  - id: schema:generated-document-issue-response
+    path: planning-mds/schemas/generated-document-issue-response.schema.json
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document
+      - entity:generated-document-artifact
+  - id: schema:generated-document-preview-response
+    path: planning-mds/schemas/generated-document-preview-response.schema.json
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document-template
+  - id: schema:generated-document-request
+    path: planning-mds/schemas/generated-document-request.schema.json
+    related_nodes:
+      - capability:outbound-document-generation
+      - entity:document-template
+      - entity:generated-document-artifact
   - id: schema:global-search-response
     path: planning-mds/schemas/global-search-response.schema.json
     related_nodes:

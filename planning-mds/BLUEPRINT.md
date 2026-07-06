@@ -199,6 +199,11 @@ Status: Phase C implementation is complete for F0001 (Dashboard), F0002 (Broker 
 - F0027: COI, ACORD & Outbound Document Generation - Planned
 - [F0028: Carrier & Market Relationship Management](features/archive/F0028-carrier-and-market-relationship-management/PRD.md) - Done (Archived 2026-07-03; feature run 2026-07-02-736e7854; 6 stories: market directory search, carrier/market profile management, underwriter contact management, appetite note capture, appointment context, market activity/related work)
 
+- F0017: Broker/MGA Hierarchy, Producer Ownership & Territory Management - Planned
+- F0024: Claims & Service Case Tracking - Planned
+- [F0027: COI, ACORD & Outbound Document Generation](features/archive/F0027-coi-acord-and-outbound-document-generation/PRD.md) - Done (Archived 2026-07-03; feature run `2026-07-02-b9316621`; 5 stories: template library governance, preview generated document, issue generated artifact, regenerate/retrieve artifacts, render proposal from submission packet context)
+- F0028: Carrier & Market Relationship Management - Planned
+
 **Brokerage Platform Expansion (Planned):**
 - F0025: Commission, Producer Splits & Revenue Tracking - Planned
 - F0026: Billing, Invoicing & Reconciliation - Planned
