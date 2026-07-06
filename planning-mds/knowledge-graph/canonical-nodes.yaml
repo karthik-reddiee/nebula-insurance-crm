@@ -95,6 +95,9 @@ adrs:
   - id: adr:029
     label: Communication Activity Capture And Redaction
     path: planning-mds/architecture/decisions/ADR-029-communication-activity-capture-and-redaction.md
+  - id: adr:030
+    label: Service Case And Claim Reference Boundary
+    path: planning-mds/architecture/decisions/ADR-030-service-case-and-claim-reference-boundary.md
   - id: adr:auth-token-storage
     label: Auth Token Storage
     path: planning-mds/architecture/decisions/ADR-Auth-Token-Storage.md
@@ -1559,6 +1562,88 @@ endpoints:
     source_docs:
       - planning-mds/api/nebula-api.yaml
       - planning-mds/features/archive/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+  - id: endpoint:service-case-claim-reference
+    label: PATCH /service-cases/{serviceCaseId}/claim-reference
+    method: PATCH
+    related_nodes:
+      - entity:service-case
+      - entity:service-case-claim-reference
+      - policy_rule:service-case-update-claim-reference
+    route: /service-cases/{serviceCaseId}/claim-reference
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/api-schema-deltas.md
+  - id: endpoint:service-case-communication-link
+    label: POST /service-cases/{serviceCaseId}/communication-links
+    method: POST
+    related_nodes:
+      - entity:communication-event
+      - entity:service-case
+      - policy_rule:communication-event-read
+      - policy_rule:service-case-link-communication
+    route: /service-cases/{serviceCaseId}/communication-links
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/api-schema-deltas.md
+  - id: endpoint:service-case-create
+    label: POST /service-cases
+    method: POST
+    related_nodes:
+      - entity:service-case
+      - entity:service-case-claim-reference
+      - policy_rule:service-case-create
+      - workflow:service-case
+    route: /service-cases
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/api-schema-deltas.md
+  - id: endpoint:service-case-detail
+    label: GET /service-cases/{serviceCaseId}
+    method: GET
+    related_nodes:
+      - entity:service-case
+      - policy_rule:service-case-read
+    route: /service-cases/{serviceCaseId}
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/api-schema-deltas.md
+  - id: endpoint:service-case-follow-up-task
+    label: POST /service-cases/{serviceCaseId}/follow-up-task
+    method: POST
+    related_nodes:
+      - entity:service-case
+      - entity:task-item
+      - policy_rule:service-case-create-follow-up
+      - policy_rule:task-create
+    route: /service-cases/{serviceCaseId}/follow-up-task
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/api-schema-deltas.md
+  - id: endpoint:service-case-list
+    label: GET /service-cases
+    method: GET
+    related_nodes:
+      - entity:service-case
+      - policy_rule:service-case-read
+    route: /service-cases
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/api-schema-deltas.md
+  - id: endpoint:service-case-transition
+    label: POST /service-cases/{serviceCaseId}/transition
+    method: POST
+    related_nodes:
+      - entity:service-case
+      - entity:service-case-transition
+      - policy_rule:service-case-transition
+      - workflow:service-case
+    route: /service-cases/{serviceCaseId}/transition
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/api-schema-deltas.md
+  - id: endpoint:service-case-update
+    label: PATCH /service-cases/{serviceCaseId}
+    method: PATCH
+    related_nodes:
+      - entity:service-case
+      - policy_rule:service-case-assign
+      - policy_rule:service-case-update
+    route: /service-cases/{serviceCaseId}
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/api-schema-deltas.md
   - id: endpoint:submission-approval
     label: POST /submissions/{submissionId}/approval
     method: POST
@@ -2082,6 +2167,27 @@ entities:
       - planning-mds/architecture/data-model.md
       - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
       - planning-mds/features/archive/F0023-global-search-saved-views-and-operational-reporting/feature-assembly-plan.md
+  - id: entity:service-case
+    label: ServiceCase
+    notes: CRM-owned source record for service requests and claim-support coordination; claim details
+      are reference context only.
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-030-service-case-and-claim-reference-boundary.md
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/architecture-plan.md
+  - id: entity:service-case-claim-reference
+    label: ServiceCaseClaimReference
+    notes: Optional 1:1 child for limited claim-reference context; excludes reserves, payments, and adjudication.
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/architecture/decisions/ADR-030-service-case-and-claim-reference-boundary.md
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/architecture-plan.md
+  - id: entity:service-case-transition
+    label: ServiceCaseTransition
+    notes: Append-only status transition history for service-case workflow.
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/architecture-plan.md
   - id: entity:submission
     label: Submission
     rationale:
@@ -3914,6 +4020,150 @@ policy_rules:
       - planning-mds/architecture/decisions/ADR-014-search-index-and-saved-view-architecture.md
       - planning-mds/security/authorization-matrix.md
       - planning-mds/security/policies/policy.csv
+  - id: policy_rule:service-case-assign
+    label: service_case:assign
+    action: assign
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+    notes: Cross-user owner changes are manager/admin scope in MVP.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:service-case
+    resource: service_case
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:service-case-create
+    label: service_case:create
+    action: create
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Create also requires linked account and optional policy read scope.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:service-case
+    resource: service_case
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:service-case-create-follow-up
+    label: service_case:create_follow_up
+    action: create_follow_up
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Also requires task:create and existing task assignee validation.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:service-case
+      - entity:task-item
+    resource: service_case
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:service-case-link-communication
+    label: service_case:link_communication
+    action: link_communication
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Also requires communication_event:read and linked communication record scope.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:communication-event
+      - entity:service-case
+    resource: service_case
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:service-case-read
+    label: service_case:read
+    action: read
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Read also requires linked account/policy scope; external roles are denied for MVP.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:service-case
+    resource: service_case
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:service-case-transition
+    label: service_case:transition
+    action: transition
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Transition must satisfy the approved service-case state machine and append transition evidence.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:service-case
+      - entity:service-case-transition
+    resource: service_case
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:service-case-update
+    label: service_case:update
+    action: update
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Closed service cases are immutable except for audit reads.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:service-case
+    resource: service_case
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
+  - id: policy_rule:service-case-update-claim-reference
+    label: service_case:update_claim_reference
+    action: update_claim_reference
+    allowed_roles:
+      - role:admin
+      - role:distribution-manager
+      - role:distribution-user
+      - role:program-manager
+      - role:relationship-manager
+      - role:underwriter
+    notes: Claim reference context excludes adjudication, reserves, payments, and carrier sync.
+    related_nodes:
+      - capability:authorization-enforcement
+      - entity:service-case
+      - entity:service-case-claim-reference
+    resource: service_case
+    source_docs:
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/authorization-deltas.md
+      - planning-mds/security/policies/policy.csv
   - id: policy_rule:submission-approve
     label: submission:approve
     action: approve
@@ -4582,6 +4832,10 @@ schemas:
     path: planning-mds/schemas/paginated-document-list.schema.json
     related_nodes:
       - entity:document
+  - id: schema:paginated-service-case-list
+    path: planning-mds/schemas/paginated-service-case-list.schema.json
+    related_nodes:
+      - entity:service-case
   - id: schema:paginated-territory-assignment-list
     path: planning-mds/schemas/paginated-territory-assignment-list.schema.json
     related_nodes:
@@ -4757,6 +5011,41 @@ schemas:
     related_nodes:
       - capability:saved-views
       - entity:saved-view
+  - id: schema:service-case
+    path: planning-mds/schemas/service-case.schema.json
+    related_nodes:
+      - entity:service-case
+      - entity:service-case-claim-reference
+      - entity:service-case-transition
+  - id: schema:service-case-claim-reference-update-request
+    path: planning-mds/schemas/service-case-claim-reference-update-request.schema.json
+    related_nodes:
+      - entity:service-case
+      - entity:service-case-claim-reference
+  - id: schema:service-case-communication-link-request
+    path: planning-mds/schemas/service-case-communication-link-request.schema.json
+    related_nodes:
+      - entity:communication-event
+      - entity:service-case
+  - id: schema:service-case-create-request
+    path: planning-mds/schemas/service-case-create-request.schema.json
+    related_nodes:
+      - entity:service-case
+      - entity:service-case-claim-reference
+  - id: schema:service-case-follow-up-task-request
+    path: planning-mds/schemas/service-case-follow-up-task-request.schema.json
+    related_nodes:
+      - entity:service-case
+      - entity:task-item
+  - id: schema:service-case-transition-request
+    path: planning-mds/schemas/service-case-transition-request.schema.json
+    related_nodes:
+      - entity:service-case
+      - entity:service-case-transition
+  - id: schema:service-case-update-request
+    path: planning-mds/schemas/service-case-update-request.schema.json
+    related_nodes:
+      - entity:service-case
   - id: schema:session-continuity-event
     path: planning-mds/schemas/session-continuity-event.schema.json
     related_nodes:
@@ -5091,6 +5380,40 @@ workflows:
         label: Completed
       - id: state:renewal:lost
         label: Lost
+  - id: workflow:service-case
+    label: Service Case Workflow
+    notes: Internal servicing workflow from Intake through Closed; transitions are append-only and closed
+      records are immutable in MVP.
+    related_entities:
+      - entity:activity-timeline-event
+      - entity:service-case
+      - entity:service-case-transition
+    source_docs:
+      - planning-mds/architecture/data-model.md
+      - planning-mds/features/archive/F0024-claims-and-service-case-tracking/architecture-plan.md
+    states:
+      - id: state:service-case:intake
+        label: Intake
+        transitions_to:
+          - state:service-case:in-progress
+          - state:service-case:waiting
+      - id: state:service-case:in-progress
+        label: InProgress
+        transitions_to:
+          - state:service-case:waiting
+          - state:service-case:resolved
+      - id: state:service-case:waiting
+        label: Waiting
+        transitions_to:
+          - state:service-case:in-progress
+          - state:service-case:resolved
+      - id: state:service-case:resolved
+        label: Resolved
+        transitions_to:
+          - state:service-case:closed
+      - id: state:service-case:closed
+        label: Closed
+        transitions_to: []
   - id: workflow:submission
     label: Submission lifecycle
     notes: 'F0006 owns the intake half of this workflow through ReadyForUWReview. F0019 activates and

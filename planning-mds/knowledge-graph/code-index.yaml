@@ -1755,6 +1755,45 @@ node_bindings:
         schemas:
           - planning-mds/schemas/global-search-response.schema.json
           - planning-mds/schemas/global-search-result.schema.json
+  - id: entity:service-case
+    paths:
+      backend:
+        api:
+          - engine/src/Nebula.Api/Endpoints/ServiceCaseEndpoints.cs
+        application:
+          - engine/src/Nebula.Application/DTOs/ServiceCase*.cs
+          - engine/src/Nebula.Application/Interfaces/IServiceCaseRepository.cs
+          - engine/src/Nebula.Application/Services/ServiceCaseService.cs
+          - engine/src/Nebula.Application/Validators/ServiceCase*.cs
+        domain:
+          - engine/src/Nebula.Domain/Entities/ServiceCase*.cs
+        infrastructure:
+          - engine/src/Nebula.Infrastructure/Persistence/Configurations/ServiceCase*.cs
+          - engine/src/Nebula.Infrastructure/Persistence/Migrations/*F0024*ServiceCases*.cs
+          - engine/src/Nebula.Infrastructure/Repositories/ServiceCaseRepository.cs
+        tests:
+          - engine/tests/Nebula.Tests/**/ServiceCase*.cs
+      docs:
+        architecture:
+          - planning-mds/architecture/decisions/ADR-030-service-case-and-claim-reference-boundary.md
+          - planning-mds/features/archive/F0024-claims-and-service-case-tracking/api-schema-deltas.md
+          - planning-mds/features/archive/F0024-claims-and-service-case-tracking/architecture-plan.md
+          - planning-mds/features/archive/F0024-claims-and-service-case-tracking/authorization-deltas.md
+        authz:
+          - planning-mds/security/authorization-matrix.md
+          - planning-mds/security/policies/policy.csv
+        schemas:
+          - planning-mds/schemas/activity-event-payloads.schema.json
+          - planning-mds/schemas/paginated-service-case-list.schema.json
+          - planning-mds/schemas/service-case*.schema.json
+      frontend:
+        feature:
+          - experience/src/features/service-cases/**
+        pages:
+          - experience/src/pages/AccountDetailPage.tsx
+          - experience/src/pages/PolicyDetailPage.tsx
+          - experience/src/pages/ServiceCaseDetailPage.tsx
+          - experience/src/pages/ServiceCasesPage.tsx
   - id: entity:submission
     paths:
       backend:

@@ -1,8 +1,23 @@
 /// <reference types="vitest" />
-import { defineConfig, loadEnv } from 'vite'
+import { defineConfig, loadEnv, type ProxyOptions } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
+
+function createApiProxyOptions(target: string): ProxyOptions {
+  return {
+    target,
+    changeOrigin: true,
+    bypass(req) {
+      const accept = req.headers.accept ?? ''
+      const authorization = req.headers.authorization
+      if (!authorization && accept.includes('text/html')) {
+        return '/index.html'
+      }
+      return undefined
+    },
+  }
+}
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
@@ -35,6 +50,7 @@ export default defineConfig(({ mode }) => {
     '/submissions',
     '/renewals',
     '/search-results',
+    '/service-cases',
     '/saved-views',
     '/operational-reports',
     '/documents',
@@ -69,14 +85,11 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 5173,
-      proxy: {
+proxy: {
         ...Object.fromEntries(
           apiProxyPaths.map((pathPrefix) => [
             pathPrefix,
-            {
-              target: apiProxyTarget,
-              changeOrigin: true,
-            },
+            createApiProxyOptions(apiProxyTarget),
           ]),
         ),
         '/neuron': {

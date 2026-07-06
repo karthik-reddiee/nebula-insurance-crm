@@ -194,6 +194,7 @@ builder.Services.AddScoped<ProducerOwnershipService>();
 builder.Services.AddScoped<TerritoryService>();
 builder.Services.AddScoped<SessionContinuityTelemetryService>();
 builder.Services.AddScoped<NeuronCompanionTelemetryService>();
+builder.Services.AddScoped<ServiceCaseService>();
 
 // Current user
 builder.Services.AddHttpContextAccessor();
@@ -350,6 +351,7 @@ app.MapDocumentEndpoints();
 app.MapDashboardEndpoints();
 app.MapTaskEndpoints();
 app.MapCommunicationEndpoints();
+app.MapServiceCaseEndpoints();
 app.MapUserEndpoints();
 app.MapTimelineEndpoints();
 app.MapSessionTelemetryEndpoints();
