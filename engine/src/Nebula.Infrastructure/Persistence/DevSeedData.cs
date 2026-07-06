@@ -49,6 +49,8 @@ public static class DevSeedData
         // already seeded before F0009 migration added the BrokerTenantId column.
         await EnsureDevBrokerTenantIdAsync(db);
         await EnsureCarrierRefsAsync(db);
+        await EnsureF0017BrokerDistributionNodesAsync(db);
+        await EnsureF0017DemoExamplesAsync(db);
 
         if (await db.Submissions.AnyAsync()) return; // app data already seeded
 
@@ -88,6 +90,8 @@ public static class DevSeedData
         devBroker.BrokerTenantId = BrokerUserDevTenantId;
         db.Brokers.AddRange(brokers);
         await db.SaveChangesAsync();
+        await EnsureF0017BrokerDistributionNodesAsync(db);
+        await EnsureF0017DemoExamplesAsync(db);
 
         AssignAccountRelationships(accounts, brokers, userIds, rng, now);
         db.AccountContacts.AddRange(BuildAccountContacts(accounts, now, rng, userIds));
@@ -315,6 +319,324 @@ public static class DevSeedData
         timelineEvents.AddRange(BuildBrokerTimelineEvents(now, rng, userNameById, brokers));
         timelineEvents.AddRange(BuildTransitionTimelineEvents(rng, userNameById, transitions));
         db.ActivityTimelineEvents.AddRange(timelineEvents.OrderByDescending(e => e.OccurredAt).Take(500));
+
+        await db.SaveChangesAsync();
+    }
+
+    private static async Task EnsureF0017DemoExamplesAsync(AppDbContext db)
+    {
+        var visibleDemoBrokerId = Guid.Parse("e2bb173c-ae3c-431b-bcd6-98f21f04448c");
+        var brokers = await db.Brokers
+            .IgnoreQueryFilters()
+            .Where(b => b.BrokerTenantId == BrokerUserDevTenantId || b.Id == visibleDemoBrokerId)
+            .OrderByDescending(b => b.Id == visibleDemoBrokerId)
+            .ThenBy(b => b.LegalName)
+            .ToListAsync();
+
+        if (brokers.Count == 0)
+        {
+            var fallbackBroker = await db.Brokers.IgnoreQueryFilters().OrderBy(b => b.LegalName).FirstOrDefaultAsync();
+            if (fallbackBroker is not null)
+                brokers.Add(fallbackBroker);
+        }
+
+        foreach (var broker in brokers)
+            await EnsureF0017DemoExamplesForBrokerAsync(db, broker);
+    }
+
+    private static async Task EnsureF0017DemoExamplesForBrokerAsync(AppDbContext db, Broker broker)
+    {
+        if (broker is null)
+            return;
+
+        var brokerNode = await db.DistributionNodes.FirstOrDefaultAsync(n => n.Id == broker.Id);
+        if (brokerNode is null)
+            return;
+
+        var now = DateTime.UtcNow;
+        var actor = broker.UpdatedByUserId == Guid.Empty ? broker.CreatedByUserId : broker.UpdatedByUserId;
+        var childA = DeriveF0017DemoProducerId(broker.Id, 1);
+        var childB = DeriveF0017DemoProducerId(broker.Id, 2);
+
+        foreach (var (id, name) in new[]
+        {
+            (childA, $"{broker.LegalName} Producer A"),
+            (childB, $"{broker.LegalName} Producer B"),
+        })
+        {
+            var producer = await db.DistributionNodes.FirstOrDefaultAsync(n => n.Id == id);
+            if (producer is null)
+            {
+                db.DistributionNodes.Add(new DistributionNode
+                {
+                    Id = id,
+                    NodeType = "Producer",
+                    DisplayName = name,
+                    ParentId = broker.Id,
+                    AncestryPath = $"{brokerNode.AncestryPath}/{broker.Id}",
+                    Depth = brokerNode.Depth + 1,
+                    ChildCount = 0,
+                    IsActive = true,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedByUserId = actor,
+                    UpdatedByUserId = actor,
+                });
+            }
+            else
+            {
+                producer.NodeType = "Producer";
+                producer.DisplayName = name;
+                producer.ParentId = broker.Id;
+                producer.AncestryPath = $"{brokerNode.AncestryPath}/{broker.Id}";
+                producer.Depth = brokerNode.Depth + 1;
+                producer.IsActive = true;
+                producer.UpdatedAt = now;
+                producer.UpdatedByUserId = actor;
+            }
+        }
+
+        await db.SaveChangesAsync();
+
+        if (!await db.ProducerOwnership.AnyAsync(o => o.ScopeType == "BrokerRelationship" && o.ScopeId == broker.Id))
+        {
+            db.ProducerOwnership.Add(new ProducerOwnership
+            {
+                ScopeType = "BrokerRelationship",
+                ScopeId = broker.Id,
+                ProducerNodeId = childA,
+                EffectiveFrom = new DateOnly(2026, 1, 1),
+                EffectiveTo = null,
+                AssignmentReason = "F0017 demo current ownership",
+                CreatedAt = now,
+                UpdatedAt = now,
+                CreatedByUserId = actor,
+                UpdatedByUserId = actor,
+            });
+        }
+
+        var firstTerritory = await EnsureDemoTerritoryAsync(db, "F0017 Demo - Northeast", "Northeast", now, actor);
+        var secondTerritory = await EnsureDemoTerritoryAsync(db, "F0017 Demo - Southeast", "Southeast", now, actor);
+
+        if (!await db.TerritoryAssignments.AnyAsync(a => a.MemberType == "Broker" && a.MemberId == broker.Id))
+        {
+            db.TerritoryAssignments.AddRange(
+                new TerritoryAssignment
+                {
+                    TerritoryId = firstTerritory.Id,
+                    MemberType = "Broker",
+                    MemberId = broker.Id,
+                    EffectiveFrom = new DateOnly(2026, 1, 1),
+                    EffectiveTo = new DateOnly(2026, 4, 1),
+                    AssignmentReason = "F0017 demo prior territory before reassignment",
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedByUserId = actor,
+                    UpdatedByUserId = actor,
+                },
+                new TerritoryAssignment
+                {
+                    TerritoryId = secondTerritory.Id,
+                    MemberType = "Broker",
+                    MemberId = broker.Id,
+                    EffectiveFrom = new DateOnly(2026, 4, 1),
+                    EffectiveTo = null,
+                    AssignmentReason = "F0017 demo reassignment closes the prior open assignment",
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedByUserId = actor,
+                    UpdatedByUserId = actor,
+                });
+        }
+
+        if (!await db.ActivityTimelineEvents.AnyAsync(e =>
+                e.EntityType == "Broker" &&
+                e.EntityId == broker.Id &&
+                e.EventType == "TerritoryMemberReassigned"))
+        {
+            db.ActivityTimelineEvents.AddRange(
+                new ActivityTimelineEvent
+                {
+                    EntityType = "Broker",
+                    EntityId = broker.Id,
+                    EventType = "ProducerOwnershipAssigned",
+                    EventDescription = $"Producer ownership assigned to {childA} effective 2026-01-01",
+                    ActorUserId = actor,
+                    ActorDisplayName = "Dev Seed",
+                    OccurredAt = now.AddMinutes(-3),
+                    EventPayloadJson = System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        scopeType = "BrokerRelationship",
+                        scopeId = broker.Id,
+                        oldProducerNodeId = (Guid?)null,
+                        newProducerNodeId = childA,
+                        effectiveFrom = "2026-01-01",
+                    }),
+                },
+                new ActivityTimelineEvent
+                {
+                    EntityType = "Broker",
+                    EntityId = broker.Id,
+                    EventType = "TerritoryMemberReassigned",
+                    EventDescription = $"Territory reassigned from {firstTerritory.Name} to {secondTerritory.Name} effective 2026-04-01",
+                    ActorUserId = actor,
+                    ActorDisplayName = "Dev Seed",
+                    OccurredAt = now.AddMinutes(-2),
+                    EventPayloadJson = System.Text.Json.JsonSerializer.Serialize(new
+                    {
+                        memberType = "Broker",
+                        memberId = broker.Id,
+                        oldTerritoryId = firstTerritory.Id,
+                        newTerritoryId = secondTerritory.Id,
+                        effectiveFrom = "2026-04-01",
+                    }),
+                });
+        }
+
+        await db.SaveChangesAsync();
+
+        var parentCounts = await db.DistributionNodes
+            .Where(n => n.ParentId != null)
+            .GroupBy(n => n.ParentId!.Value)
+            .Select(g => new { ParentId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.ParentId, x => x.Count);
+
+        foreach (var node in await db.DistributionNodes.ToListAsync())
+            node.ChildCount = parentCounts.GetValueOrDefault(node.Id);
+
+        await db.SaveChangesAsync();
+    }
+
+    private static Guid DeriveF0017DemoProducerId(Guid brokerId, byte suffix)
+    {
+        var bytes = brokerId.ToByteArray();
+        bytes[14] = 0x17;
+        bytes[15] = suffix;
+        return new Guid(bytes);
+    }
+
+    private static async Task<Territory> EnsureDemoTerritoryAsync(
+        AppDbContext db,
+        string name,
+        string region,
+        DateTime now,
+        Guid actor)
+    {
+        var territory = await db.Territories.FirstOrDefaultAsync(t => t.Name == name);
+        if (territory is not null)
+            return territory;
+
+        territory = new Territory
+        {
+            Name = name,
+            Description = "F0017 demo territory",
+            CriteriaJson = System.Text.Json.JsonSerializer.Serialize(new Dictionary<string, string> { ["region"] = region }),
+            IsActive = true,
+            CreatedAt = now,
+            UpdatedAt = now,
+            CreatedByUserId = actor,
+            UpdatedByUserId = actor,
+        };
+        db.Territories.Add(territory);
+        await db.SaveChangesAsync();
+        return territory;
+    }
+
+    private static async Task EnsureF0017BrokerDistributionNodesAsync(AppDbContext db)
+    {
+        var mgas = await db.MGAs.AsNoTracking().ToListAsync();
+        var brokers = await db.Brokers.IgnoreQueryFilters().AsNoTracking().ToListAsync();
+        if (mgas.Count == 0 && brokers.Count == 0)
+            return;
+
+        var now = DateTime.UtcNow;
+
+        foreach (var mga in mgas)
+        {
+            var node = await db.DistributionNodes.FirstOrDefaultAsync(n => n.Id == mga.Id);
+            if (node is null)
+            {
+                db.DistributionNodes.Add(new DistributionNode
+                {
+                    Id = mga.Id,
+                    NodeType = "MGA",
+                    DisplayName = mga.Name,
+                    ParentId = null,
+                    AncestryPath = "",
+                    Depth = 0,
+                    ChildCount = 0,
+                    IsActive = mga.Status != "Inactive" && !mga.IsDeleted,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedByUserId = mga.CreatedByUserId == Guid.Empty ? Guid.Empty : mga.CreatedByUserId,
+                    UpdatedByUserId = mga.UpdatedByUserId == Guid.Empty ? mga.CreatedByUserId : mga.UpdatedByUserId,
+                });
+                continue;
+            }
+
+            node.NodeType = "MGA";
+            node.DisplayName = mga.Name;
+            node.ParentId = null;
+            node.AncestryPath = "";
+            node.Depth = 0;
+            node.IsActive = mga.Status != "Inactive" && !mga.IsDeleted;
+            node.UpdatedAt = now;
+            node.UpdatedByUserId = mga.UpdatedByUserId == Guid.Empty ? node.UpdatedByUserId : mga.UpdatedByUserId;
+        }
+
+        await db.SaveChangesAsync();
+
+        foreach (var broker in brokers)
+        {
+            var node = await db.DistributionNodes.FirstOrDefaultAsync(n => n.Id == broker.Id);
+            var parentId = broker.MgaId;
+            var ancestryPath = parentId is null ? "" : $"/{parentId}";
+            var depth = parentId is null ? 0 : 1;
+            var isActive = broker.Status != "Inactive" && !broker.IsDeleted;
+
+            if (node is null)
+            {
+                db.DistributionNodes.Add(new DistributionNode
+                {
+                    Id = broker.Id,
+                    NodeType = "Broker",
+                    DisplayName = broker.LegalName,
+                    ParentId = parentId,
+                    AncestryPath = ancestryPath,
+                    Depth = depth,
+                    ChildCount = 0,
+                    IsActive = isActive,
+                    CreatedAt = now,
+                    UpdatedAt = now,
+                    CreatedByUserId = broker.CreatedByUserId,
+                    UpdatedByUserId = broker.UpdatedByUserId == Guid.Empty ? broker.CreatedByUserId : broker.UpdatedByUserId,
+                });
+                continue;
+            }
+
+            node.NodeType = "Broker";
+            node.DisplayName = broker.LegalName;
+            node.ParentId = parentId;
+            node.AncestryPath = ancestryPath;
+            node.Depth = depth;
+            node.IsActive = isActive;
+            node.UpdatedAt = now;
+            node.UpdatedByUserId = broker.UpdatedByUserId == Guid.Empty ? node.UpdatedByUserId : broker.UpdatedByUserId;
+        }
+
+        await db.SaveChangesAsync();
+
+        var parentCounts = await db.DistributionNodes
+            .Where(n => n.ParentId != null)
+            .GroupBy(n => n.ParentId!.Value)
+            .Select(g => new { ParentId = g.Key, Count = g.Count() })
+            .ToDictionaryAsync(x => x.ParentId, x => x.Count);
+
+        var nodes = await db.DistributionNodes.ToListAsync();
+        foreach (var node in nodes)
+        {
+            node.ChildCount = parentCounts.GetValueOrDefault(node.Id);
+        }
 
         await db.SaveChangesAsync();
     }

@@ -515,9 +515,9 @@ features:
       - schema:account-update-request
       - schema:activity-event-payloads
       - schema:timeline-event
-  - status: planned
+  - status: archived-done
     id: feature:F0017
-    path: planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership
+    path: planning-mds/features/archive/F0017-broker-mga-hierarchy-and-producer-ownership
     affects:
       - capability:distribution-hierarchy-management
       - capability:producer-ownership-management
@@ -2756,7 +2756,7 @@ stories:
       - schema:account-summary
   - id: story:F0017-S0001
     feature: feature:F0017
-    path: planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0001-model-broker-mga-hierarchy.md
+    path: planning-mds/features/archive/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0001-model-broker-mga-hierarchy.md
     affects:
       - capability:distribution-hierarchy-management
       - endpoint:distribution-node-parent-update
@@ -2778,7 +2778,7 @@ stories:
       - schema:timeline-event
   - id: story:F0017-S0002
     feature: feature:F0017
-    path: planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0002-navigate-hierarchy.md
+    path: planning-mds/features/archive/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0002-navigate-hierarchy.md
     affects:
       - capability:distribution-hierarchy-management
       - endpoint:distribution-node-ancestors
@@ -2796,7 +2796,7 @@ stories:
       - schema:problem-details
   - id: story:F0017-S0003
     feature: feature:F0017
-    path: planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0003-producer-ownership-effective-dated.md
+    path: planning-mds/features/archive/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0003-producer-ownership-effective-dated.md
     affects:
       - capability:producer-ownership-management
       - endpoint:producer-ownership-assign
@@ -2820,7 +2820,7 @@ stories:
       - schema:timeline-event
   - id: story:F0017-S0004
     feature: feature:F0017
-    path: planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0004-territory-management-effective-dated.md
+    path: planning-mds/features/archive/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0004-territory-management-effective-dated.md
     affects:
       - capability:territory-management
       - endpoint:territory-assignment-lookup
@@ -2850,7 +2850,7 @@ stories:
       - schema:timeline-event
   - id: story:F0017-S0005
     feature: feature:F0017
-    path: planning-mds/features/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0005-hierarchy-ownership-territory-audit.md
+    path: planning-mds/features/archive/F0017-broker-mga-hierarchy-and-producer-ownership/F0017-S0005-hierarchy-ownership-territory-audit.md
     affects:
       - capability:distribution-hierarchy-management
       - capability:producer-ownership-management

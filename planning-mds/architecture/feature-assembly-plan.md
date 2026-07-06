@@ -2138,7 +2138,7 @@ eval():   r.obj.assignee ("abc-123") == r.sub.id ("abc-123") → true
 
 **Added:** 2026-06-07 - Feature action Step 0 (run `2026-06-07-771a5ef6`) created the feature-local implementation execution plan after Phase B architecture (ADR-026) completed during planning.
 
-> **Implementation Execution Plan:** [`feature-assembly-plan.md`](../features/F0017-broker-mga-hierarchy-and-producer-ownership/feature-assembly-plan.md) - backend-led slice order (S0001-S0005): 4 new entities (`DistributionNode`, `ProducerOwnership`, `Territory`, `TerritoryAssignment`), self-referencing hierarchy with materialized ancestry + cycle/orphan guards, shared effective-dating period logic, territory overlap rule, 9 endpoints with Casbin role-based mutation guards, and immutable timeline emission. Frontend distribution panels validated in CI (WSL `/mnt/c` toolchain constraint).
+> **Implementation Execution Plan:** [`feature-assembly-plan.md`](../features/archive/F0017-broker-mga-hierarchy-and-producer-ownership/feature-assembly-plan.md) - backend-led slice order (S0001-S0005): 4 new entities (`DistributionNode`, `ProducerOwnership`, `Territory`, `TerritoryAssignment`), self-referencing hierarchy with materialized ancestry + cycle/orphan guards, shared effective-dating period logic, territory overlap rule, 9 endpoints with Casbin role-based mutation guards, and immutable timeline emission. Frontend distribution panels validated in CI (WSL `/mnt/c` toolchain constraint).
 
 ### Dependencies
 

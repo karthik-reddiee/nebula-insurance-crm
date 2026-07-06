@@ -1,6 +1,7 @@
 # F0017 — Broker/MGA Hierarchy, Producer Ownership & Territory Management
 
-**Status:** Draft
+**Status:** Done
+**Archived:** 2026-07-03
 **Priority:** High
 **Phase:** CRM Release MVP+
 
@@ -20,14 +21,14 @@ Model broker, MGA, producer, and territory structure so ownership, reporting, an
 
 | ID | Title | Status |
 |----|-------|--------|
-| [F0017-S0001](./F0017-S0001-model-broker-mga-hierarchy.md) | Model broker/MGA hierarchy (self-referencing, arbitrary depth) | Planned |
-| [F0017-S0002](./F0017-S0002-navigate-hierarchy.md) | Navigate and traverse the distribution hierarchy | Planned |
-| [F0017-S0003](./F0017-S0003-producer-ownership-effective-dated.md) | Assign and maintain producer ownership (effective-dated) | Planned |
-| [F0017-S0004](./F0017-S0004-territory-management-effective-dated.md) | Define and manage territories with effective-dated assignment | Planned |
-| [F0017-S0005](./F0017-S0005-hierarchy-ownership-territory-audit.md) | Audit and timeline for hierarchy, ownership, and territory changes | Planned |
+| [F0017-S0001](./F0017-S0001-model-broker-mga-hierarchy.md) | Model broker/MGA hierarchy (self-referencing, arbitrary depth) | Done |
+| [F0017-S0002](./F0017-S0002-navigate-hierarchy.md) | Navigate and traverse the distribution hierarchy | Done |
+| [F0017-S0003](./F0017-S0003-producer-ownership-effective-dated.md) | Assign and maintain producer ownership (effective-dated) | Done |
+| [F0017-S0004](./F0017-S0004-territory-management-effective-dated.md) | Define and manage territories with effective-dated assignment | Done |
+| [F0017-S0005](./F0017-S0005-hierarchy-ownership-territory-audit.md) | Audit and timeline for hierarchy, ownership, and territory changes | Done |
 
 **Total Stories:** 5
-**Completed:** 0 / 5
+**Completed:** 5 / 5
 
 ## Architecture
 

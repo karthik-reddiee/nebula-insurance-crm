@@ -194,7 +194,7 @@ Status: Phase C implementation is complete for F0001 (Dashboard), F0002 (Broker 
 
 **CRM Release MVP+ (Planned):**
 - F0008: Broker Insights - Planned
-- F0017: Broker/MGA Hierarchy, Producer Ownership & Territory Management - Planned
+- [F0017: Broker/MGA Hierarchy, Producer Ownership & Territory Management](features/archive/F0017-broker-mga-hierarchy-and-producer-ownership/PRD.md) - Done (Archived 2026-07-03; 5 stories: broker/MGA hierarchy, hierarchy traversal, producer ownership, territory assignment, audit/timeline)
 - [F0024: Claims & Service Case Tracking](features/archive/F0024-claims-and-service-case-tracking/PRD.md) - Done (Archived 2026-07-03; 6 stories: service case intake, contextual visibility, ownership/follow-up, status transitions, claim-reference context, permission-safe audit history)
 - F0027: COI, ACORD & Outbound Document Generation - Planned
 - F0028: Carrier & Market Relationship Management - Planned

@@ -1,9 +1,9 @@
 version: 0
-generated_at: '2026-07-05T23:58:43+00:00'
+generated_at: '2026-07-06T01:27:41+00:00'
 summary:
-  total_invocations: 51
+  total_invocations: 54
   by_language:
-    csharp: 50
+    csharp: 53
     typescript: 1
   source_files: 11
   bound_targets: 20
@@ -194,12 +194,22 @@ invocations:
   target_symbol: symbol:capability-authorization-enforcement:i-authorization-service.authorize-async
   target_node: capability:authorization-enforcement
 - source_file: engine/src/Nebula.Application/Services/DistributionNodeService.cs
-  source_line: 155
+  source_line: 156
+  language: csharp
+  target_symbol: symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
+  target_node: entity:activity-timeline-event
+- source_file: engine/src/Nebula.Application/Services/DistributionNodeService.cs
+  source_line: 182
   language: csharp
   target_symbol: symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
   target_node: entity:activity-timeline-event
 - source_file: engine/src/Nebula.Application/Services/ProducerOwnershipService.cs
   source_line: 70
+  language: csharp
+  target_symbol: symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
+  target_node: entity:activity-timeline-event
+- source_file: engine/src/Nebula.Application/Services/ProducerOwnershipService.cs
+  source_line: 94
   language: csharp
   target_symbol: symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
   target_node: entity:activity-timeline-event
@@ -210,6 +220,11 @@ invocations:
   target_node: entity:activity-timeline-event
 - source_file: engine/src/Nebula.Application/Services/TerritoryService.cs
   source_line: 105
+  language: csharp
+  target_symbol: symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
+  target_node: entity:activity-timeline-event
+- source_file: engine/src/Nebula.Application/Services/TerritoryService.cs
+  source_line: 127
   language: csharp
   target_symbol: symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
   target_node: entity:activity-timeline-event

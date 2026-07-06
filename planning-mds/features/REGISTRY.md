@@ -26,7 +26,6 @@ Per §19 of the feature-evidence package contract. Replaces the legacy `Abandone
 | Feature ID | Name | Status | Phase | Folder |
 |------------|------|--------|-------|--------|
 | F0008 | Broker Insights | Planned | MVP | `F0008-broker-insights/` |
-| F0017 | Broker/MGA Hierarchy, Producer Ownership & Territory Management | Planned | CRM Release MVP+ | `F0017-broker-mga-hierarchy-and-producer-ownership/` |
 | F0022 | Work Queues, Assignment Rules & Coverage Management | Planned | CRM Release MVP | `F0022-work-queues-assignment-rules-and-coverage-management/` |
 | F0025 | Commission, Producer Splits & Revenue Tracking | Planned | Brokerage Platform Expansion | `F0025-commission-producer-splits-and-revenue-tracking/` |
 | F0026 | Billing, Invoicing & Reconciliation | Planned | Brokerage Platform Expansion | `F0026-billing-invoicing-and-reconciliation/` |
@@ -45,6 +44,7 @@ Per §19 of the feature-evidence package contract. Replaces the legacy `Abandone
 | Feature ID | Name | Archived Date | Folder |
 |------------|------|---------------|--------|
 | F0024 | Claims & Service Case Tracking | 2026-07-03 | `archive/F0024-claims-and-service-case-tracking/` |
+| F0017 | Broker/MGA Hierarchy, Producer Ownership & Territory Management | 2026-07-03 | `archive/F0017-broker-mga-hierarchy-and-producer-ownership/` |
 | F0038 | Neuron Day-at-a-Glance Shell (Renewals live + draft outreach + mock-send) | 2026-07-02 | `archive/F0038-neuron-day-at-a-glance-shell/` |
 | F0021 | Communication Hub & Activity Capture | 2026-07-02 | `archive/F0021-communication-hub-and-activity-capture/` |
 | F0023 | Global Search, Saved Views & Operational Reporting | 2026-06-20 | `archive/F0023-global-search-saved-views-and-operational-reporting/` |

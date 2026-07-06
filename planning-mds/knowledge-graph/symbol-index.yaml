@@ -1,7 +1,7 @@
 version: 0
-generated_at: '2026-07-05T23:58:42+00:00'
+generated_at: '2026-07-06T01:27:40+00:00'
 summary:
-  total_symbols: 4479
+  total_symbols: 4492
   by_language:
     python:
       files: 52
@@ -994,11 +994,11 @@ symbols:
   kind: function
   name: BrokerDetailPage
   file: experience/src/pages/BrokerDetailPage.tsx
-  line: 30
+  line: 31
   signature: export default function BrokerDetailPage()
   visibility: export
   language: typescript
-  end_line: 230
+  end_line: 240
   callers: []
   callees: []
 - id: symbol:capability-broker-relationship-management:broker-dto.broker-dto
@@ -1013,6 +1013,20 @@ symbols:
   end_line: 14
   callers: []
   callees: []
+- id: symbol:capability-broker-relationship-management:broker-endpoint-tests.ancestors-json
+  node: capability:broker-relationship-management
+  kind: record
+  name: AncestorsJson
+  file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
+  line: 251
+  signature: private record AncestorsJson(NodeJson Node, IReadOnlyList<NodeJson> Ancestors)
+  visibility: private
+  language: csharp
+  container: BrokerEndpointTests
+  end_line: 251
+  is_test: true
+  callers: []
+  callees: []
 - id: symbol:capability-broker-relationship-management:broker-endpoint-tests.broker-endpoint-tests
   node: capability:broker-relationship-management
   kind: class
@@ -1023,21 +1037,38 @@ symbols:
     : IClassFixture<CustomWebApplicationFactory>'
   visibility: public
   language: csharp
-  end_line: 167
+  end_line: 252
   is_test: true
   callers: []
   callees: []
+- id: symbol:capability-broker-relationship-management:broker-endpoint-tests.create-broker-creates-matching-distribution-node
+  node: capability:broker-relationship-management
+  kind: method
+  name: CreateBroker_CreatesMatchingDistributionNode
+  file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
+  line: 27
+  signature: public async Task CreateBroker_CreatesMatchingDistributionNode()
+  visibility: public
+  language: csharp
+  container: BrokerEndpointTests
+  end_line: 47
+  is_test: true
+  callers: []
+  callees: []
+  instantiates:
+  - symbol:capability-broker-relationship-management:broker-create-dto.broker-create-dto
+  - symbol:capability-broker-relationship-management:types.broker-create-dto
 - id: symbol:capability-broker-relationship-management:broker-endpoint-tests.create-broker-duplicate-license-returns409
   node: capability:broker-relationship-management
   kind: method
   name: CreateBroker_DuplicateLicense_Returns409
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 27
+  line: 49
   signature: public async Task CreateBroker_DuplicateLicense_Returns409()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 37
+  end_line: 59
   is_test: true
   callers: []
   callees: []
@@ -1049,12 +1080,12 @@ symbols:
   kind: method
   name: CreateBroker_InvalidState_Returns400
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 102
+  line: 148
   signature: public async Task CreateBroker_InvalidState_Returns400()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 108
+  end_line: 154
   is_test: true
   callers: []
   callees: []
@@ -1083,12 +1114,30 @@ symbols:
   kind: method
   name: DeleteBroker_ExistingBroker_Returns204
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 91
+  line: 137
   signature: public async Task DeleteBroker_ExistingBroker_Returns204()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 100
+  end_line: 146
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-broker-relationship-management:broker-service.delete-async
+  instantiates:
+  - symbol:capability-broker-relationship-management:broker-create-dto.broker-create-dto
+  - symbol:capability-broker-relationship-management:types.broker-create-dto
+- id: symbol:capability-broker-relationship-management:broker-endpoint-tests.delete-broker-marks-distribution-node-inactive
+  node: capability:broker-relationship-management
+  kind: method
+  name: DeleteBroker_MarksDistributionNodeInactive
+  file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
+  line: 174
+  signature: public async Task DeleteBroker_MarksDistributionNodeInactive()
+  visibility: public
+  language: csharp
+  container: BrokerEndpointTests
+  end_line: 188
   is_test: true
   callers: []
   callees:
@@ -1101,12 +1150,12 @@ symbols:
   kind: method
   name: DeleteBroker_SetsStatusInactive
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 111
+  line: 157
   signature: public async Task DeleteBroker_SetsStatusInactive()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 126
+  end_line: 172
   is_test: true
   callers: []
   callees:
@@ -1119,12 +1168,12 @@ symbols:
   kind: method
   name: GetBroker_ExistingId_Returns200
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 54
+  line: 76
   signature: public async Task GetBroker_ExistingId_Returns200()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 64
+  end_line: 86
   is_test: true
   callers: []
   callees: []
@@ -1136,12 +1185,12 @@ symbols:
   kind: method
   name: GetBroker_NonExistentId_Returns404
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 66
+  line: 88
   signature: public async Task GetBroker_NonExistentId_Returns404()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 71
+  end_line: 93
   is_test: true
   callers: []
   callees: []
@@ -1150,12 +1199,12 @@ symbols:
   kind: record
   name: JsonPaginatedBrokerList
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 165
+  line: 244
   signature: private record JsonPaginatedBrokerList(
   visibility: private
   language: csharp
   container: BrokerEndpointTests
-  end_line: 166
+  end_line: 245
   is_test: true
   callers: []
   callees: []
@@ -1164,29 +1213,43 @@ symbols:
   kind: method
   name: ListBrokers_ReturnsPagedResult
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 39
+  line: 61
   signature: public async Task ListBrokers_ReturnsPagedResult()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 52
+  end_line: 74
   is_test: true
   callers: []
   callees: []
   instantiates:
   - symbol:capability-broker-relationship-management:broker-create-dto.broker-create-dto
   - symbol:capability-broker-relationship-management:types.broker-create-dto
+- id: symbol:capability-broker-relationship-management:broker-endpoint-tests.node-json
+  node: capability:broker-relationship-management
+  kind: record
+  name: NodeJson
+  file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
+  line: 247
+  signature: private record NodeJson(
+  visibility: private
+  language: csharp
+  container: BrokerEndpointTests
+  end_line: 249
+  is_test: true
+  callers: []
+  callees: []
 - id: symbol:capability-broker-relationship-management:broker-endpoint-tests.reactivate-broker-after-deactivation-returns200-with-active-status
   node: capability:broker-relationship-management
   kind: method
   name: ReactivateBroker_AfterDeactivation_Returns200WithActiveStatus
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 129
+  line: 191
   signature: public async Task ReactivateBroker_AfterDeactivation_Returns200WithActiveStatus()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 144
+  end_line: 206
   is_test: true
   callers: []
   callees:
@@ -1199,15 +1262,33 @@ symbols:
   kind: method
   name: ReactivateBroker_AlreadyActive_Returns409
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 146
+  line: 225
   signature: public async Task ReactivateBroker_AlreadyActive_Returns409()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 156
+  end_line: 235
   is_test: true
   callers: []
   callees: []
+  instantiates:
+  - symbol:capability-broker-relationship-management:broker-create-dto.broker-create-dto
+  - symbol:capability-broker-relationship-management:types.broker-create-dto
+- id: symbol:capability-broker-relationship-management:broker-endpoint-tests.reactivate-broker-marks-distribution-node-active
+  node: capability:broker-relationship-management
+  kind: method
+  name: ReactivateBroker_MarksDistributionNodeActive
+  file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
+  line: 208
+  signature: public async Task ReactivateBroker_MarksDistributionNodeActive()
+  visibility: public
+  language: csharp
+  container: BrokerEndpointTests
+  end_line: 223
+  is_test: true
+  callers: []
+  callees:
+  - symbol:capability-broker-relationship-management:broker-service.delete-async
   instantiates:
   - symbol:capability-broker-relationship-management:broker-create-dto.broker-create-dto
   - symbol:capability-broker-relationship-management:types.broker-create-dto
@@ -1216,26 +1297,45 @@ symbols:
   kind: method
   name: ReactivateBroker_NonExistent_Returns404
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 158
+  line: 237
   signature: public async Task ReactivateBroker_NonExistent_Returns404()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 163
+  end_line: 242
   is_test: true
   callers: []
   callees: []
+- id: symbol:capability-broker-relationship-management:broker-endpoint-tests.update-broker-syncs-distribution-node-display-name-and-active-state
+  node: capability:broker-relationship-management
+  kind: method
+  name: UpdateBroker_SyncsDistributionNodeDisplayNameAndActiveState
+  file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
+  line: 113
+  signature: public async Task UpdateBroker_SyncsDistributionNodeDisplayNameAndActiveState()
+  visibility: public
+  language: csharp
+  container: BrokerEndpointTests
+  end_line: 135
+  is_test: true
+  callers: []
+  callees: []
+  instantiates:
+  - symbol:capability-broker-relationship-management:broker-create-dto.broker-create-dto
+  - symbol:capability-broker-relationship-management:broker-update-dto.broker-update-dto
+  - symbol:capability-broker-relationship-management:types.broker-create-dto
+  - symbol:capability-broker-relationship-management:types.broker-update-dto
 - id: symbol:capability-broker-relationship-management:broker-endpoint-tests.update-broker-with-if-match-returns200
   node: capability:broker-relationship-management
   kind: method
   name: UpdateBroker_WithIfMatch_Returns200
   file: engine/tests/Nebula.Tests/Integration/BrokerEndpointTests.cs
-  line: 73
+  line: 95
   signature: public async Task UpdateBroker_WithIfMatch_Returns200()
   visibility: public
   language: csharp
   container: BrokerEndpointTests
-  end_line: 89
+  end_line: 111
   is_test: true
   callers: []
   callees: []
@@ -1800,13 +1900,13 @@ symbols:
   kind: method
   name: AuditBrokerUserRead
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 275
+  line: 350
   signature: private void AuditBrokerUserRead(ICurrentUserService user, string resource,
     Guid? entityId, Guid? resolvedBrokerId = null)
   visibility: private
   language: csharp
   container: BrokerService
-  end_line: 285
+  end_line: 360
   callers:
   - symbol:capability-broker-relationship-management:broker-service.get-by-id-async
   - symbol:capability-broker-relationship-management:broker-service.get-by-id-for-broker-user-async
@@ -1824,7 +1924,7 @@ symbols:
   signature: public class BrokerService(
   visibility: public
   language: csharp
-  end_line: 286
+  end_line: 361
   callers: []
   callees: []
 - id: symbol:capability-broker-relationship-management:broker-service.create-async
@@ -1832,16 +1932,17 @@ symbols:
   kind: method
   name: CreateAsync
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 76
+  line: 77
   signature: public async Task<(BrokerDto? Dto, string? ErrorCode)> CreateAsync(
   visibility: public
   language: csharp
   container: BrokerService
-  end_line: 122
+  end_line: 124
   callers:
   - symbol:capability-broker-relationship-management:broker-endpoints.create-broker
   callees:
   - symbol:capability-broker-relationship-management:broker-service.map-to-dto
+  - symbol:capability-broker-relationship-management:broker-service.sync-broker-distribution-node-async
   - symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
   - symbol:entity-broker:i-broker-repository.add-async
   - symbol:entity-broker:i-broker-repository.exists-by-license-async
@@ -1859,19 +1960,22 @@ symbols:
   kind: method
   name: DeleteAsync
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 186
+  line: 189
   signature: public async Task<string?> DeleteAsync(Guid id, ICurrentUserService user,
     CancellationToken ct = default)
   visibility: public
   language: csharp
   container: BrokerService
-  end_line: 223
+  end_line: 227
   callers:
   - symbol:capability-broker-relationship-management:broker-endpoint-tests.delete-broker-existing-broker-returns204
+  - symbol:capability-broker-relationship-management:broker-endpoint-tests.delete-broker-marks-distribution-node-inactive
   - symbol:capability-broker-relationship-management:broker-endpoint-tests.delete-broker-sets-status-inactive
   - symbol:capability-broker-relationship-management:broker-endpoint-tests.reactivate-broker-after-deactivation-returns200-with-active-status
+  - symbol:capability-broker-relationship-management:broker-endpoint-tests.reactivate-broker-marks-distribution-node-active
   - symbol:capability-broker-relationship-management:broker-endpoints.delete-broker
   callees:
+  - symbol:capability-broker-relationship-management:broker-service.sync-broker-distribution-node-async
   - symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
   - symbol:entity-broker:i-broker-repository.get-by-id-async
   - symbol:entity-broker:i-broker-repository.has-active-submissions-or-renewals-async
@@ -1885,13 +1989,13 @@ symbols:
   kind: method
   name: GetByIdAsync
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 19
+  line: 20
   signature: public async Task<BrokerDto?> GetByIdAsync(Guid id, ICurrentUserService
     user, CancellationToken ct = default)
   visibility: public
   language: csharp
   container: BrokerService
-  end_line: 31
+  end_line: 32
   callers:
   - symbol:capability-broker-relationship-management:broker-endpoints.get-broker
   callees:
@@ -1909,13 +2013,13 @@ symbols:
   kind: method
   name: GetByIdForBrokerUserAsync
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 38
+  line: 39
   signature: public async Task<BrokerBrokerUserDto?> GetByIdForBrokerUserAsync(Guid
     id, ICurrentUserService user, CancellationToken ct = default)
   visibility: public
   language: csharp
   container: BrokerService
-  end_line: 49
+  end_line: 50
   callers:
   - symbol:capability-broker-relationship-management:broker-endpoints.get-broker
   callees:
@@ -1931,12 +2035,12 @@ symbols:
   kind: method
   name: ListAsync
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 67
+  line: 68
   signature: public async Task<PaginatedResult<BrokerDto>> ListAsync(
   visibility: public
   language: csharp
   container: BrokerService
-  end_line: 74
+  end_line: 75
   callers:
   - symbol:capability-broker-relationship-management:broker-endpoints.list-brokers
   callees:
@@ -1953,12 +2057,12 @@ symbols:
   kind: method
   name: ListForBrokerUserAsync
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 56
+  line: 57
   signature: public async Task<PaginatedResult<BrokerBrokerUserDto>> ListForBrokerUserAsync(
   visibility: public
   language: csharp
   container: BrokerService
-  end_line: 65
+  end_line: 66
   callers:
   - symbol:capability-broker-relationship-management:broker-endpoints.list-brokers
   callees:
@@ -1974,12 +2078,12 @@ symbols:
   kind: method
   name: MapToBrokerUserDto
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 268
+  line: 273
   signature: private static BrokerBrokerUserDto MapToBrokerUserDto(Broker b)
   visibility: private
   language: csharp
   container: BrokerService
-  end_line: 270
+  end_line: 275
   callers:
   - symbol:capability-broker-relationship-management:broker-service.get-by-id-for-broker-user-async
   - symbol:capability-broker-relationship-management:broker-service.list-for-broker-user-async
@@ -1994,12 +2098,12 @@ symbols:
   kind: method
   name: MapToDto
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 264
+  line: 269
   signature: private static BrokerDto MapToDto(Broker b)
   visibility: private
   language: csharp
   container: BrokerService
-  end_line: 266
+  end_line: 271
   callers:
   - symbol:capability-broker-relationship-management:broker-service.create-async
   - symbol:capability-broker-relationship-management:broker-service.get-by-id-async
@@ -2019,12 +2123,12 @@ symbols:
   kind: method
   name: MaskPii
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 272
+  line: 277
   signature: private static BrokerDto MaskPii(BrokerDto dto)
   visibility: private
   language: csharp
   container: BrokerService
-  end_line: 273
+  end_line: 278
   callers:
   - symbol:capability-broker-relationship-management:broker-service.get-by-id-async
   - symbol:capability-broker-relationship-management:broker-service.list-async
@@ -2038,16 +2142,17 @@ symbols:
   kind: method
   name: ReactivateAsync
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 225
+  line: 229
   signature: public async Task<(BrokerDto? Dto, string? ErrorCode)> ReactivateAsync(
   visibility: public
   language: csharp
   container: BrokerService
-  end_line: 262
+  end_line: 267
   callers:
   - symbol:capability-broker-relationship-management:broker-endpoints.reactivate-broker
   callees:
   - symbol:capability-broker-relationship-management:broker-service.map-to-dto
+  - symbol:capability-broker-relationship-management:broker-service.sync-broker-distribution-node-async
   - symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
   - symbol:entity-broker:i-broker-repository.get-by-id-including-deactivated-async
   - symbol:entity-broker:i-broker-repository.update-async
@@ -2057,22 +2162,42 @@ symbols:
   - symbol:capability-broker-relationship-management:broker-dto.broker-dto
   - symbol:capability-broker-relationship-management:types.broker-dto
   - symbol:entity-user-profile:i-current-user-service.i-current-user-service
+- id: symbol:capability-broker-relationship-management:broker-service.sync-broker-distribution-node-async
+  node: capability:broker-relationship-management
+  kind: method
+  name: SyncBrokerDistributionNodeAsync
+  file: engine/src/Nebula.Application/Services/BrokerService.cs
+  line: 280
+  signature: private async Task SyncBrokerDistributionNodeAsync(
+  visibility: private
+  language: csharp
+  container: BrokerService
+  end_line: 348
+  callers:
+  - symbol:capability-broker-relationship-management:broker-service.create-async
+  - symbol:capability-broker-relationship-management:broker-service.delete-async
+  - symbol:capability-broker-relationship-management:broker-service.reactivate-async
+  - symbol:capability-broker-relationship-management:broker-service.update-async
+  callees: []
+  type_refs:
+  - symbol:entity-broker:broker.broker
 - id: symbol:capability-broker-relationship-management:broker-service.update-async
   node: capability:broker-relationship-management
   kind: method
   name: UpdateAsync
   file: engine/src/Nebula.Application/Services/BrokerService.cs
-  line: 124
+  line: 126
   signature: public async Task<(BrokerDto? Dto, string? ErrorCode)> UpdateAsync(
   visibility: public
   language: csharp
   container: BrokerService
-  end_line: 184
+  end_line: 187
   callers:
   - symbol:capability-broker-relationship-management:broker-endpoints.update-broker
   callees:
   - symbol:capability-broker-relationship-management:broker-service.map-to-dto
   - symbol:capability-broker-relationship-management:broker-service.mask-pii
+  - symbol:capability-broker-relationship-management:broker-service.sync-broker-distribution-node-async
   - symbol:entity-activity-timeline-event:i-timeline-repository.add-event-async
   - symbol:entity-broker:i-broker-repository.get-by-id-async
   - symbol:entity-broker:i-broker-repository.update-async
@@ -47035,7 +47160,20 @@ symbols:
   signature: 'function installBrokerHandlers(initialBroker: Partial<BrokerDto> ='
   visibility: local
   language: typescript
-  end_line: 236
+  end_line: 244
+  is_test: true
+  callers: []
+  callees: []
+- id: symbol:endpoint-broker-detail:broker-detail-page.integration.test.install-distribution-handlers
+  node: endpoint:broker-detail
+  kind: function
+  name: installDistributionHandlers
+  file: experience/src/pages/tests/BrokerDetailPage.integration.test.tsx
+  line: 246
+  signature: function installDistributionHandlers()
+  visibility: local
+  language: typescript
+  end_line: 339
   is_test: true
   callers: []
   callees: []
@@ -47044,12 +47182,12 @@ symbols:
   kind: function
   name: renderBrokerDetailPage
   file: experience/src/pages/tests/BrokerDetailPage.integration.test.tsx
-  line: 238
+  line: 341
   signature: 'function renderBrokerDetailPage(additionalRoutes: React.ReactElement[]
     = [])'
   visibility: local
   language: typescript
-  end_line: 244
+  end_line: 347
   is_test: true
   callers: []
   callees: []
@@ -51424,12 +51562,12 @@ symbols:
   kind: method
   name: ApplyFallbackState
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 586
+  line: 908
   signature: private static void ApplyFallbackState(
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 612
+  end_line: 934
   callers:
   - symbol:entity-account:dev-seed-data.apply-seeded-account-lifecycle-fixtures
   callees: []
@@ -51443,12 +51581,12 @@ symbols:
   kind: method
   name: ApplySeededAccountLifecycleFixtures
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 545
+  line: 867
   signature: private static void ApplySeededAccountLifecycleFixtures(
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 584
+  end_line: 906
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51463,12 +51601,12 @@ symbols:
   kind: method
   name: AssignAccountRelationships
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 377
+  line: 699
   signature: private static void AssignAccountRelationships(
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 394
+  end_line: 716
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
@@ -51480,12 +51618,12 @@ symbols:
   kind: method
   name: BuildAccountContacts
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 396
+  line: 718
   signature: private static IEnumerable<AccountContact> BuildAccountContacts(
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 432
+  end_line: 754
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51500,13 +51638,13 @@ symbols:
   kind: method
   name: BuildAccounts
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 341
+  line: 663
   signature: private static List<Account> BuildAccounts(int count, DateTime now, Random
     rng, Guid[] userIds)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 375
+  end_line: 697
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51520,13 +51658,13 @@ symbols:
   kind: method
   name: BuildBrokerRegions
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 653
+  line: 975
   signature: private static IEnumerable<BrokerRegion> BuildBrokerRegions(IReadOnlyList<Broker>
     brokers, Random rng)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 666
+  end_line: 988
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
@@ -51540,12 +51678,12 @@ symbols:
   kind: method
   name: BuildBrokerTimelineEvents
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 759
+  line: 1081
   signature: private static IEnumerable<ActivityTimelineEvent> BuildBrokerTimelineEvents(
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 796
+  end_line: 1118
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
@@ -51559,12 +51697,12 @@ symbols:
   kind: method
   name: BuildBrokers
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 614
+  line: 936
   signature: private static List<Broker> BuildBrokers(
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 651
+  end_line: 973
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51580,13 +51718,13 @@ symbols:
   kind: method
   name: BuildContacts
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 668
+  line: 990
   signature: private static IEnumerable<Contact> BuildContacts(IReadOnlyList<Broker>
     brokers, DateTime now, Random rng, Guid[] userIds)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 696
+  end_line: 1018
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51598,12 +51736,12 @@ symbols:
   kind: method
   name: BuildPolicies
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 434
+  line: 756
   signature: private static List<Policy> BuildPolicies(
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 492
+  end_line: 814
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51620,13 +51758,13 @@ symbols:
   kind: method
   name: BuildPolicyCoverageLines
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 527
+  line: 849
   signature: private static List<PolicyCoverageLine> BuildPolicyCoverageLines(IReadOnlyList<Policy>
     policies, DateTime now, Guid userId)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 543
+  end_line: 865
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
@@ -51640,13 +51778,13 @@ symbols:
   kind: method
   name: BuildPolicyVersions
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 494
+  line: 816
   signature: private static List<PolicyVersion> BuildPolicyVersions(IReadOnlyList<Policy>
     policies, DateTime now, Guid userId)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 525
+  end_line: 847
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51661,12 +51799,12 @@ symbols:
   kind: method
   name: BuildTasks
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 698
+  line: 1020
   signature: private static List<TaskItem> BuildTasks(
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 757
+  end_line: 1079
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51683,13 +51821,13 @@ symbols:
   kind: method
   name: BuildTransitionReason
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 906
+  line: 1228
   signature: private static string? BuildTransitionReason(Random rng, string workflowType,
     string fromState, string toState)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 927
+  end_line: 1249
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51699,12 +51837,12 @@ symbols:
   kind: method
   name: BuildTransitionTimelineEvents
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 798
+  line: 1120
   signature: private static IEnumerable<ActivityTimelineEvent> BuildTransitionTimelineEvents(
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 818
+  end_line: 1140
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
@@ -51718,12 +51856,12 @@ symbols:
   kind: method
   name: BuildUserProfiles
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 331
+  line: 653
   signature: private static List<UserProfile> BuildUserProfiles(DateTime now)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 339
+  end_line: 661
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
@@ -51736,14 +51874,28 @@ symbols:
   kind: method
   name: CanTerminateRenewalFromState
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 887
+  line: 1209
   signature: private static bool CanTerminateRenewalFromState(string current)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 888
+  end_line: 1210
   callers:
   - symbol:entity-account:dev-seed-data.generate-workflow-path
+  callees: []
+- id: symbol:entity-account:dev-seed-data.derive-f0017-demo-producer-id
+  node: entity:account
+  kind: method
+  name: DeriveF0017DemoProducerId
+  file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
+  line: 510
+  signature: private static Guid DeriveF0017DemoProducerId(Guid brokerId, byte suffix)
+  visibility: private
+  language: csharp
+  container: DevSeedData
+  end_line: 516
+  callers:
+  - symbol:entity-account:dev-seed-data.ensure-f0017-demo-examples-for-broker-async
   callees: []
 - id: symbol:entity-account:dev-seed-data.dev-seed-data
   node: entity:account
@@ -51754,7 +51906,7 @@ symbols:
   signature: public static class DevSeedData
   visibility: public
   language: csharp
-  end_line: 1122
+  end_line: 1444
   callers: []
   callees: []
 - id: symbol:entity-account:dev-seed-data.ensure-carrier-refs-async
@@ -51762,42 +51914,107 @@ symbols:
   kind: method
   name: EnsureCarrierRefsAsync
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 961
+  line: 1283
   signature: private static async Task EnsureCarrierRefsAsync(AppDbContext db)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 984
+  end_line: 1306
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
   instantiates:
   - symbol:entity-policy:carrier-ref.carrier-ref
+- id: symbol:entity-account:dev-seed-data.ensure-demo-territory-async
+  node: entity:account
+  kind: method
+  name: EnsureDemoTerritoryAsync
+  file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
+  line: 518
+  signature: private static async Task<Territory> EnsureDemoTerritoryAsync(
+  visibility: private
+  language: csharp
+  container: DevSeedData
+  end_line: 543
+  callers:
+  - symbol:entity-account:dev-seed-data.ensure-f0017-demo-examples-for-broker-async
+  callees: []
 - id: symbol:entity-account:dev-seed-data.ensure-dev-broker-tenant-id-async
   node: entity:account
   kind: method
   name: EnsureDevBrokerTenantIdAsync
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 947
+  line: 1269
   signature: private static async Task EnsureDevBrokerTenantIdAsync(AppDbContext db)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 959
+  end_line: 1281
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
+- id: symbol:entity-account:dev-seed-data.ensure-f0017-broker-distribution-nodes-async
+  node: entity:account
+  kind: method
+  name: EnsureF0017BrokerDistributionNodesAsync
+  file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
+  line: 545
+  signature: private static async Task EnsureF0017BrokerDistributionNodesAsync(AppDbContext
+    db)
+  visibility: private
+  language: csharp
+  container: DevSeedData
+  end_line: 642
+  callers:
+  - symbol:entity-account:dev-seed-data.seed-dev-data-async
+  callees: []
+- id: symbol:entity-account:dev-seed-data.ensure-f0017-demo-examples-async
+  node: entity:account
+  kind: method
+  name: EnsureF0017DemoExamplesAsync
+  file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
+  line: 326
+  signature: private static async Task EnsureF0017DemoExamplesAsync(AppDbContext db)
+  visibility: private
+  language: csharp
+  container: DevSeedData
+  end_line: 345
+  callers:
+  - symbol:entity-account:dev-seed-data.seed-dev-data-async
+  callees:
+  - symbol:entity-account:dev-seed-data.ensure-f0017-demo-examples-for-broker-async
+- id: symbol:entity-account:dev-seed-data.ensure-f0017-demo-examples-for-broker-async
+  node: entity:account
+  kind: method
+  name: EnsureF0017DemoExamplesForBrokerAsync
+  file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
+  line: 347
+  signature: private static async Task EnsureF0017DemoExamplesForBrokerAsync(AppDbContext
+    db, Broker broker)
+  visibility: private
+  language: csharp
+  container: DevSeedData
+  end_line: 508
+  callers:
+  - symbol:entity-account:dev-seed-data.ensure-f0017-demo-examples-async
+  callees:
+  - symbol:entity-account:dev-seed-data.derive-f0017-demo-producer-id
+  - symbol:entity-account:dev-seed-data.ensure-demo-territory-async
+  instantiates:
+  - symbol:entity-activity-timeline-event:activity-timeline-event.activity-timeline-event
+  type_refs:
+  - symbol:entity-broker:broker.broker
 - id: symbol:entity-account:dev-seed-data.ensure-reference-statuses-async
   node: entity:account
   kind: method
   name: EnsureReferenceStatusesAsync
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 936
+  line: 1258
   signature: private static async Task EnsureReferenceStatusesAsync(AppDbContext db)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 940
+  end_line: 1262
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51808,12 +52025,12 @@ symbols:
   kind: method
   name: GenerateWorkflowPath
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 828
+  line: 1150
   signature: private static List<string> GenerateWorkflowPath(
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 871
+  end_line: 1193
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees:
@@ -51825,12 +52042,12 @@ symbols:
   kind: method
   name: GetRenewalTargetDays
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 929
+  line: 1251
   signature: private static int GetRenewalTargetDays(string? lineOfBusiness)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 934
+  end_line: 1256
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
@@ -51839,13 +52056,13 @@ symbols:
   kind: method
   name: PatchRecentTransitionsEntityId
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 820
+  line: 1142
   signature: private static void PatchRecentTransitionsEntityId(List<WorkflowTransition>
     transitions, Guid entityId)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 826
+  end_line: 1148
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
@@ -51856,12 +52073,12 @@ symbols:
   kind: method
   name: Pick
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 1080
+  line: 1402
   signature: private static T Pick<T>(Random rng, IReadOnlyList<T> values)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 1080
+  end_line: 1402
   callers:
   - symbol:entity-account:dev-seed-data.build-account-contacts
   - symbol:entity-account:dev-seed-data.build-accounts
@@ -51873,12 +52090,12 @@ symbols:
   kind: method
   name: PickRenewalTerminal
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 890
+  line: 1212
   signature: private static string PickRenewalTerminal(Random rng, string current)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 895
+  end_line: 1217
   callers:
   - symbol:entity-account:dev-seed-data.generate-workflow-path
   callees:
@@ -51888,12 +52105,12 @@ symbols:
   kind: method
   name: PickSubmissionTerminal
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 873
+  line: 1195
   signature: private static string PickSubmissionTerminal(Random rng, string current)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 885
+  end_line: 1207
   callers:
   - symbol:entity-account:dev-seed-data.generate-workflow-path
   callees:
@@ -51903,13 +52120,13 @@ symbols:
   kind: method
   name: RandomStepDays
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 897
+  line: 1219
   signature: private static double RandomStepDays(Random rng, string fromState, string
     toState)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 904
+  end_line: 1226
   callers:
   - symbol:entity-account:dev-seed-data.seed-dev-data-async
   callees: []
@@ -51923,7 +52140,7 @@ symbols:
   visibility: public
   language: csharp
   container: DevSeedData
-  end_line: 320
+  end_line: 324
   callers: []
   callees:
   - symbol:capability-dynamic-lob-attributes:lob-schema-defaults.resolve-default-product-version-id
@@ -51944,6 +52161,8 @@ symbols:
   - symbol:entity-account:dev-seed-data.build-user-profiles
   - symbol:entity-account:dev-seed-data.ensure-carrier-refs-async
   - symbol:entity-account:dev-seed-data.ensure-dev-broker-tenant-id-async
+  - symbol:entity-account:dev-seed-data.ensure-f0017-broker-distribution-nodes-async
+  - symbol:entity-account:dev-seed-data.ensure-f0017-demo-examples-async
   - symbol:entity-account:dev-seed-data.ensure-reference-statuses-async
   - symbol:entity-account:dev-seed-data.generate-workflow-path
   - symbol:entity-account:dev-seed-data.get-renewal-target-days
@@ -51960,13 +52179,13 @@ symbols:
   kind: method
   name: UpsertRenewalReferenceStatusesAsync
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 1026
+  line: 1348
   signature: private static async Task UpsertRenewalReferenceStatusesAsync(AppDbContext
     db)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 1064
+  end_line: 1386
   callers:
   - symbol:entity-account:dev-seed-data.ensure-reference-statuses-async
   callees: []
@@ -51977,13 +52196,13 @@ symbols:
   kind: method
   name: UpsertSubmissionReferenceStatusesAsync
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 986
+  line: 1308
   signature: private static async Task UpsertSubmissionReferenceStatusesAsync(AppDbContext
     db)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 1024
+  end_line: 1346
   callers:
   - symbol:entity-account:dev-seed-data.ensure-reference-statuses-async
   callees: []
@@ -51992,13 +52211,13 @@ symbols:
   kind: method
   name: WeightedPick
   file: engine/src/Nebula.Infrastructure/Persistence/DevSeedData.cs
-  line: 1066
+  line: 1388
   signature: private static T WeightedPick<T>(Random rng, params (T Item, int Weight)[]
     choices)
   visibility: private
   language: csharp
   container: DevSeedData
-  end_line: 1078
+  end_line: 1400
   callers:
   - symbol:entity-account:dev-seed-data.build-brokers
   - symbol:entity-account:dev-seed-data.build-policies
